@@ -60,7 +60,7 @@
 	<message key="author.submit.submissionLocale">Submission Language</message>
 	<message key="author.submit.submissionLocaleDescription">This site accepts proposals in several languages. Choose the primary language of the submission from the pulldown below.</message>
 	<message key="author.submit.submissionChecklist">Submission Checklist</message>
-	<message key="author.submit.submissionChecklistDescription">Indicate that this proposal is ready to be considered by the Committee by checking off the following (comments to the Secretary can be added at Step 5).</message>
+	<message key="author.submit.submissionChecklistDescription">Indicate that this proposal is ready to be considered by this system by checking off the following:</message>
 	<message key="author.submit.verifyChecklist">You must make sure all items in the submission checklist are satisfied before continuing.</message>
 	<message key="author.submit.copyrightNoticeAgree">The principal investigators agree to the terms of this Copyright Notice, which will apply to this submission if and when it is published by this site (comments to the Committee Secretariat can be added below).</message>
 	<message key="author.submit.copyrightNoticeAgreeRequired">You must agree to the terms of the Copyright Notice before continuing.</message>

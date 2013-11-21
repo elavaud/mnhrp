@@ -25,6 +25,10 @@
 {include file="common/formErrors.tpl"}
 {if $articleId}<input type="hidden" name="articleId" value="{$articleId|escape}" />{/if}
 
+{if $currentJournal->getLocalizedSetting('authorGuidelines') != ''}
+<h3>{translate key="about.authorGuidelines"}</h3>
+<p>{$currentJournal->getLocalizedSetting('authorGuidelines')}</p>
+{/if}
 {if count($sectionOptions) <= 1}
 	<p>{translate key="author.submit.notAccepting"}</p>
 {else}
