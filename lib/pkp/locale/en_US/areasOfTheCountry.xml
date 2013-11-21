@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : areasOfTheCountry.xml
+    Created on : February 8th 2013
+    Author     : Edouard Lavaud
+    Description:
+        For use in country where proposal is submitted.
+-->
+
+<countries>
+    <country code="ARR" name="Arkhangai"/>
+    <country code="BAO" name="Bayan-Ölgii"/>
+    <country code="BAK" name="Bayankhongor"/>
+    <country code="BUL" name="Bulgan"/>
+    <country code="DAU" name="Darkhan-Uul"/>
+    <country code="DOD" name="Dornod"/>
+    <country code="DOG" name="Dornogovi"/>
+    <country code="DUG" name="Dundgovi"/>
+    <country code="GOA" name="Govi-Altai"/>
+    <country code="GOS" name="Govisümber"/>
+    <country code="KHE" name="Khentii"/>
+    <country code="KHD" name="Khovd"/>
+    <country code="KHS" name="Khövsgöl"/>
+    <country code="OMN" name="Ömnögovi"/>
+    <country code="ORK" name="Orkhon"/>
+    <country code="OVO" name="Övörkhangai"/>
+    <country code="SEL" name="Selenge"/>
+    <country code="SUK" name="Sükhbaatar"/>
+    <country code="TOV" name="Töv"/>
+    <country code="UVS" name="Uvs"/>
+    <country code="ZAV" name="Zavkhan"/>
+</countries>
