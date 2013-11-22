@@ -90,7 +90,20 @@
 				<td align="right"><a href="{url journal=$journalPath page="sectionEditor" op="meetings"}">{translate key="editor.meetings"}</a></td>
 				<td align="right"></td>
 			</tr>
-			
+			<tr>
+				<td></td>
+				<td align="left"></td>
+				<td align="left">{if $sectionEditorSubmissionsCount[4]}
+						<a href="{url journal=$journalPath page="sectionEditor" op="index" path="waitingForResubmissions"}">{translate key="common.queue.short.waitingForResubmissions"} ({$sectionEditorSubmissionsCount[4]})</a>
+					{else}<span class="disabled">0 {translate key="common.queue.short.waitingForResubmissions"}</span>{/if}
+				</td>
+				<td align="left">{if $sectionEditorSubmissionsCount[5]}
+					<a href="{url journal=$journalPath page="sectionEditor" op="index" path="submissionsArchives"}">{translate key="common.queue.short.submissionsArchives"} ({$sectionEditorSubmissionsCount[5]})</a>
+					{else}<span class="disabled">0 {translate key="common.queue.short.submissionsArchives"}</span>{/if}
+				</td>
+				<td align="right"></td>
+				<td align="right"></td>
+			</tr>
 		{/if}
 		{if $isValid.LayoutEditor.$journalId}
 			{assign var="layoutEditorSubmissionsCount" value=$submissionsCount.LayoutEditor.$journalId}

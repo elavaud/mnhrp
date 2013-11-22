@@ -107,6 +107,8 @@
 	<message key="common.queue.short.proposalsInReview">In Review</message>
     <message key="common.queue.short.submissionsApproved">Ongoing</message>
     <message key="common.queue.short.submissionsNotApproved">Not Approved</message>
+    <message key="common.queue.short.waitingForResubmissions">For Re-Submission</message>
+    <message key="common.queue.long.waitingForResubmissions">Waiting for Re-Submission</message>
     <message key="common.queue.long.submissionsNotApproved">Not Approved Proposals</message>
 	<message key="common.queue.long.submissionsArchives">Archived Proposals</message>
 	<message key="common.queue.short.submissionsArchives">Archives</message>

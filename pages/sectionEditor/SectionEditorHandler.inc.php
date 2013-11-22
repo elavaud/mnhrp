@@ -72,7 +72,10 @@ class SectionEditorHandler extends Handler {
 			FILTER_SECTION_ALL => Locale::Translate('editor.allSections')
 		) + $sections;
 		switch($page) {
-			case 'submissionsInReview':
+			case 'waitingForResubmissions':
+				$functionName = 'getSectionEditorWaitingForSubmissionsIterator';
+				break;
+                        case 'submissionsInReview':
 				$functionName = 'getSectionEditorSubmissionsInReviewIterator';
 				break;
 			case 'submissionsApproved':

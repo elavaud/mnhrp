@@ -434,7 +434,41 @@ class SectionEditorSubmissionDAO extends DAO {
 		$returner = new DAOResultFactory($result, $this, '_returnSectionEditorSubmissionFromRow');
 		return $returner;
 	}
-	
+
+        
+        /**
+	 * Get all submissions waiting for resubmissions.
+	 * @param $journalId int
+	 * @param $sectionId int
+	 * @param $searchField int Symbolic SUBMISSION_FIELD_... identifier
+	 * @param $searchMatch string "is" or "contains" or "startsWith"
+	 * @param $search String to look in $searchField for
+	 * @param $dateField int Symbolic SUBMISSION_FIELD_DATE_... identifier
+	 * @param $dateFrom String date to search from
+	 * @param $dateTo String date to search to
+	 * @param $rangeInfo object
+	 * @return array EditorSubmission
+	 * Last modified by EL on February 17th 2013
+	 * Removed edit assignments
+	 */
+	function &getSectionEditorWaitingForSubmissionsIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+		$result =& $this->_getUnfilteredSectionEditorSubmissions(
+			$sectionId, $journalId,
+			$searchField, $searchMatch, $search,
+			$dateField, $dateFrom, $dateTo, $countryField,
+			'(a.status = ' . STATUS_REVIEWED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_RESUBMIT . '
+			) OR ((a.status <> ' . STATUS_REVIEWED . '
+                                OR a.status <> ' . STATUS_WITHDRAWN . '
+				OR a.status <> ' . STATUS_ARCHIVED . '
+				OR a.status <> ' . STATUS_COMPLETED . '
+			) AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . ')',
+			$rangeInfo, $sortBy, $sortDirection
+		);
+		
+		$returner = new DAOResultFactory($result, $this, '_returnSectionEditorSubmissionFromRow');
+		return $returner;
+	}
+
 	/**
 	 * Get all submissions in review for a journal and a specific section.
 	 * @param $journalId int
@@ -607,22 +641,7 @@ class SectionEditorSubmissionDAO extends DAO {
 			$dateField, $dateFrom, $dateTo, $countryField,
 			'a.status = ' . STATUS_ARCHIVED . ' 
 			OR a.status = ' . STATUS_WITHDRAWN . '
-			OR (
-					(
-						a.status = ' . STATUS_REVIEWED . '
-						AND (
-							sdec.decision = ' . SUBMISSION_SECTION_DECISION_DECLINED . '
-							OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_RESUBMIT . '
-						)
-				) OR (
-						(
-							a.status <> ' . STATUS_REVIEWED . '
-							OR a.status <> ' . STATUS_WITHDRAWN . '
-							OR a.status <> ' . STATUS_ARCHIVED . '
-							OR a.status <> ' . STATUS_COMPLETED . '
-					) AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . '
-				)
-			)',
+			OR (a.status = ' . STATUS_REVIEWED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_DECLINED . ')',
 			$rangeInfo, $sortBy, $sortDirection
 		);
 		
@@ -643,6 +662,8 @@ class SectionEditorSubmissionDAO extends DAO {
 		$submissionsCount[1] = 0;
 		$submissionsCount[2] = 0;
 		$submissionsCount[3] = 0;
+		$submissionsCount[4] = 0;
+		$submissionsCount[5] = 0;
 
 		$sql = 'SELECT COUNT(*) as review_count
 				FROM	articles a			
@@ -679,11 +700,25 @@ class SectionEditorSubmissionDAO extends DAO {
 			) AND a.date_submitted IS NOT NULL)';
 				
 		$sql3 = ' AND (a.status = ' . STATUS_COMPLETED .')';
+                
+		$sql4 = ' AND (a.status = ' . STATUS_REVIEWED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_RESUBMIT . '
+			) OR ((a.status <> ' . STATUS_REVIEWED . '
+                                OR a.status <> ' . STATUS_WITHDRAWN . '
+				OR a.status <> ' . STATUS_ARCHIVED . '
+				OR a.status <> ' . STATUS_COMPLETED . '
+			) AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . ')';
+        
+		$sql5 = ' AND a.status = ' . STATUS_ARCHIVED . ' 
+			OR a.status = ' . STATUS_WITHDRAWN . '
+			OR (a.status = ' . STATUS_REVIEWED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_DECLINED . ')';
+                
 				
 		$result0 =& $this->retrieve($sql.$sql0, array($journalId, $sectionId));
 		$result1 =& $this->retrieve($sql.$sql1, array($journalId, $sectionId));
 		$result2 =& $this->retrieve($sql.$sql2, array($journalId, $sectionId));
 		$result3 =& $this->retrieve($sql.$sql3, array($journalId, $sectionId));
+		$result4 =& $this->retrieve($sql.$sql4, array($journalId, $sectionId));
+		$result5 =& $this->retrieve($sql.$sql5, array($journalId, $sectionId));
 
 		$submissionsCount[0] = $result0->Fields('review_count');
 		$result0->Close();
@@ -696,6 +731,12 @@ class SectionEditorSubmissionDAO extends DAO {
 		unset($result2);
 		$submissionsCount[3] = $result3->Fields('review_count');
 		$result3->Close();
+		unset($result3);
+		$submissionsCount[4] = $result4->Fields('review_count');
+		$result4->Close();
+		unset($result3);
+		$submissionsCount[5] = $result5->Fields('review_count');
+		$result5->Close();
 		unset($result3);
 
 		return $submissionsCount;
