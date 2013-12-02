@@ -51,8 +51,6 @@ class AuthorHandler extends Handler {
 		$toDate = Request::getUserDateVar('dateTo', 32, 12, null, 23, 59, 59);
 		if ($toDate !== null) $toDate = date('Y-m-d H:i:s', $toDate);
 		
-		$countryField = Request::getUserVar('countryField');
-
 		$page = isset($args[0]) ? $args[0] : '';
 		switch($page) {
 			case 'proposalsInReview':
@@ -76,24 +74,10 @@ class AuthorHandler extends Handler {
 		$sort = isset($sort) ? $sort : 'title';
 		$sortDirection = Request::getUserVar('sortDirection');
 		$sortDirection = (isset($sortDirection) && ($sortDirection == SORT_DIRECTION_ASC || $sortDirection == SORT_DIRECTION_DESC)) ? $sortDirection : SORT_DIRECTION_ASC;
-		if ($sort == 'status') {
-			// FIXME Does not pass $rangeInfo else we only get partial results
-			$unsortedSubmissions = $authorSubmissionDao->$functionName($user->getId(), $journal->getId(), $searchField, $searchMatch, $search, $dateSearchField, $fromDate, $toDate, $countryField, null, $sort, $sortDirection);
-
-			// Sort all submissions by status, which is too complex to do in the DB
-			$submissionsArray = $unsortedSubmissions->toArray();
-			$compare = create_function('$s1, $s2', 'return strcmp($s1->getSubmissionStatus(), $s2->getSubmissionStatus());');
-			@usort ($submissionsArray, $compare);
-			if($sortDirection == SORT_DIRECTION_DESC) {
-				$submissionsArray = array_reverse($submissionsArray);
-			}
-			// Convert submission array back to an ItemIterator class
-			import('lib.pkp.classes.core.ArrayItemIterator');
-			$submissions =& ArrayItemIterator::fromRangeInfo($submissionsArray, $rangeInfo);
-		} else {
-			$submissions = $authorSubmissionDao->$functionName($user->getId(), $journal->getId(), $searchField, $searchMatch, $search, $dateSearchField, $fromDate, $toDate, $countryField, $rangeInfo, $sort, $sortDirection);
-		}
-        $templateMgr =& TemplateManager::getManager();
+		
+                $submissions = $authorSubmissionDao->$functionName($user->getId(), $journal->getId(), $searchField, $searchMatch, $search, $dateSearchField, $fromDate, $toDate, $rangeInfo, $sort, $sortDirection);
+		
+                $templateMgr =& TemplateManager::getManager();
 		$templateMgr->assign('pageToDisplay', $page);
 
 		$templateMgr->assign_by_ref('submissions', $submissions);
@@ -145,8 +129,6 @@ class AuthorHandler extends Handler {
 		$templateMgr->assign('helpTopicId', 'editorial.authorsRole.submissions');
 		$templateMgr->assign('sort', $sort);
 		$templateMgr->assign('sortDirection', $sortDirection);
-		// Added by igm 9/24/11
-		$templateMgr->assign('countryField', $countryField);
 		$templateMgr->display('author/index.tpl');
 	}
 

@@ -84,6 +84,37 @@
 		<td>{$publishedArticle->getViews()}</td>
 	</tr>
 	{/if}
+	{assign var="proposalStatus" value=$submission->getSubmissionStatus()}
+	{assign var="proposalStatusKey" value=$submission->getProposalStatusKey($proposalStatus)}
+	<tr valign="top" id="proposalStatus">
+		<td title="{translate key="submission.proposalStatusInstruct"}" class="label" width="20%">[?] {translate key="submission.proposalStatus"}</td>
+		<td width="80%" class="value">
+			{translate key=$proposalStatusKey}
+			{if $submission->isSubmissionDue() && $proposalStatus != PROPOSAL_STATUS_COMPLETED}
+				({translate key="submission.status.continuingReview"})
+			{/if}
+		</td>
+	</tr>
+	{if $proposalStatus == PROPOSAL_STATUS_WITHDRAWN}
+		<tr id="withdrawnReasons">
+			<td class="label">&nbsp;</td>
+			<td class="value">{translate key="common.reason"}: 
+			{if $submission->getWithdrawReason(en_US) == "0"}
+				{translate key="submission.withdrawLack"}
+			{elseif $submission->getWithdrawReason(en_US) == "1"}
+				{translate key="submission.withdrawAdverse"}
+			{else}
+				{$submission->getWithdrawReason(en_US)}
+			{/if}
+			</td>
+		</tr>
+		{if $submission->getWithdrawComments(en_US)}
+			<tr id="withdrawComments">
+				<td class="label">&nbsp;</td>
+				<td class="value">{translate key="common.comments"}: {$submission->getWithdrawComments(en_US)}</td>
+			</tr>
+		{/if}
+	{/if}
 </table>
 </div>
 

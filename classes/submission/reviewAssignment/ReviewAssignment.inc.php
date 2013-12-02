@@ -64,6 +64,17 @@ class ReviewAssignment extends PKPReviewAssignment {
 		);
 		return $reviewerRatingOptions;
 	}
+        
+        /*
+	 * Check if a review form response exists. Having it here avoid to pass the DAO in a template
+	 * @param $reviewAssignmentId
+	 * @return boolean
+	 */	 
+	function &reviewFormResponseExists() {
+            $reviewFormResponseDao =& DAORegistry::getDAO('ReviewFormResponseDAO');
+            return $reviewFormResponseDao->reviewFormResponseExists($this->getReviewId());
+	}  
+        
 }
 
 ?>

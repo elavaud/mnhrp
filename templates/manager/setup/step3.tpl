@@ -28,7 +28,8 @@
 {/if}
 
 <div id="authorGuidelinesInfo">
-<h3>3.1 {translate key="manager.setup.authorGuidelines"}</h3>
+<h3>3.1 {translate key="manager.setup.submission.steps"}</h3>
+<h6>3.1.1 {translate key="navigation.stepNumber" step=1} - {translate key="manager.setup.authorGuidelines"}</h6>
 
 <p>{translate key="manager.setup.authorGuidelinesDescription"}</p>
 
@@ -39,7 +40,7 @@
 </div>
 
 <div id="submissionPreparationChecklist">
-<h4>{translate key="manager.setup.submissionPreparationChecklist"}</h4>
+<h6>3.1.2 {translate key="navigation.stepNumber" step=1} - {translate key="manager.setup.submissionPreparationChecklist"}</h6>
 
 <p>{translate key="manager.setup.submissionPreparationChecklistDescription"}</p>
 
@@ -66,7 +67,24 @@
 
 <p><input type="submit" name="addChecklist" value="{translate key="manager.setup.addChecklistItem"}" class="button" /></p>
 </div>
+<!--{*
+<div id="requiredAbstracts">
 
+<h6>3.1.3 {translate key="navigation.stepNumber" step=2} - {translate key="manager.setup.submission.steps.abstracts"}</h6>
+
+<p>{translate key="manager.setup.submission.steps.abstracts.description"}</p>
+
+<table width="100%" class="data">
+	{foreach from=$formLocales item=localeName key=localeKey}
+		<tr valign="top">
+			<td width="20%" class="label">{$localeName}</td>
+			<td width="80%" class="value"><input type="checkbox" name="abstractLocales[{$localeKey}|escape]" id="abstractLocales[{$localeKey}|escape]" value="1" {if abstractLocales[{$localeKey}|escape] == "1"} checked="checked"{/if} />Required</td>
+		</tr>
+	{/foreach}
+</table>
+
+</div>
+*}-->
 <div class="separator"></div>
 
 <div id="authorCopyrightNotice">

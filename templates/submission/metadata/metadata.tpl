@@ -8,7 +8,7 @@
  *}
 
 {assign var="status" value=$submission->getSubmissionStatus()}
-{assign var="decision" value=$submission->getMostRecentDecision()}
+{assign var="decision" value=$submission->getMostRecentDecisionValue()}
 
 {if $canEditMetadata && $isSectionEditor && $status!=PROPOSAL_STATUS_COMPLETED && $status!=PROPOSAL_STATUS_ARCHIVED && $decision!=SUBMISSION_SECTION_DECISION_EXEMPTED && $decision!=SUBMISSION_SECTION_DECISION_APPROVED}
 	<p><a href="{url op="viewMetadata" path=$submission->getId()}" class="action">{translate key="submission.editMetadata"}</a></p>

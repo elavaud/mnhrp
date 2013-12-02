@@ -96,7 +96,7 @@ class InitialReviewDecisionForm extends Form {
 			case SUBMISSION_SECTION_DECISION_APPROVED:
 			case SUBMISSION_SECTION_DECISION_RESUBMIT:
 			case SUBMISSION_SECTION_DECISION_DECLINED:
-				SectionEditorAction::recordDecision($submission, $decision, REVIEW_TYPE_INITIAL, $previousDecision->getRound(), $dateDecided,  $previousDecision->getId());
+				SectionEditorAction::recordDecision($submission, $decision, REVIEW_TYPE_INITIAL, $previousDecision->getRound(), null, $dateDecided,  $previousDecision->getId());
 		}
 	}
 

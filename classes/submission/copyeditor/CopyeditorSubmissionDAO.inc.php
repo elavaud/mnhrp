@@ -65,12 +65,13 @@ class CopyeditorSubmissionDAO extends DAO {
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
 				LEFT JOIN edit_assignments e ON (a.article_id = e.article_id)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.article_id = ?',
+                                LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	a.article_id = ? AND sdec2.section_decision_id IS NULL',
 			array(
 				'title',
 				$primaryLocale,
@@ -104,13 +105,14 @@ class CopyeditorSubmissionDAO extends DAO {
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
-				LEFT JOIN section_editors se ON (a.section_id = se.section_id)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.article_id = ?',
+                                LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_editors se ON (sdec.section_id = se.section_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	a.article_id = ? AND sdec2.section_decision_id IS NULL',
 			array(
 				'title',
 				$primaryLocale,
@@ -307,13 +309,14 @@ class CopyeditorSubmissionDAO extends DAO {
 				LEFT JOIN issues i ON (pa.issue_id = i.issue_id)
 				LEFT JOIN authors aa ON (aa.submission_id = a.article_id)
 				LEFT JOIN authors aap ON (aap.submission_id = a.article_id AND aap.primary_contact = 1)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN section_editors se ON (se.section_id = a.section_id)
+                                LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_editors se ON (se.section_id = sdec.section_id)
 				LEFT JOIN users ed ON (se.user_id = ed.user_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
 				LEFT JOIN article_settings atpl ON (atpl.article_id = a.article_id AND atpl.setting_name = ? AND atpl.locale = a.locale)
 				LEFT JOIN article_settings atl ON (a.article_id = atl.article_id AND atl.setting_name = ? AND atl.locale = ?)
 				LEFT JOIN article_settings appc ON (a.article_id = appc.article_id AND appc.setting_name = ? AND appc.locale = a.locale)
@@ -324,7 +327,7 @@ class CopyeditorSubmissionDAO extends DAO {
 				LEFT JOIN signoffs scpi ON (a.article_id = scpi.assoc_id AND scpi.assoc_type = ? AND scpi.symbolic = ?)
 			WHERE
 				' . (isset($journalId)?'a.journal_id = ? AND':'') . '
-				scpi.user_id = ? AND
+				scpi.user_id = ? AND sdec2.section_decision_id IS NULL AND
 			(' . ($active?'':'NOT ') . ' (i.date_published IS NULL AND ((scpi.date_notified IS NOT NULL AND scpi.date_completed IS NULL) OR (scpf.date_notified IS NOT NULL AND scpf.date_completed IS NULL)))) ';
 			
 			
@@ -353,7 +356,6 @@ class CopyeditorSubmissionDAO extends DAO {
 			FROM	articles a
 				LEFT JOIN published_articles pa ON (a.article_id = pa.article_id)
 				LEFT JOIN issues i ON (pa.issue_id = i.issue_id)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
 				LEFT JOIN signoffs scf ON (a.article_id = scf.assoc_id AND scf.assoc_type = ? AND scf.symbolic = ?)
 				LEFT JOIN signoffs sci ON (a.article_id = sci.assoc_id AND sci.assoc_type = ? AND sci.symbolic = ?)
 			WHERE	a.journal_id = ? AND sci.user_id = ? AND sci.date_notified IS NOT NULL';

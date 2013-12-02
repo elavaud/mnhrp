@@ -13,6 +13,7 @@
 <div class="separator"></div>
 
 <form name="submit" method="post" action="{url op="saveSubmit" path=$submitStep}">
+	{assign var="formLocale" value="en_US"}
     <input type="hidden" name="articleId" value="{$articleId|escape}" />
 {include file="common/formErrors.tpl"}
 
@@ -71,7 +72,7 @@
 			$('#otherInternationalGrantName').val("");
 		} else {
 			var other = false
-			var list = document.getElementsByName("internationalGrantName[en_US][]");
+			var list = document.getElementsByName("internationalGrantName['en_US'][]");
 			for (i=0; i<list.length; i++){
 				var strUser = list[i].options[list[i].selectedIndex].value;
 				if (strUser == 'OTHER'){
@@ -174,7 +175,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         	// Add filter of proposal types: with Human Subjects vs. without Human Subjects
-        	if($('input[name^="withHumanSubjects"]:checked').val() == "No" || $('input[name^="withHumanSubjects"]:checked').val() == null) {
+        	if($('input[name^="withHumanSubjects"]:checked').val() == {/literal}{$smarty.const.PROPOSAL_DETAIL_NO}{literal} || $('input[name^="withHumanSubjects"]:checked').val() == null) {
             	$('#proposalTypeField').hide();
             	$('#firstProposalType').hide();
             	$('#otherProposalTypeField').hide();
@@ -187,7 +188,7 @@
         	$('input[name^="withHumanSubjects"]').change(
         		function(){
             		var answer = $('input[name^="withHumanSubjects"]:checked').val();
-            		if(answer == "Yes") {
+            		if(answer == {/literal}{$smarty.const.PROPOSAL_DETAIL_YES}{literal}) {
                 		$('#proposalTypeField').show();
                 		$('#firstProposalType').show();
                 		$('#addAnotherType').show();
@@ -290,7 +291,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
         	//Add filter of multi-country research
-        	if($('input[name^="multiCountryResearch"]:checked').val() == "No" || $('input[name^="multiCountryResearch"]:checked').val() == null) {
+        	if($('input[name^="multiCountryResearch"]:checked').val() == {/literal}{$smarty.const.PROPOSAL_DETAIL_NO}{literal} || $('input[name^="multiCountryResearch"]:checked').val() == null) {
             	$('#multiCountryField').hide();
             	$('#firstMultiCountry').hide();
             	$('#addAnotherCountry').hide();
@@ -302,7 +303,7 @@
         	$('input[name^="multiCountryResearch"]').change(
         		function(){
               		var answer = $('input[name^="multiCountryResearch"]:checked').val();
-              		if(answer == "Yes") {
+              		if(answer == {/literal}{$smarty.const.PROPOSAL_DETAIL_YES}{literal}) {
                   		$('#multiCountryField').show();
                   		$('#firstMultiCountry').show();
                   		$('#addAnotherCountry').show();
@@ -346,46 +347,46 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
 
 			//Add filter of nationwide
-        	if($('input[name^="nationwide"]:checked').val() == "Yes" || $('input[name^="nationwide"]:checked').val() == null) {
-            	$('#proposalCountryField').hide();
-            	$('#firstProposalCountry').hide();
-            	$('#addAnotherProvince').hide();
-            	$('#proposalCountry').append('<option value="NW"></option>');
-            	$('#proposalCountry').val("NW");
+        	if($('input[name^="nationwide"]:checked').val() == {/literal}{$smarty.const.PROPOSAL_DETAIL_YES}{literal} || $('input[name^="nationwide"]:checked').val() == null) {
+            	$('#geoAreaField').hide();
+            	$('#firstGeoArea').hide();
+            	$('#addAnotherArea').hide();
+            	$('#geoArea').append('<option value="NW"></option>');
+            	$('#geoArea').val("NW");
         	} else {
-            	$('#proposalCountry option[value="NW"]').remove();
-            	$('#proposalCountryField').show();
-            	$('#firstProposalCountry').show();
-            	$('#addAnotherProvince').show();
+            	$('#geoArea option[value="NW"]').remove();
+            	$('#geoAreaField').show();
+            	$('#firstGeoArea').show();
+            	$('#addAnotherArea').show();
         	}
             
         	$('input[name^="nationwide"]').change(
         		function(){
               		var answer = $('input[name^="nationwide"]:checked').val();
-              		if(answer == "No" || answer == "Yes, with randomly selected provinces") {
-                  		$('#proposalCountryField').show();
-                  		$('#firstProposalCountry').show();
-                  		$('#addAnotherProvince').show();
-                  		$('#proposalCountry option[value="NW"]').remove();
+              		if(answer == {/literal}{$smarty.const.PROPOSAL_DETAIL_NO}{literal} || answer == {/literal}{$smarty.const.PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS}{literal}) {
+                  		$('#geoAreaField').show();
+                  		$('#firstGeoArea').show();
+                  		$('#addAnotherArea').show();
+                  		$('#geoArea option[value="NW"]').remove();
               		} else {
-                  		$('#proposalCountryField').hide();
-            			$('#firstProposalCountry').hide();
-            			$('.proposalCountrySupp').remove();
-            			$('#addAnotherProvince').hide();
-                  		$('#proposalCountry').append('<option value="NW"></option>');
-                  		$('#proposalCountry').val("NW");
+                  		$('#geoAreaField').hide();
+            			$('#firstGeoArea').hide();
+            			$('.geoAreaSupp').remove();
+            			$('#addAnotherArea').hide();
+                  		$('#geoArea').append('<option value="NW"></option>');
+                  		$('#geoArea').val("NW");
               		}
         		}
         	);
         	
         	//Start code for multi-provinces proposals
-        	$('#addAnotherProvince').click(
+        	$('#addAnotherArea').click(
         		function(){
-            		var proposalCountryHtml = '<tr valign="top" class="proposalCountrySupp">' + $('#firstProposalCountry').html() + '</tr>';
-            		$('#firstProposalCountry').after(proposalCountryHtml);
-            		$('#firstProposalCountry').next().find('select').attr('selectedIndex', 0);
-            		$('.proposalCountrySupp').find('.removeProposalProvince').show();
-            		$('#firstProposalCountry').find('.removeProposalProvince').hide();
+            		var geoAreaHtml = '<tr valign="top" class="geoAreaSupp">' + $('#firstGeoArea').html() + '</tr>';
+            		$('#firstGeoArea').after(geoAreaHtml);
+            		$('#firstGeoArea').next().find('select').attr('selectedIndex', 0);
+            		$('.geoAreaSupp').find('.removeProposalProvince').show();
+            		$('#firstGeoArea').find('.removeProposalProvince').hide();
             		return false;
         		}
         	);
@@ -405,32 +406,50 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         	// Add filter of sudent research
-        	if($('input[name^="studentInitiatedResearch"]:checked').val() == "No" || $('input[name^="withHumanSubjects"]:checked').val() == null) {
-            	$('#studentInstitutionField').hide();
+        	if($('input[name^="studentInitiatedResearch"]:checked').val() == {/literal}{$smarty.const.PROPOSAL_DETAIL_NO}{literal} || $('input[name^="studentInitiatedResearch"]:checked').val() == null) {
             	$('#academicDegreeField').hide();
-            	$('#studentInstitution').val("NA");
+            	$('#supervisorNameField').hide();
+            	$('#supervisorName').val("NA");
+            	$('#supervisorEmailField').hide();
+            	$('#supervisorEmail').val("NA");
             	$('#academicDegree').append('<option value="NA"></option>');
             	$('#academicDegree').val("NA");
+            	$('#studentInstitutionField').hide();
+            	$('#studentInstitution').val("NA");
+            	$('#supervisor').hide();
         	} else {
-				$('#studentInstitutionField').show();
+            	$('#studentInstitutionField').show();
 				$('#academicDegreeField').show();
+				$('#supervisor').show();
 				$('#academicDegree option[value="NA"]').remove();
+            	$('#supervisorNameField').show();
+            	$('#supervisorEmailField').show();
 			}
 
         	$('input[name^="studentInitiatedResearch"]').change(
         		function(){
             		var answer = $('input[name^="studentInitiatedResearch"]:checked').val();
-            		if(answer == "Yes") {
-                		$('#studentInstitutionField').show();
+            		if(answer == {/literal}{$smarty.const.PROPOSAL_DETAIL_YES}{literal}) {
+            			$('#studentInstitutionField').show();
+            			$('#studentInstitution').val("");
                 		$('#academicDegreeField').show();
-                		$('#studentInstitution').val("");
+                		$('#supervisor').show();
                 		$('#academicDegree option[value="NA"]').remove();
+            			$('#supervisorNameField').show();
+            			$('#supervisorName').val("");
+            			$('#supervisorEmailField').show();
+            			$('#supervisorEmail').val("");
             		} else {
-                		$('#studentInstitutionField').hide();
                 		$('#academicDegreeField').hide();
-                		$('#studentInstitution').val("NA");
+            			$('#supervisorNameField').hide();
+            			$('#supervisorName').val("NA");
+            			$('#supervisorEmailField').hide();
+            			$('#supervisorEmail').val("NA");
+            			$('#supervisor').hide();
                 		$('#academicDegree').append('<option value="NA"></option>');
                 		$('#academicDegree').val("NA");
+                		$('#studentInstitutionField').hide();
+            			$('#studentInstitution').val("NA");
             		}
         		}
         	);
@@ -442,7 +461,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         	// Add filter of ERC decisions
-        	if($('input[name^="reviewedByOtherErc"]:checked').val() == "No" || $('input[name^="reviewedByOtherErc"]:checked').val() == null) {
+        	if($('input[name^="reviewedByOtherErc"]:checked').val() == {/literal}{$smarty.const.PROPOSAL_DETAIL_NO}{literal} || $('input[name^="reviewedByOtherErc"]:checked').val() == null) {
             	$('#otherErcDecisionField').hide();
             	$('#otherErcDecision').val("NA");
         	} else {
@@ -452,7 +471,7 @@
         	$('input[name^="reviewedByOtherErc"]').change(
         		function(){
               		var answer = $('input[name^="reviewedByOtherErc"]:checked').val();
-              		if(answer == "Yes") {
+              		if(answer == {/literal}{$smarty.const.PROPOSAL_DETAIL_YES}{literal}) {
                   		$('#otherErcDecisionField').show();
                   		$('#otherErcDecision option[value="NA"]').remove();
               		} else {
@@ -738,40 +757,47 @@
 -->
     <div id="titleAndAbstract">
         <h3>{translate key="submission.titleAndAbstract"}</h3>
+		
+		{foreach from=$abstractLocales item=localeName key=localeKey}
+			{assign var="abstract" value=$abstracts[$localeKey]}
+			<input type="hidden" name="abstracts[{$localeKey|escape}][abstractId]" value="{$abstract.abstractId|escape}" />
 
-        <table width="100%" class="data">
-            <tr><td colspan="2">&nbsp;</td></tr>
-            <tr valign="top" id="scientificTitleField">
-                <td title="{translate key="proposal.scientificTitleInstruct"}" width="20%" class="label">[?] {fieldLabel name="scientificTitle" required="true" key="proposal.scientificTitle"}</td>
-                <td width="80%" class="value"><input type="text" class="textField" name="scientificTitle" id="scientificTitle" value="{$scientificTitle|escape}" size="50" maxlength="255" /></td>
-            </tr>
-            <tr valign="top" id="publicTitleField">
-                <td title="{translate key="proposal.publicTitleInstruct"}" width="20%" class="label">[?] {fieldLabel name="publicTitle" required="true" key="proposal.publicTitle"}</td>
-                <td width="80%" class="value"><input type="text" class="textField" name="publicTitle" id="publicTitle" value="{$publicTitle|escape}" size="50" maxlength="255" /></td>
-            </tr>
-            <tr><td colspan="2">&nbsp;</td></tr>
-            <tr valign="top" id="backgroundField">
-                <td title="{translate key="proposal.backgroundInstruct"}" width="20%" class="label">[?] {fieldLabel name="background" required="true" key="proposal.background"}</td>
-                <td width="80%" class="value"><textarea name="background" id="background" class="textArea" rows="5" cols="70">{$background|escape}</textarea></td>
-            </tr>
-            <tr valign="top" id="objectivesField">
-                <td title="{translate key="proposal.objectivesInstruct"}" width="20%" class="label">[?] {fieldLabel name="objectives" required="true" key="proposal.objectives"}</td>
-                <td width="80%" class="value"><textarea name="objectives" id="objectives" class="textArea" rows="5" cols="70">{$objectives|escape}</textarea></td>
-            </tr>
-            <tr valign="top" id="studyMethodsField">
-                <td title="{translate key="proposal.studyMethodsInstruct"}" width="20%" class="label">[?] {fieldLabel name="studyMethods" required="true" key="proposal.studyMethods"}</td>
-                <td width="80%" class="value"><textarea name="studyMethods" id="studyMethods" class="textArea" rows="5" cols="70">{$studyMethods|escape}</textarea></td>
-            </tr>  
-            <tr valign="top" id="expectedOutcomesField">
-                <td title="{translate key="proposal.expectedOutcomesInstruct"}" width="20%" class="label">[?] {fieldLabel name="expectedOutcomes" required="true" key="proposal.expectedOutcomes"}</td>
-                <td width="80%" class="value"><textarea name="expectedOutcomes" id="expectedOutcomes" class="textArea" rows="5" cols="70">{$expectedOutcomes|escape}</textarea></td>
-            </tr>   
-            <tr><td colspan="2">&nbsp;</td></tr>
-            <tr valign="top" id="keywordsField">
-                <td title="{translate key="proposal.keywordsInstruct"}" width="20%" class="label">[?] {fieldLabel name="keywords" required="true" key="proposal.keywords"}</td>
-                <td width="80%" class="value"><input type="text" class="textField" name="keywords" id="keywords" value="{$keywords|escape}" size="50" maxlength="255" /></td>
-            </tr>
-        </table>
+			<h6>{$localeName} {translate key="common.language"}</h6>
+			
+        	<table width="100%" class="data">
+            	<tr><td colspan="2">&nbsp;</td></tr>
+            	<tr valign="top" id="scientificTitleField">
+                	<td title="{translate key="proposal.scientificTitleInstruct"}" width="20%" class="label">[?] {fieldLabel name="scientificTitle" required="true" key="proposal.scientificTitle"}</td>
+                	<td width="80%" class="value"><input type="text" class="textField" name="abstracts[{$localeKey|escape}][scientificTitle]" id="scientificTitle" value="{$abstract.scientificTitle|escape}" size="50" maxlength="255" /></td>
+            	</tr>
+            	<tr valign="top" id="publicTitleField">
+                	<td title="{translate key="proposal.publicTitleInstruct"}" width="20%" class="label">[?] {fieldLabel name="publicTitle" required="true" key="proposal.publicTitle"}</td>
+                	<td width="80%" class="value"><input type="text" class="textField" name="abstracts[{$localeKey|escape}][publicTitle]" id="publicTitle" value="{$abstract.publicTitle|escape}" size="50" maxlength="255" /></td>
+            	</tr>
+            	<tr><td colspan="2">&nbsp;</td></tr>
+            	<tr valign="top" id="backgroundField">
+                	<td title="{translate key="proposal.backgroundInstruct"}" width="20%" class="label">[?] {fieldLabel name="background" required="true" key="proposal.background"}</td>
+                	<td width="80%" class="value"><textarea name="abstracts[{$localeKey|escape}][background]" id="background" class="textArea" rows="5" cols="70">{$abstract.background|escape}</textarea></td>
+            	</tr>
+            	<tr valign="top" id="objectivesField">
+                	<td title="{translate key="proposal.objectivesInstruct"}" width="20%" class="label">[?] {fieldLabel name="objectives" required="true" key="proposal.objectives"}</td>
+                	<td width="80%" class="value"><textarea name="abstracts[{$localeKey|escape}][objectives]" id="objectives" class="textArea" rows="5" cols="70">{$abstract.objectives|escape}</textarea></td>
+            	</tr>
+            	<tr valign="top" id="studyMethodsField">
+                	<td title="{translate key="proposal.studyMethodsInstruct"}" width="20%" class="label">[?] {fieldLabel name="studyMethods" required="true" key="proposal.studyMethods"}</td>
+                	<td width="80%" class="value"><textarea name="abstracts[{$localeKey|escape}][studyMethods]" id="studyMethods" class="textArea" rows="5" cols="70">{$abstract.studyMethods|escape}</textarea></td>
+            	</tr>  
+            	<tr valign="top" id="expectedOutcomesField">
+                	<td title="{translate key="proposal.expectedOutcomesInstruct"}" width="20%" class="label">[?] {fieldLabel name="expectedOutcomes" required="true" key="proposal.expectedOutcomes"}</td>
+                	<td width="80%" class="value"><textarea name="abstracts[{$localeKey|escape}][expectedOutcomes]" id="expectedOutcomes" class="textArea" rows="5" cols="70">{$abstract.expectedOutcomes|escape}</textarea></td>
+            	</tr>   
+            	<tr><td colspan="2">&nbsp;</td></tr>
+            	<tr valign="top" id="keywordsField">
+                	<td title="{translate key="proposal.keywordsInstruct"}" width="20%" class="label">[?] {fieldLabel name="keywords" required="true" key="proposal.keywords"}</td>
+                	<td width="80%" class="value"><input type="text" class="textField" name="abstracts[{$localeKey|escape}][keywords]" id="keywords" value="{$abstract.keywords|escape}" size="50" maxlength="255" /></td>
+            	</tr>
+        	</table>
+        {/foreach}
     </div>
     <div class="separator"></div>
 <!--    
@@ -786,138 +812,197 @@
         <h3>{translate key="submission.proposalDetails"}</h3>
 
         <table width="100%" class="data">
+
             <tr valign="top" id="studentInitiatedResearchField">
                 <td title="{translate key="proposal.studentInitiatedResearchInstruct"}" width="20%" class="label">[?] {fieldLabel name="studentInitiatedResearch" required="true" key="proposal.studentInitiatedResearch"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="studentInitiatedResearch[{$formLocale|escape}]" id="studentInitiatedResearch" value="Yes" {if  $studentInitiatedResearch[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="studentInitiatedResearch" id="studentInitiatedResearch" value="{$smarty.const.PROPOSAL_DETAIL_YES}" {if $studentInitiatedResearch == PROPOSAL_DETAIL_YES} checked="checked" {elseif  $proposalDetails.studentInitiatedResearch == PROPOSAL_DETAIL_YES } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="studentInitiatedResearch[{$formLocale|escape}]" id="studentInitiatedResearch" value="No" {if  $studentInitiatedResearch[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
-                </td>
-            </tr>
-            <tr valign="top" id="studentInstitutionField">
-                <td width="20%" class="label">&nbsp;</td>
-                <td width="80%" class="value">
-                	<span title="{translate key="proposal.studentInstitutionInstruct"}" style="font-style: italic;">[?] {fieldLabel name="studentInstitution" required="false" key="proposal.studentInstitution"}</span>&nbsp;&nbsp;
-            		<input type="text" class="textField" name="studentInstitution[{$formLocale|escape}]" id="studentInstitution" value="{$studentInstitution[$formLocale]|escape}" size="40" maxlength="255" />
+                    <input type="radio" name="studentInitiatedResearch" id="studentInitiatedResearch" value="{$smarty.const.PROPOSAL_DETAIL_NO}" {if $studentInitiatedResearch == PROPOSAL_DETAIL_NO} checked="checked" {elseif  $proposalDetails.studentInitiatedResearch == PROPOSAL_DETAIL_NO } checked="checked"{/if} />{translate key="common.no"}
+                	<table width="100%" class="data">
+               			<tr valign="top" id="studentInstitutionField">
+                			<td title="{translate key="proposal.studentInstitutionInstruct"}" width="20%" class="label">[?] {fieldLabel name="studentInstitution" required="false" key="proposal.studentInstitution"}</td>
+                			<td width="80%" class="value">
+            					<input type="text" class="textField" name="studentInstitution" id="studentInstitution" value="{if $studentInstitution}{$studentInstitution|escape}{else}{$studentResearch.studentInstitution|escape}{/if}" size="40" maxlength="255" />
+            				</td>
+            			</tr>
+             			<tr valign="top" id="academicDegreeField">
+                			<td title="{translate key="proposal.academicDegreeInstruct"}" width="20%" class="label">[?] {fieldLabel name="academicDegree" required="false" key="proposal.academicDegree"}</td>
+                			<td width="80%" class="value">
+								<select name="academicDegree" id="academicDegree" class="selectMenu">
+									<option value=""></option>
+									<option value="{$smarty.const.STUDENT_DEGREE_UNDERGRADUATE}" {if  $academicDegree == STUDENT_DEGREE_UNDERGRADUATE } selected="selected" {elseif $studentResearch.academicDegree == STUDENT_DEGREE_UNDERGRADUATE} selected="selected" {/if}>{translate key="proposal.undergraduate"}</option>
+									<option value="{$smarty.const.STUDENT_DEGREE_MASTER}" {if  $academicDegree == STUDENT_DEGREE_MASTER } selected="selected" {elseif $studentResearch.academicDegree == STUDENT_DEGREE_MASTER} selected="selected"{/if}>{translate key="proposal.master"}</option>
+									<option value="{$smarty.const.STUDENT_DEGREE_POST_DOC}" {if  $academicDegree == STUDENT_DEGREE_POST_DOC } selected="selected" {elseif $studentResearch.academicDegree == STUDENT_DEGREE_POST_DOC} selected="selected"{/if}>{translate key="proposal.postDoc"}</option>
+									<option value="{$smarty.const.STUDENT_DEGREE_PHD}" {if  $academicDegree == STUDENT_DEGREE_PHD } selected="selected" {elseif $studentResearch.academicDegree == STUDENT_DEGREE_PHD} selected="selected"{/if}>{translate key="proposal.phd"}</option>
+									<option value="{$smarty.const.STUDENT_DEGREE_OTHER}" {if  $academicDegree == STUDENT_DEGREE_OTHER } selected="selected" {elseif $studentResearch.academicDegree == STUDENT_DEGREE_OTHER} selected="selected"{/if}>{translate key="common.other"}</option>
+								</select>
+                			</td>
+            			</tr>
+                		<tr valign="top" id="supervisor"><td colspan="2"><b>{translate key="proposal.studentSupervisor"}</b></td></tr>
+                		<tr valign="top" id="supervisorNameField">
+                			<td title="{translate key="proposal.studentSupervisorNameInstruct"}" width="20%" class="label">[?] {fieldLabel name="supervisorName" required="false" key="proposal.studentSupervisorName"}</td>
+                			<td width="80%" class="value">
+            					<input type="text" class="textField" name="supervisorName" id="supervisorName" value="{if $supervisorName}{$supervisorName|escape}{else}{$studentResearch.supervisorName|escape}{/if}" size="50" maxlength="255" />
+            				</td>
+            			</tr>
+                		<tr valign="top" id="supervisorEmailField">
+                			<td title="{translate key="proposal.studentSupervisorEmailInstruct"}" width="20%" class="label">[?] {fieldLabel name="supervisorEmail" required="false" key="user.email"}</td>
+                			<td width="80%" class="value">
+            					<input type="text" class="textField" name="supervisorEmail" id="supervisorEmail" value="{if $supervisorEmail}{$supervisorEmail|escape}{else}{$studentResearch.supervisorEmail|escape}{/if}" size="50" maxlength="255" />
+            				</td>
+            			</tr>
+            		</table>
             	</td>
             </tr>
-            <tr valign="top" id="academicDegreeField">
-                <td width="20%" class="label">&nbsp;</td>
-                <td width="80%" class="value">
-                	<span title="{translate key="proposal.academicDegreeInstruct"}" style="font-style: italic;">[?] {fieldLabel name="academicDegree" required="false" key="proposal.academicDegree"}</span>&nbsp;&nbsp;
-					<select name="academicDegree[{$formLocale|escape}]" id="academicDegree" class="selectMenu">
-						<option value=""></option>
-						<option value="Undergraduate" {if  $academicDegree[$formLocale] == "Undergraduate" } selected="selected"{/if}>{translate key="proposal.undergraduate"}</option>
-						<option value="Master" {if  $academicDegree[$formLocale] == "Master" } selected="selected"{/if}>{translate key="proposal.master"}</option>
-						<option value="Post-Doc" {if  $academicDegree[$formLocale] == "Post-Doc" } selected="selected"{/if}>{translate key="proposal.postDoc"}</option>
-						<option value="Ph.D" {if  $academicDegree[$formLocale] == "Ph.D" } selected="selected"{/if}>{translate key="proposal.phd"}</option>
-						<option value="Other" {if  $academicDegree[$formLocale] == "Other" } selected="selected"{/if}>{translate key="common.other"}</option>
-					</select>
-                </td>
-            </tr>
+            
             <tr valign="top" id="startDateField">
                 <td title="{translate key="proposal.startDateInstruct"}" width="20%" class="label">[?] {fieldLabel name="startDate" required="true" key="proposal.startDate"}</td>
-                <td width="80%" class="value"><input type="text" class="textField" name="startDate[{$formLocale|escape}]" id="startDate" value="{$startDate[$formLocale]|escape}" size="20" maxlength="255" /></td>
-            </tr>
-            <tr valign="top" id="endDateField">
-                <td title="{translate key="proposal.endDateInstruct"}" width="20%" class="label">[?] {fieldLabel name="endDate" required="true" key="proposal.endDate"}</td>
-                <td width="80%" class="value"><input type="text" class="textField" name="endDate[{$formLocale|escape}]" id="endDate" value="{$endDate[$formLocale]|escape}" size="20" maxlength="255" /></td>
+                <td width="80%" class="value"><input type="text" class="textField" name="startDate" id="startDate" value="{if $startDate}{$startDate|escape}{else}{$proposalDetails.startDate|escape}{/if}" size="20" maxlength="255" /></td>
             </tr>
             
-{assign var="isOtherPrimarySponsorSelected" value=false}
-{foreach from=$primarySponsor[$formLocale] key=i item=sponsor}           
-            <tr valign="top" {if $i == 0}id="firstPrimarySponsor" class="primarySponsor"{else}id="primarySponsorField"  class="primarySponsorSupp"{/if}>
-                <td title="{translate key="proposal.primarySponsorInstruct"}" width="20%" class="label">
-				{if $i == 0}[?] {fieldLabel name="primarySponsor" required="true" key="proposal.primarySponsor"}{/if}</td>
+            <tr valign="top" id="endDateField">
+                <td title="{translate key="proposal.endDateInstruct"}" width="20%" class="label">[?] {fieldLabel name="endDate" required="true" key="proposal.endDate"}</td>
+                <td width="80%" class="value"><input type="text" class="textField" name="endDate" id="endDate" value="{if $endDate}{$endDate|escape}{else}{$proposalDetails.endDate|escape}{/if}" size="20" maxlength="255" /></td>
+            </tr>
+            
+            <tr valign="top" id="primarySponsorField">
+                <td title="{translate key="proposal.primarySponsorInstruct"}" width="20%" class="label">[?] {fieldLabel name="primarySponsor" required="true" key="proposal.primarySponsor"}</td>
                 <td width="80%" class="value">
-                    <select name="primarySponsor[{$formLocale|escape}][]" id="primarySponsor" class="selectMenu" onchange="showOrHideOtherPrimarySponsorField(this.value);">
+                    <select name="primarySponsor" id="primarySponsor" class="selectMenu" onchange="showOrHideOtherPrimarySponsorField(this.value);">
                         <option value=""></option>
                         {foreach from=$agencies key=id item=sponsor}
                             {if $sponsor.code != "NA"}
                                 {assign var="isSelected" value=false}
-                                {foreach from=$primarySponsor[$formLocale] key=id item=selectedTypes}
-                                    {if $primarySponsor[$formLocale][$i] == $sponsor.code}
+                                	{if $primarySponsor == $sponsor.code}
+                                        {assign var="isSelected" value=true}
+                                    {elseif $proposalDetails.primarySponsor == $sponsor.code}
                                         {assign var="isSelected" value=true}
                                     {/if}
-                                    {if $primarySponsor[$formLocale][$i] == "OTHER"}{assign var="isOtherPrimarySponsorSelected" value=true}{/if}
-                                {/foreach}
+                                    {if $primarySponsor == "OTHER"}
+                                    	{assign var="isOtherPrimarySponsorSelected" value=true}
+                                    {elseif $proposalDetails.primarySponsor == "OTHER"}
+                                    	{assign var="isOtherPrimarySponsorSelected" value=true}
+                                    {/if}
                                 <option value="{$sponsor.code}" {if $isSelected==true}selected="selected"{/if} >{$sponsor.name}</option>
                             {/if}
                         {/foreach}
                     </select>
                 </td>
             </tr>
-{/foreach}
-
             <tr valign="top" id="otherPrimarySponsorField" {if $isOtherPrimarySponsorSelected == false}style="display: none;"{/if}>
                 <td width="20%" class="label"></td>
                 <td width="80%" class="value">
                 <span title="{translate key="proposal.otherPrimarySponsorInstruct"}" style="font-style: italic;">[?] {fieldLabel name="otherPrimarySponsor" required="true" key="proposal.otherPrimarySponsor"}</span>&nbsp;&nbsp;
-                <input type="text" class="textField" name="otherPrimarySponsor[{$formLocale|escape}]" id="otherPrimarySponsor" value="{if $isOtherPrimarySponsorSelected == false}NA{else}{$otherPrimarySponsor[$formLocale]|escape}{/if}" size="20" maxlength="255" />
+                <input type="text" class="textField" name="otherPrimarySponsor" id="otherPrimarySponsor" value="{if $isOtherPrimarySponsorSelected == false}NA{elseif $otherPrimarySponsor != 'NA' && $otherPrimarySponsor}{$otherPrimarySponsor|escape}{else}{$proposalDetails.otherPrimarySponsor|escape}{/if}" size="20" maxlength="255" />
                 </td>
             </tr>
             
-{assign var="isOtherSecondarySponsorSelected" value=false}
-{foreach from=$secondarySponsors[$formLocale] key=i item=sponsor}
-            <tr valign="top" {if $i == 0}id="firstSecondarySponsor" class="secondarySponsor"{else}id="secondarySponsorField" class="secondarySponsorSupp"{/if}>
-                <td width="20%" class="secondarySponsorTitle" title="{translate key="proposal.secondarySponsorsInstruct"}">{if $i == 0}[?] {fieldLabel name="secondarySponsors" key="proposal.secondarySponsors"}{/if}</td>
-				<td class="noSecondarySponsorTitle" style="display: none;">&nbsp;</td>
-                <td width="80%" class="value">
-                    <select name="secondarySponsors[{$formLocale|escape}][]" id="secondarySponsors" class="selectMenu" onchange="showOrHideOtherSecondarySponsor(this.value);">
-                        <option value=""></option>
-                        {foreach from=$agencies key=id item=sponsor}
-                            {if $sponsor.code != "NA"}
-                                {assign var="isSelected" value=false}
-                                {foreach from=$secondarySponsors[$formLocale] key=id item=selectedTypes}
-                                    {if $secondarySponsors[$formLocale][$i] == $sponsor.code}
-                                        {assign var="isSelected" value=true}
-                                    {/if}
-                                    {if $secondarySponsors[$formLocale][$i] == "OTHER"}{assign var="isOtherSecondarySponsorSelected" value=true}{/if}
-                                {/foreach}
-                                <option value="{$sponsor.code}" {if $isSelected==true}selected="selected"{/if} >{$sponsor.name}</option>
-                            {/if}
-                        {/foreach}
-                    </select>
-                    <a href="" class="removeSecondarySponsor" {if $i == 0} style="display:none"{/if}>{translate key="common.remove"}</a>
-                </td>
-            </tr>
-{/foreach} 
+			{assign var="isOtherSecondarySponsorSelected" value=false}
+			{if !empty($secondarySponsors)}
+				{foreach from=$secondarySponsors key=i item=sponsor}
+            		<tr valign="top" {if $i == 0}id="firstSecondarySponsor" class="secondarySponsor"{else}id="secondarySponsorField" class="secondarySponsorSupp"{/if}>
+                		<td width="20%" class="secondarySponsorTitle" title="{translate key="proposal.secondarySponsorsInstruct"}">{if $i == 0}[?] {fieldLabel name="secondarySponsors" key="proposal.secondarySponsors"}{/if}</td>
+						<td class="noSecondarySponsorTitle" style="display: none;">&nbsp;</td>
+                		<td width="80%" class="value">
+                    		<select name="secondarySponsors[]" id="secondarySponsors" class="selectMenu" onchange="showOrHideOtherSecondarySponsor(this.value);">
+                    	    	<option value=""></option>
+                        		{foreach from=$agencies key=id item=sponsor}
+                            		{if $sponsor.code != "NA"}
+                                		{assign var="isSelected" value=false}
+                                		{foreach from=$secondarySponsors key=id item=selectedTypes}
+                                    		{if $secondarySponsors[$i] == $sponsor.code}
+                                        		{assign var="isSelected" value=true}
+                                    		{/if}
+                                    		{if $secondarySponsors[$i] == "OTHER"}
+                                    			{assign var="isOtherSecondarySponsorSelected" value=true}
+                                    		{/if}
+                                		{/foreach}
+                                		<option value="{$sponsor.code}" {if $isSelected==true}selected="selected"{/if} >{$sponsor.name}</option>
+                            		{/if}
+                        		{/foreach}
+                    		</select>
+                    		<a href="" class="removeSecondarySponsor" {if $i == 0} style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+			{else}
+				{foreach from=$proposalDetails.secondarySponsors key=i item=sponsor}
+            		<tr valign="top" {if $i == 0}id="firstSecondarySponsor" class="secondarySponsor"{else}id="secondarySponsorField" class="secondarySponsorSupp"{/if}>
+                		<td width="20%" class="secondarySponsorTitle" title="{translate key="proposal.secondarySponsorsInstruct"}">{if $i == 0}[?] {fieldLabel name="secondarySponsors" key="proposal.secondarySponsors"}{/if}</td>
+						<td class="noSecondarySponsorTitle" style="display: none;">&nbsp;</td>
+                		<td width="80%" class="value">
+                    		<select name="secondarySponsors[]" id="secondarySponsors" class="selectMenu" onchange="showOrHideOtherSecondarySponsor(this.value);">
+                    	    	<option value=""></option>
+                        		{foreach from=$agencies key=id item=sponsor}
+                            		{if $sponsor.code != "NA"}
+                                		{assign var="isSelected" value=false}
+                                		{foreach from=$proposalDetails.secondarySponsors key=id item=selectedTypes}
+                                    		{if $proposalDetails.secondarySponsors[$i] == $sponsor.code}
+                                        		{assign var="isSelected" value=true}
+                                    		{/if}
+                                    		{if $proposalDetails.secondarySponsors[$i] == "OTHER"}
+                                    			{assign var="isOtherSecondarySponsorSelected" value=true}
+                                    		{/if}
+                                		{/foreach}
+                                		<option value="{$sponsor.code}" {if $isSelected==true}selected="selected"{/if} >{$sponsor.name}</option>
+                            		{/if}
+                        		{/foreach}
+                    		</select>
+                    		<a href="" class="removeSecondarySponsor" {if $i == 0} style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+			{/if}
             <tr id="addAnotherSecondarySponsor">
                 <td width="20%">&nbsp;</td>
                 <td width="40%"><a href="#" id="addAnotherSecondarySponsor">{translate key="proposal.addAnotherSecondarySponsor"}</a></td>
-            </tr>
-            
+            </tr> 
             <tr valign="top" id="otherSecondarySponsorField" {if $isOtherSecondarySponsorSelected == false}style="display: none;"{/if}>
                 <td width="20%" class="label"></td>
                 <td width="80%" class="value">
-                <span title="{translate key="proposal.otherSecondarySponsorInstruct"}" style="font-style: italic;">[?] {fieldLabel name="otherSecondarySponsor" required="true" key="proposal.otherSecondarySponsor"}</span>&nbsp;&nbsp;
-                <input type="text" class="textField" name="otherSecondarySponsor[{$formLocale|escape}]" id="otherSecondarySponsor" value="{if $isOtherSecondarySponsorSelected == false}NA{else}{$otherSecondarySponsor[$formLocale]|escape}{/if}" size="20" maxlength="255" />
+                	<span title="{translate key="proposal.otherSecondarySponsorInstruct"}" style="font-style: italic;">[?] {fieldLabel name="otherSecondarySponsor" required="true" key="proposal.otherSecondarySponsor"}</span>&nbsp;&nbsp;
+                	<input type="text" class="textField" name="otherSecondarySponsor" id="otherSecondarySponsor" value="{if $isOtherSecondarySponsorSelected == false}NA{elseif $otherSecondarySponsor && $otherSecondarySponsor != 'NA'}{$otherSecondarySponsor|escape}{else}{$proposalDetails.otherSecondarySponsor|escape}{/if}" size="20" maxlength="255" />
                 </td>
             </tr>
             
             <tr valign="top" id="multiCountryResearchField">
                 <td title="{translate key="proposal.multiCountryResearchInstruct"}" width="20%" class="label">[?] {fieldLabel name="multiCountryResearch" required="true" key="proposal.multiCountryResearch"}</td>
                 <td width="80%" class="value">
-                	<input type="radio" name="multiCountryResearch[{$formLocale|escape}]" id="multiCountryResearch" value="Yes" {if  $multiCountryResearch[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                	<input type="radio" name="multiCountryResearch" id="multiCountryResearch" value="{$smarty.const.PROPOSAL_DETAIL_YES}" {if  $multiCountryResearch == PROPOSAL_DETAIL_YES } checked="checked" {elseif $proposalDetails.multiCountryResearch == PROPOSAL_DETAIL_YES } checked="checked" {/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="multiCountryResearch[{$formLocale|escape}]" id="multiCountryResearch" value="No" {if  $multiCountryResearch[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="multiCountryResearch" id="multiCountryResearch" value="{$smarty.const.PROPOSAL_DETAIL_NO}" {if  $multiCountryResearch == PROPOSAL_DETAIL_NO } checked="checked" {elseif $proposalDetails.multiCountryResearch == PROPOSAL_DETAIL_NO } checked="checked" {/if} />{translate key="common.no"}
                 </td>
             </tr>
-            
-{foreach from=$multiCountry[$formLocale] key=i item=country}
-            <tr valign="top" {if $i == 0}id="firstMultiCountry" class="multiCountry"{else}id="mutliCountryField" class="multiCountrySupp"{/if}>
-                <td width="20%" class="label">&nbsp;</td>
-                <td width="80%" class="value">
-                	<span style="font-style: italic;">{fieldLabel name="multiCountry" required="true" key="proposal.multiCountry"}</span>&nbsp;&nbsp;
-                    <select name="multiCountry[{$formLocale|escape}][]" id="multiCountry" class="selectMenu">
-                        <option value="MCNA"></option><option value=""></option>
-		{html_options options=$countries selected=$multiCountry[$formLocale][$i]}
-                    </select>
-                    <a href="" class="removeMultiCountry" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
-                </td>
-            </tr>
-{/foreach}
-
+            {if !empty($countries)}
+				{foreach from=$countries key=i item=country}
+            		<tr valign="top" {if $i == 0}id="firstMultiCountry" class="multiCountry"{else}id="mutliCountryField" class="multiCountrySupp"{/if}>
+                		<td width="20%" class="label">&nbsp;</td>
+                		<td width="80%" class="value">
+                			<span style="font-style: italic;">{fieldLabel name="multiCountry" required="true" key="proposal.multiCountry"}</span>&nbsp;&nbsp;
+                    		<select name="countries[]" id="multiCountry" class="selectMenu">
+                        		<option value="MCNA"></option><option value=""></option>
+								{html_options options=$coutryList selected=$countries[$i]}
+                    		</select>
+                    		<a href="" class="removeMultiCountry" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+            {else}
+				{foreach from=$proposalDetails.countries key=i item=country}
+            		<tr valign="top" {if $i == 0}id="firstMultiCountry" class="multiCountry"{else}id="mutliCountryField" class="multiCountrySupp"{/if}>
+                		<td width="20%" class="label">&nbsp;</td>
+                		<td width="80%" class="value">
+                			<span style="font-style: italic;">{fieldLabel name="multiCountry" required="true" key="proposal.multiCountry"}</span>&nbsp;&nbsp;
+                    		<select name="countries[]" id="multiCountry" class="selectMenu">
+                        		<option value="MCNA"></option><option value=""></option>
+								{html_options options=$coutryList selected=$proposalDetails.countries[$i]}
+                    		</select>
+                    		<a href="" class="removeMultiCountry" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+			{/if}
             <tr id="addAnotherCountry">
                 <td width="20%">&nbsp;</td>
                 <td><a href="#" id="addAnotherCountry">{translate key="proposal.addAnotherCountry"}</a></td>
@@ -926,58 +1011,103 @@
             <tr valign="top" id="nationwideField">
                 <td width="20%" class="label">{fieldLabel name="nationwide" required="true" key="proposal.nationwide"}</td>
                 <td width="80%" class="value">
-                	<input type="radio" name="nationwide[{$formLocale|escape}]" id="nationwide" value="Yes" {if  $nationwide[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                	<input type="radio" name="nationwide" id="nationwide" value="{$smarty.const.PROPOSAL_DETAIL_YES}" {if  $nationwide == PROPOSAL_DETAIL_YES } checked="checked"{elseif  $proposalDetails.nationwide == PROPOSAL_DETAIL_YES } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="nationwide[{$formLocale|escape}]" id="nationwide" value="Yes, with randomly selected provinces" {if  $nationwide[$formLocale] == "Yes, with randomly selected provinces" } checked="checked"{/if}  />{translate key="proposal.randomlySelectedProvince"}
+                    <input type="radio" name="nationwide" id="nationwide" value="{$smarty.const.PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS}" {if  $nationwide == PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS } checked="checked"{elseif  $proposalDetails.nationwide == PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS } checked="checked"{/if}  />{translate key="proposal.randomlySelectedProvince"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="nationwide[{$formLocale|escape}]" id="nationwide" value="No" {if  $nationwide[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="nationwide" id="nationwide" value="{$smarty.const.PROPOSAL_DETAIL_NO}" {if  $nationwide == PROPOSAL_DETAIL_NO } checked="checked"{elseif  $proposalDetails.nationwide == PROPOSAL_DETAIL_NO } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
-            
-{foreach from=$proposalCountry[$formLocale] key=i item=country}
-            <tr valign="top" {if $i == 0}id="firstProposalCountry" class="proposalCountry"{else}id="proposalCountryField" class="proposalCountrySupp"{/if}>
-                <td width="20%" class="label">&nbsp;</td>
-                <td width="80%" class="value">
-                	<span style="font-style: italic;">{fieldLabel name="proposalCountry" required="true" key="proposal.proposalCountry"}</span>&nbsp;&nbsp;
-                    <select name="proposalCountry[{$formLocale|escape}][]" id="proposalCountry" class="selectMenu">
-                        <option value=""></option>
-		{html_options options=$proposalCountries selected=$proposalCountry[$formLocale][$i]}
-                    </select>
-                    <a href="" class="removeProposalProvince" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
-                </td>
-            </tr>
-{/foreach}
-
-            <tr id="addAnotherProvince">
+            {if !empty($geoAreas)}
+				{foreach from=$geoAreas key=i item=country}
+            		<tr valign="top" {if $i == 0}id="firstGeoArea" class="geoArea"{else}id="geoAreaField" class="geoAreaSupp"{/if}>
+                		<td width="20%" class="label">&nbsp;</td>
+                		<td width="80%" class="value">
+                			<span style="font-style: italic;">{fieldLabel name="geoArea" required="true" key="proposal.geoArea"}</span>&nbsp;&nbsp;
+                    		<select name="geoAreas[]" id="geoArea" class="selectMenu">
+                        		<option value=""></option>
+								{html_options options=$geoAreasList selected=$geoAreas[$i]}
+                    		</select>
+                    		<a href="" class="removeProposalProvince" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+			{else}
+				{foreach from=$proposalDetails.geoAreas key=i item=country}
+            		<tr valign="top" {if $i == 0}id="firstGeoArea" class="geoArea"{else}id="geoAreaField" class="geoAreaSupp"{/if}>
+                		<td width="20%" class="label">&nbsp;</td>
+                		<td width="80%" class="value">
+                			<span style="font-style: italic;">{fieldLabel name="geoArea" required="true" key="proposal.geoArea"}</span>&nbsp;&nbsp;
+                    		<select name="geoAreas[]" id="geoArea" class="selectMenu">
+                        		<option value=""></option>
+								{html_options options=$geoAreasList selected=$proposalDetails.geoAreas[$i]}
+                    		</select>
+                    		<a href="" class="removeProposalProvince" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+			{/if}
+            <tr id="addAnotherArea">
                 <td width="20%">&nbsp;</td>
-                <td><a href="#" id="addAnotherProvince">{translate key="proposal.addAnotherArea"}</a></td>
+                <td><a href="#" id="addAnotherArea">{translate key="proposal.addAnotherArea"}</a></td>
             </tr>        
 
-{assign var="isOtherResearchFieldSelected" value=false}
-{foreach from=$researchField[$formLocale] key=i item=field}
-            <tr valign="top"  {if $i == 0}id="firstResearchField" class="researchField"{else}id="researchFieldField" class="researchFieldSupp"{/if}>
-                <td width="20%" class="researchFieldTitle">{if $i == 0}{fieldLabel name="researchField" required="true" key="proposal.researchField"}{else} &nbsp; {/if}</td>
-				<td class="noResearchFieldTitle" style="display: none;">&nbsp;</td>
-                <td width="80%" class="value">
-                    <select name="researchField[{$formLocale|escape}][]" class="selectMenu" onchange="showOrHideOtherResearchField(this.value);">
-                    	<option value=""></option>
-                            {foreach from=$researchFields key=if item=rfield}
-                            {if $rfield.code != "NA"}
-                                {assign var="isSelected" value=false}
-                                {foreach from=$researchField[$formLocale] key=if item=selectedFields}
-                                    {if $researchField[$formLocale][$i] == $rfield.code}
-                                        {assign var="isSelected" value=true}
-                                    {/if}
-                                    {if $researchField[$formLocale][$i] == "OTHER"}{assign var="isOtherResearchFieldSelected" value=true}{/if}
-                                {/foreach}
-                                <option value="{$rfield.code}" {if $isSelected==true}selected="selected"{/if} >{$rfield.name}</option>
-                            {/if}
-                            {/foreach}
-                    </select>
-                    <a href="" class="removeResearchField" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
-                </td>
-            </tr>           
-{/foreach}
+			{assign var="isOtherResearchFieldSelected" value=false}
+			{if !empty($researchFields)}
+				{foreach from=$researchFields key=i item=field}
+            		<tr valign="top"  {if $i == 0}id="firstResearchField" class="researchField"{else}id="researchFieldField" class="researchFieldSupp"{/if}>
+                		<td width="20%" class="researchFieldTitle">{if $i == 0}{fieldLabel name="researchField" required="true" key="proposal.researchField"}{else} &nbsp; {/if}</td>
+						<td class="noResearchFieldTitle" style="display: none;">&nbsp;</td>
+                		<td width="80%" class="value">
+                    		<select name="researchFields[]" class="selectMenu" onchange="showOrHideOtherResearchField(this.value);">
+                    			<option value=""></option>
+                            		{foreach from=$researchFieldsList key=if item=rfield}
+                            			{if $rfield.code != "NA"}
+                                			{assign var="isSelected" value=false}
+                                			{foreach from=$researchFields key=if item=selectedFields}
+                                   				{if $researchFields[$i] == $rfield.code}
+                                        			{assign var="isSelected" value=true}
+                                    			{/if}
+                                    			{if $researchFields[$i] == "OTHER"}
+                                    				{assign var="isOtherResearchFieldSelected" value=true}
+                                    			{/if}
+                                			{/foreach}
+                                			<option value="{$rfield.code}" {if $isSelected==true}selected="selected"{/if} >{$rfield.name}</option>
+                            			{/if}
+                            		{/foreach}
+                    		</select>
+                    		<a href="" class="removeResearchField" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+               			</td>
+            		</tr>           
+				{/foreach}
+			{else}
+				{foreach from=$proposalDetails.researchFields key=i item=field}
+            		<tr valign="top"  {if $i == 0}id="firstResearchField" class="researchField"{else}id="researchFieldField" class="researchFieldSupp"{/if}>
+                		<td width="20%" class="researchFieldTitle">{if $i == 0}{fieldLabel name="researchField" required="true" key="proposal.researchField"}{else} &nbsp; {/if}</td>
+						<td class="noResearchFieldTitle" style="display: none;">&nbsp;</td>
+                		<td width="80%" class="value">
+                    		<select name="researchFields[]" class="selectMenu" onchange="showOrHideOtherResearchField(this.value);">
+                    			<option value=""></option>
+                            		{foreach from=$researchFieldsList key=if item=rfield}
+                            			{if $rfield.code != "NA"}
+                                			{assign var="isSelected" value=false}
+                                			{foreach from=$proposalDetails.researchFields key=if item=selectedFields}
+                                   				{if $proposalDetails.researchFields[$i] == $rfield.code}
+                                        			{assign var="isSelected" value=true}
+                                    			{/if}
+                                    			{if $proposalDetails.researchFields[$i] == "OTHER"}
+                                    				{assign var="isOtherResearchFieldSelected" value=true}
+                                    			{/if}
+                                			{/foreach}
+                                			<option value="{$rfield.code}" {if $isSelected==true}selected="selected"{/if} >{$rfield.name}</option>
+                            			{/if}
+                            		{/foreach}
+                    		</select>
+                    		<a href="" class="removeResearchField" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+               			</td>
+            		</tr>           
+				{/foreach}
+			{/if}
             <tr id="addAnotherField">
                 <td width="20%">&nbsp;</td>
                 <td><a href="#" id="addAnotherField">{translate key="proposal.addAnotherFieldOfResearch"}</a></td>
@@ -986,64 +1116,90 @@
                 <td width="20%" class="label">&nbsp;</td>
                 <td width="80%" class="value">
                 	<span style="font-style: italic;">{fieldLabel name="otherResearchField" key="proposal.otherResearchField"}</span>&nbsp;&nbsp;
-            		<input type="text" class="textField" name="otherResearchField[{$formLocale|escape}]" id="otherResearchField" value="{if $isOtherResearchFieldSelected == false}NA{else}{$otherResearchField[$formLocale]|escape}{/if}" size="30" maxlength="255" />
+            		<input type="text" class="textField" name="otherResearchField" id="otherResearchField" value="{if $isOtherResearchFieldSelected == false}NA{elseif $otherResearchField && $otherResearchField != 'NA'}{$otherResearchField|escape}{else}{$proposalDetails.otherResearchField|escape}{/if}" size="30" maxlength="255" />
             	</td>
             </tr>
+            
             <tr valign="top" id="HumanSubjectField">
                 <td width="20%" class="label">{fieldLabel name="withHumanSubjects" required="true" key="proposal.withHumanSubjects"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="withHumanSubjects[{$formLocale|escape}]" id="withHumanSubjects" value="Yes" {if  $withHumanSubjects[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="withHumanSubjects" id="withHumanSubjects" value="{$smarty.const.PROPOSAL_DETAIL_YES}" {if  $withHumanSubjects == PROPOSAL_DETAIL_YES } checked="checked"{elseif  $proposalDetails.withHumanSubjects == PROPOSAL_DETAIL_YES } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="withHumanSubjects[{$formLocale|escape}]" id="withHumanSubjects" value="No" {if  $withHumanSubjects[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="withHumanSubjects" id="withHumanSubjects" value="{$smarty.const.PROPOSAL_DETAIL_NO}" {if  $withHumanSubjects == PROPOSAL_DETAIL_NO } checked="checked"{elseif  $proposalDetails.withHumanSubjects == PROPOSAL_DETAIL_NO } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
-
-{assign var="isOtherProposalTypeSelected" value=false}
-{foreach from=$proposalType[$formLocale] key=i item=type}
-            <tr valign="top" {if $i == 0}id="firstProposalType" class="proposalType"{else}id="proposalTypeField" class="proposalTypeSupp"{/if}>
-                <td width="20%" class="label">&nbsp;</td>
-                <td width="80%" class="value">
-                	<span style="font-style: italic;">{fieldLabel name="proposalType" required="false" key="proposal.proposalType"}</span>&nbsp;&nbsp;
-                    <select name="proposalType[{$formLocale|escape}][]" id="proposalType" class="selectMenu" onchange="showOrHideOtherProposalType(this.value);">
-                        <option value=""></option>
-                            {foreach from=$proposalTypes key=id item=ptype}
-                            {if $ptype.code != "PNHS"}
-                                {assign var="isSelected" value=false}
-                                {foreach from=$proposalType[$formLocale] key=id item=selectedTypes}
-                                    {if $proposalType[$formLocale][$i] == $ptype.code}
-                                        {assign var="isSelected" value=true}
-                                    {/if}
-                                    {if $proposalType[$formLocale][$i] == "OTHER"}{assign var="isOtherProposalTypeSelected" value=true}{/if}
-                                {/foreach}
-                                <option value="{$ptype.code}" {if $isSelected==true}selected="selected"{/if} >{$ptype.name}</option>
-                            {/if}
-                            {/foreach}
-                    </select>
-                    <a href="" class="removeProposalType" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
-                </td>
-            </tr>
-{/foreach}          
+			{assign var="isOtherProposalTypeSelected" value=false}
+			{if !empty($proposalTypes)}
+				{foreach from=$proposalTypes key=i item=type}
+            		<tr valign="top" {if $i == 0}id="firstProposalType" class="proposalType"{else}id="proposalTypeField" class="proposalTypeSupp"{/if}>
+                		<td width="20%" class="label">&nbsp;</td>
+                		<td width="80%" class="value">
+                			<span style="font-style: italic;">{fieldLabel name="proposalType" required="false" key="proposal.proposalType"}</span>&nbsp;&nbsp;
+                    		<select name="proposalTypes[]" id="proposalType" class="selectMenu" onchange="showOrHideOtherProposalType(this.value);">
+                        		<option value=""></option>
+                            	{foreach from=$proposalTypesList key=id item=ptype}
+                            		{if $ptype.code != "PNHS"}
+                                		{assign var="isSelected" value=false}
+                                		{foreach from=$proposalTypes key=id item=selectedTypes}
+                                    		{if $proposalTypes[$i] == $ptype.code}
+                                        		{assign var="isSelected" value=true}
+                                    		{/if}
+                                    		{if $proposalTypes[$i] == "OTHER"}{assign var="isOtherProposalTypeSelected" value=true}{/if}
+                                		{/foreach}
+                                		<option value="{$ptype.code}" {if $isSelected==true}selected="selected"{/if} >{$ptype.name}</option>
+                            		{/if}
+                            	{/foreach}
+                    		</select>
+                    		<a href="" class="removeProposalType" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+			{else}
+				{foreach from=$proposalDetails.proposalTypes key=i item=type}
+            		<tr valign="top" {if $i == 0}id="firstProposalType" class="proposalType"{else}id="proposalTypeField" class="proposalTypeSupp"{/if}>
+                		<td width="20%" class="label">&nbsp;</td>
+                		<td width="80%" class="value">
+                			<span style="font-style: italic;">{fieldLabel name="proposalType" required="false" key="proposal.proposalType"}</span>&nbsp;&nbsp;
+                    		<select name="proposalTypes[]" id="proposalType" class="selectMenu" onchange="showOrHideOtherProposalType(this.value);">
+                        		<option value=""></option>
+                            	{foreach from=$proposalTypesList key=id item=ptype}
+                            		{if $ptype.code != "PNHS"}
+                                		{assign var="isSelected" value=false}
+                                		{foreach from=$proposalDetails.proposalTypes key=id item=selectedTypes}
+                                    		{if $proposalDetails.proposalTypes[$i] == $ptype.code}
+                                        		{assign var="isSelected" value=true}
+                                    		{/if}
+                                    		{if $proposalDetails.proposalTypes[$i] == "OTHER"}{assign var="isOtherProposalTypeSelected" value=true}{/if}
+                                		{/foreach}
+                                		<option value="{$ptype.code}" {if $isSelected==true}selected="selected"{/if} >{$ptype.name}</option>
+                            		{/if}
+                            	{/foreach}
+                    		</select>
+                    		<a href="" class="removeProposalType" {if $i == 0}style="display:none"{/if}>{translate key="common.remove"}</a>
+                		</td>
+            		</tr>
+				{/foreach}
+			{/if}
             <tr id="addAnotherType">
                 <td width="20%">&nbsp;</td>
                 <td width="40%"><a href="#" id="addAnotherType">{translate key="proposal.addAnotherProposalType"}</a></td>
-            </tr>
-            
+            </tr>    
             <tr valign="top" id="otherProposalTypeField" {if $isOtherProposalTypeSelected == false}style="display: none;"{/if}>
                 <td width="20%" class="label">&nbsp;</td>
                 <td width="80%" class="value">
                 	<span style="font-style: italic;">{fieldLabel name="otherProposalType" key="proposal.otherProposalType" required="true"}</span>&nbsp;&nbsp;
-            		<input type="text" class="textField" name="otherProposalType[{$formLocale|escape}]" id="otherProposalType" value="{if $isOtherProposalTypeSelected == false}NA{else}{$otherProposalType[$formLocale]|escape}{/if}" size="30" maxlength="255" />
+            		<input type="text" class="textField" name="otherProposalType" id="otherProposalType" value="{if $isOtherProposalTypeSelected == false}NA{elseif $otherProposalType && $otherProposalType != 'NA'}{$otherProposalType|escape}{else}{$proposalDetails.otherProposalType|escape}{/if}" size="30" maxlength="255" />
             	</td>
             </tr>
 
             <tr valign="top" id="dataCollectionField">
             	<td width="20%" class="label">{fieldLabel name="dataCollection" required="true" key="proposal.dataCollection"}</td>
             	<td width="80%" class="value">
-            		<select name="dataCollection[{$formLocale|escape}]" class="selectMenu">
+            		<select name="dataCollection" class="selectMenu">
             			<option value=""></option>
-            			<option value="Primary" {if  $dataCollection[$formLocale] == "Primary" } selected="selected"{/if}>{translate key="proposal.primaryDataCollection"}</option>
-            			<option value="Secondary" {if  $dataCollection[$formLocale] == "Secondary" } selected="selected"{/if}>{translate key="proposal.secondaryDataCollection"}</option>
-            			<option value="Both" {if  $dataCollection[$formLocale] == "Both" } selected="selected"{/if}>{translate key="proposal.bothDataCollection"}</option>
+            			<option value="{$smarty.const.PROPOSAL_DETAIL_PRIMARY_DATA_COLLECTION}" {if $dataCollection == PROPOSAL_DETAIL_PRIMARY_DATA_COLLECTION } selected="selected" {elseif  $proposalDetails.dataCollection == PROPOSAL_DETAIL_PRIMARY_DATA_COLLECTION } selected="selected"{/if}>{translate key="proposal.primaryDataCollection"}</option>
+            			<option value="{$smarty.const.PROPOSAL_DETAIL_SECONDARY_DATA_COLLECTION}" {if $dataCollection == PROPOSAL_DETAIL_SECONDARY_DATA_COLLECTION } selected="selected"{elseif $proposalDetails.dataCollection == PROPOSAL_DETAIL_SECONDARY_DATA_COLLECTION } selected="selected"{/if}>{translate key="proposal.secondaryDataCollection"}</option>
+            			<option value="{$smarty.const.PROPOSAL_DETAIL_BOTH_DATA_COLLECTION}" {if $dataCollection == PROPOSAL_DETAIL_BOTH_DATA_COLLECTION } selected="selected"{elseif $proposalDetails.dataCollection == PROPOSAL_DETAIL_BOTH_DATA_COLLECTION } selected="selected"{/if}>{translate key="proposal.bothDataCollection"}</option>
 					</select>
             	</td>
             </tr>
@@ -1051,9 +1207,9 @@
             <tr valign="top" id="otherErcField">
                 <td width="20%" class="label">{fieldLabel name="reviewedByOtherErc" required="true" key="proposal.reviewedByOtherErc"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="reviewedByOtherErc[{$formLocale|escape}]" id="reviewedByOtherErc" value="Yes" {if  $reviewedByOtherErc[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="reviewedByOtherErc" id="reviewedByOtherErc" value="{$smarty.const.PROPOSAL_DETAIL_YES}" {if $reviewedByOtherErc == PROPOSAL_DETAIL_YES } checked="checked"{elseif $proposalDetails.committeeReviewed == PROPOSAL_DETAIL_YES } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="reviewedByOtherErc[{$formLocale|escape}]" id="reviewedByOtherErc" value="No" {if  $reviewedByOtherErc[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="reviewedByOtherErc" id="reviewedByOtherErc" value="{$smarty.const.PROPOSAL_DETAIL_NO}" {if $reviewedByOtherErc == PROPOSAL_DETAIL_NO } checked="checked"{elseif $proposalDetails.committeeReviewed == PROPOSAL_DETAIL_NO } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
 
@@ -1061,10 +1217,10 @@
                 <td width="20%" class="label">&nbsp;</td>
                 <td width="80%" class="value">
                 	<span style="font-style: italic;">{fieldLabel name="otherErcDecision" required="false" key="proposal.otherErcDecision"}</span>&nbsp;&nbsp;
-                    <select name="otherErcDecision[{$formLocale|escape}]" id="otherErcDecision" class="selectMenu">
+                    <select name="otherErcDecision" id="otherErcDecision" class="selectMenu">
                         <option value="NA"></option>
-                        <option value="Under Review" {if  $otherErcDecision[$formLocale] == "Under Review" } selected="selected"{/if} >{translate key="proposal.otherErcDecisionUnderReview"}</option>
-                        <option value="Final Decision Available" {if  $otherErcDecision[$formLocale] == "Final Decision Available" } selected="selected"{/if} >{translate key="proposal.otherErcDecisionFinalAvailable"}</option>
+                        <option value="{$smarty.const.PROPOSAL_DETAIL_UNDER_REVIEW}" {if  $otherErcDecision == PROPOSAL_DETAIL_UNDER_REVIEW } selected="selected"{elseif  $proposalDetails.committeeReviewed == PROPOSAL_DETAIL_UNDER_REVIEW } selected="selected"{/if} >{translate key="proposal.otherErcDecisionUnderReview"}</option>
+                        <option value="{$smarty.const.PROPOSAL_DETAIL_REVIEW_AVAILABLE}" {if  $otherErcDecision == PROPOSAL_DETAIL_REVIEW_AVAILABLE } selected="selected"{elseif  $proposalDetails.committeeReviewed == PROPOSAL_DETAIL_REVIEW_AVAILABLE } selected="selected"{/if} >{translate key="proposal.otherErcDecisionFinalAvailable"}</option>
                     </select>
                 </td>
             </tr>

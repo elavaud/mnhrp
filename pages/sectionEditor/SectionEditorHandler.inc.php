@@ -24,6 +24,7 @@ class SectionEditorHandler extends Handler {
 	 * Constructor
 	 **/
 	function SectionEditorHandler() {
+            
 		parent::Handler();
 		
 		$this->addCheck(new HandlerValidatorJournal($this));
@@ -44,7 +45,6 @@ class SectionEditorHandler extends Handler {
 		$this->validate();
 		$this->setupTemplate();
 		$journal =& Request::getJournal();
-		$journalId = $journal->getId();
 		$user =& Request::getUser();
 		$rangeInfo = Handler::getRangeInfo('submissions');
 		// Get the user's search conditions, if any
@@ -56,7 +56,6 @@ class SectionEditorHandler extends Handler {
 		if ($fromDate !== null) $fromDate = date('Y-m-d H:i:s', $fromDate);
 		$toDate = Request::getUserDateVar('dateTo', 32, 12, null, 23, 59, 59);
 		if ($toDate !== null) $toDate = date('Y-m-d H:i:s', $toDate);
-		$countryField = Request::getUserVar('countryField');
 
 		$sectionDao =& DAORegistry::getDAO('SectionDAO');
 		$sectionEditorSubmissionDao =& DAORegistry::getDAO('SectionEditorSubmissionDAO');
@@ -66,7 +65,7 @@ class SectionEditorHandler extends Handler {
 		$sections =& $sectionDao->getSectionTitles($journal->getId());
 
 		$sort = Request::getUserVar('sort');
-		$sort = isset($sort) ? $sort : 'id';
+		$sort = isset($sort) ? $sort : 'title';
 		$sortDirection = Request::getUserVar('sortDirection');
 		$filterSectionOptions = array(
 			FILTER_SECTION_ALL => Locale::Translate('editor.allSections')
@@ -101,7 +100,6 @@ class SectionEditorHandler extends Handler {
 			$dateSearchField,
 			$fromDate,
 			$toDate,
-			$countryField,
 			$rangeInfo,
 			$sort,
 			$sortDirection
@@ -305,7 +303,7 @@ class SectionEditorHandler extends Handler {
 			if (($ercMemberStatus == "Secretary") && ((count($secretaries) + count($users)) < 6)){
 				$roleId = $roleDao->getRoleIdFromPath('sectionEditor');
 				for ($i=0; $i<count($users); $i++) {
-					if (!$roleDao->roleExists($journal->getId(), $users[$i], $roleId) && !$sectionEditorsDao->ercSecretaryExists($journal->getId(), $sectionId, $users[$i])) {
+					if (!$roleDao->roleExists($journal->getId(), $users[$i], $roleId) && !$sectionEditorsDao->ercSecretaryExists($sectionId, $users[$i])) {
 						$role = new Role();
 						$role->setJournalId($journal->getId());
 						$role->setUserId($users[$i]);

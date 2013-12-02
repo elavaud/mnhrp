@@ -170,9 +170,9 @@ class SectionEditorsDAO extends DAO {
 	 * @param $userId int
 	 * @return boolean
 	 */
-	function ercSecretaryExists($journalId, $sectionId, $userId) {
+	function ercSecretaryExists($sectionId, $userId) {
 		$result =& $this->retrieve(
-			'SELECT COUNT(*) FROM section_editors WHERE journal_id = ? AND section_id = ? AND user_id = ?', array($journalId, $sectionId, $userId)
+			'SELECT COUNT(*) FROM section_editors WHERE section_id = ? AND user_id = ?', array($sectionId, $userId)
 		);
 		$returner = isset($result->fields[0]) && $result->fields[0] == 1 ? true : false;
 

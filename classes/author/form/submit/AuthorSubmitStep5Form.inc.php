@@ -41,10 +41,9 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 	 */
 	function display() {
 		$journal =& Request::getJournal();
-		$user =& Request::getUser();
 		$templateMgr =& TemplateManager::getManager();
 
-        // Get article file for this article
+                // Get article file for this article
 		$articleFileDao =& DAORegistry::getDAO('ArticleFileDAO');
 		$articleFiles =& $articleFileDao->getArticleFilesByArticle($this->articleId);			
 		
@@ -58,15 +57,15 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 		}
 		
 		$sectionDao =& DAORegistry::getDAO('SectionDAO');
-        $section = $sectionDao->getSection($this->article->getSectionId());
+                $section = $sectionDao->getSection($this->article->getSectionId());
 		$templateMgr->assign_by_ref('section', $section);
 		
 		$templateMgr->assign_by_ref('files', $articleFiles);	
 		$templateMgr->assign_by_ref('journal', Request::getJournal());
 
-        $templateMgr->assign_by_ref('article', $this->article);
-        $templateMgr->assign_by_ref('riskAssessment', $this->article->getRiskAssessment());
-        $templateMgr->assign_by_ref('abstract', $this->article->getLocalizedAbstract());
+                $templateMgr->assign_by_ref('article', $this->article);
+                $templateMgr->assign_by_ref('riskAssessment', $this->article->getRiskAssessment());
+                $templateMgr->assign_by_ref('abstract', $this->article->getLocalizedAbstract());
                                 
 		// Set up required Payment Related Information
 		import('classes.payment.ojs.OJSPaymentManager');
@@ -177,9 +176,9 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 
             $countryArray = explode(",", $article->getProposalCountry($this->getFormLocale()));
             
-            $section = $sectionDao->getSection($article->getSectionId());
+            //$section = $sectionDao->getSection($article->getSectionId());
             
-            $countyearsection = $articleDao->getSubmissionsForYearForSectionCount($year, $section->getId()) + 1;
+            //$countyearsection = $articleDao->getSubmissionsForYearForSectionCount($year, $section->getId()) + 1;
             
             if ($article->getLocalizedMultiCountryResearch() == "Yes"){
             	$country = 'MC';
@@ -193,7 +192,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
                 $countyearcountry = $articleDao->getSubmissionsForYearForCountryCount($year, $country) + 1;
             }
             
-            $article->setProposalId($year. '.' . $countyear . '.' . $section->getLocalizedAbbrev(). '.' . $countyearsection . '.' .$country , $this->getFormLocale());
+            $article->setProposalId($year. '.' . $countyear . '.' . $country , $this->getFormLocale());
         }
         if ($this->getData('commentsToEditor') != '') {
 			$article->setCommentsToEditor($this->getData('commentsToEditor'));
@@ -246,7 +245,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
              
 		// Send author notification email
 		import('classes.mail.ArticleMailTemplate');
-		$mail = new ArticleMailTemplate($article, 'SUBMISSION_ACK', null, null, null, false);
+		$mail = new ArticleMailTemplate($article, null, 'SUBMISSION_ACK', null, null, null, false);
 		foreach ($sectionEditors as $sectionEditor) {
 				// Not anymore: EL on February 17th 2013
 				// A section editor is directly assigned with the section id

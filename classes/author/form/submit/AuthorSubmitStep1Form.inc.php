@@ -90,8 +90,9 @@ class AuthorSubmitStep1Form extends AuthorSubmitForm {
 	 */
 	function initData() {
 		if (isset($this->article)) {
+                        $lastSectionDecision = $this->article->getLastSectionDecision();
 			$this->_data = array(
-				'sectionId' => $this->article->getSectionId(),
+				'sectionId' => $lastSectionDecision->getSectionId(),
 				'locale' => $this->article->getLocale(),
 				'commentsToEditor' => $this->article->getCommentsToEditor()
 			);
@@ -130,36 +131,44 @@ class AuthorSubmitStep1Form extends AuthorSubmitForm {
 	 */
 	function execute() {
 		
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
+		$authorSubmissionDao =& DAORegistry::getDAO('AuthorSubmissionDAO');
 
 		if (isset($this->article)) {
 			// Update existing article
-			$this->article->setSectionId($this->getData('sectionId'));
 			$this->article->setLocale($this->getData('locale'));
 			$this->article->setCommentsToEditor($this->getData('commentsToEditor'));
 			if ($this->article->getSubmissionProgress() <= $this->step) {
 				$this->article->stampStatusModified();
 				$this->article->setSubmissionProgress($this->step + 1);
 			}
-			$articleDao->updateArticle($this->article);
+                        $lastSectionDecision = $this->article->getLastSectionDecision();
+                        $lastSectionDecision->setSectionId($this->getData('sectionId'));
+			$authorSubmissionDao->updateAuthorSubmission($this->article);
 
 		} else {
 			// Insert new article
 			$journal =& Request::getJournal();
 			$user =& Request::getUser();
 
-			$this->article = new Article();
+			$this->article = new AuthorSubmission();
 			$this->article->setLocale($this->getData('locale'));
 			$this->article->setUserId($user->getId());
 			$this->article->setJournalId($journal->getId());
-			$this->article->setSectionId($this->getData('sectionId'));
 			$this->article->stampStatusModified();
 			$this->article->setSubmissionProgress($this->step + 1);
 			$this->article->setLanguage(String::substr($this->article->getLocale(), 0, 2));
 			$this->article->setCommentsToEditor($this->getData('commentsToEditor'));
-
-			// Set user to initial author
-			$user =& Request::getUser();
+                        
+                        // Set new Section Decision
+                        $sectionDecision =& new SectionDecision();
+                        $sectionDecision->setReviewType(REVIEW_TYPE_INITIAL);
+                        $sectionDecision->setRound(1);
+                        $sectionDecision->setSectionId($this->getData('sectionId'));
+                        $sectionDecision->setDecision(0);
+                        $sectionDecision->setDateDecided(date(Core::getCurrentDate()));
+                        $this->article->addDecision($sectionDecision);    
+			
+                        // Set user to initial author
 			$author = new Author();
 			$author->setFirstName($user->getFirstName());
 			$author->setMiddleName($user->getMiddleName());
@@ -171,7 +180,7 @@ class AuthorSubmitStep1Form extends AuthorSubmitForm {
 			$author->setPrimaryContact(1);
 			$this->article->addAuthor($author);
 			
-			$articleDao->insertArticle($this->article);
+			$authorSubmissionDao->insertAuthorSubmission($this->article);
 			$this->articleId = $this->article->getId();
 		}
 

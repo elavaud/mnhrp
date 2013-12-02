@@ -151,7 +151,7 @@ class LayoutEditorAction extends Action {
 		}
 
 		import('classes.mail.ArticleMailTemplate');
-		$email = new ArticleMailTemplate($submission, 'LAYOUT_COMPLETE');
+		$email = new ArticleMailTemplate($submission, null, 'LAYOUT_COMPLETE');
 
 		if (!$email->isEnabled() || ($send && !$email->hasErrors())) {
 			HookRegistry::call('LayoutEditorAction::completeLayoutEditing', array(&$submission, &$email));

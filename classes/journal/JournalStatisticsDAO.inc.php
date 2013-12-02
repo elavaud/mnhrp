@@ -36,10 +36,10 @@ class JournalStatisticsDAO extends DAO {
 
 		$params = array($journalId);
 		if (!empty($sectionIds)) {
-			$sectionSql = ' AND (a.section_id = ?';
+			$sectionSql = ' AND (sdec.section_id = ?';
 			$params[] = array_shift($sectionIds);
 			foreach ($sectionIds as $sectionId) {
-				$sectionSql .= ' OR a.section_id = ?';
+				$sectionSql .= ' OR sdec.section_id = ?';
 				$params[] = $sectionId;
 			}
 			$sectionSql .= ')';
@@ -52,9 +52,11 @@ class JournalStatisticsDAO extends DAO {
 				d.decision,
 				a.status
 			FROM	articles a
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+				LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
 				LEFT JOIN published_articles pa ON (a.article_id = pa.article_id)
 				LEFT JOIN section_decisions d ON (d.article_id = a.article_id)
-			WHERE	a.journal_id = ?' .
+			WHERE	a.journal_id = ? AND sdec2.section_decision_id IS NULL' .
 			($dateStart !== null ? ' AND a.date_submitted >= ' . $this->datetimeToDB($dateStart) : '') .
 			($dateEnd !== null ? ' AND a.date_submitted <= ' . $this->datetimeToDB($dateEnd) : '') .
 			$sectionSql .
@@ -282,10 +284,10 @@ class JournalStatisticsDAO extends DAO {
 	function getReviewerStatistics($journalId, $sectionIds, $dateStart = null, $dateEnd = null) {
 		$params = array($journalId);
 		if (!empty($sectionIds)) {
-			$sectionSql = ' AND (a.section_id = ?';
+			$sectionSql = ' AND (sdec.section_id = ?';
 			$params[] = array_shift($sectionIds);
 			foreach ($sectionIds as $sectionId) {
-				$sectionSql .= ' OR a.section_id = ?';
+				$sectionSql .= ' OR sdec.section_id = ?';
 				$params[] = $sectionId;
 			}
 			$sectionSql .= ')';
@@ -302,8 +304,11 @@ class JournalStatisticsDAO extends DAO {
 			FROM	articles a,
 				article_files af,
 				review_assignments r
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+				LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
 				LEFT JOIN users u ON (u.user_id = r.reviewer_id)
-			WHERE	a.journal_id = ?
+			WHERE	a.journal_id = ? 
+                                AND sdec2.section_decision_id IS NULL
 				AND r.submission_id = a.article_id
 				AND af.article_id = a.article_id
 				AND af.file_id = a.review_file_id' .

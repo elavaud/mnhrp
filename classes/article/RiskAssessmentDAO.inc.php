@@ -15,6 +15,13 @@ import('classes.article.RiskAssessment');
 
 class RiskAssessmentDAO extends DAO{
 
+        /**
+	 * Constructor.
+	 */
+	function RiskAssessmentDAO() {
+		parent::DAO();
+        }
+
 	/**
 	 * Get the risk assessment for a submission.
 	 * @param $submissionId int

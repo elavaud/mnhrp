@@ -1,13 +1,11 @@
 {**
- * submissionsSubmitted.tpl
+ * waitingForResubmissions.tpl
  *
- * Copyright (c) 2003-2011 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
- *
- * Show section secretary's submissions submitted.
+ * Show section secretary's proposals waiting for resubmission.
  *
  * $Id$
  *}
+ 
 <br/><br/>
 <div id="submissions">
 <table class="listing" width="100%">
@@ -34,7 +32,7 @@
 	<tr valign="top">
 		<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
 		<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>
-	 	<td>{$submission->getFirstAuthor()|truncate:20:"..."|escape}</td>
+	   	<td>{$submission->getFirstAuthor()|truncate:20:"..."|escape}</td>
         <td><a href="{url op="submissionReview" path=$submission->getId()}" class="action">{$abstract->getScientificTitle()|truncate:60:"..."|escape}</a></td>
         <td>{$lastDecision->getSectionAcronym()} - {translate key=$lastDecision->getReviewTypeKey()} - {$lastDecision->getRound()}</td>
 		<td align="right">{translate key=$lastDecision->getReviewStatusKey()}</td>		

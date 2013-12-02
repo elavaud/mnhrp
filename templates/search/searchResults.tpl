@@ -65,8 +65,8 @@ $(document).ready(
 </form>
 
 <a href="javascript:document.revise.submit()" class="action">{translate key="search.reviseSearch"}</a>&nbsp;&nbsp;
-<a href="#top" onclick="showExportOptions()" class="action" id="showExportOptions">|  &nbsp;Export Search Results&nbsp;&nbsp;</a>
-<a href="#top" onclick="hideExportOptions()" class="action" id="hideExportOptions">|  &nbsp;Hide Export Options</a><br />
+<a href="#top" onclick="showExportOptions()" class="action" id="showExportOptions">|  &nbsp;{translate key="search.exportSearchResults"}&nbsp;&nbsp;</a>
+<a href="#top" onclick="hideExportOptions()" class="action" id="hideExportOptions">|  &nbsp;{translate key="search.hideExportOptions"}</a><br />
 <!--
 <a href="javascript:document.generate.submit()" class="action">| Export Search Results</a><br />
 -->
@@ -78,69 +78,63 @@ $(document).ready(
 	<input type="hidden" name="dateTo" value="{$dateTo|escape}"/>
 	
 	<table class="data" width="100%">
-	<tr><i><br />Please check fields you would like to export.<br /></i></tr>
+	<tr><i><br />{translate key="search.exportIntruct"}<br /></i></tr>
 	<tr>
 	<td colspan="4" class="headseparator"></td>
 	</tr>
 	<tr>
-	<td><br /><strong>Investigators :</strong></td>
+	<td><br /><strong>{translate key="user.role.authors"}:</strong></td>
 	</tr>
 	<tr valign="top">
 		<td width="20%" class="value">
-			<input type="checkbox" name="investigatorName" checked="checked"/>&nbsp;Investigator Name
+			<input type="checkbox" name="investigatorName" checked="checked"/>&nbsp;{translate key="common.fullName"}
 		</td>
 		<td width="20%" class="value">
-			<input type="checkbox" name="investigatorAffiliation"/>&nbsp;Investigator Affiliation
-		</td>
-		<td width="20%" class="value">
-			<!--<input type="checkbox" name="investigatorEmail"/>&nbsp;Investigator e-mail-->
+			<input type="checkbox" name="investigatorAffiliation"/>&nbsp;{translate key="user.affiliation"}
 		</td>
 	</tr>
 	<tr>
 	<td colspan="4" class="separator"></td>
 	</tr>
 	<tr>
-	<td><strong>Metadata :</strong></td>
+	<td><strong>{translate key="article.metadata"}:</strong></td>
 	</tr>
 	<tr valign="top">
 		<td width="20%" class="value">
-			<input type="checkbox" name="title" checked="checked"/>&nbsp;Title
+			<input type="checkbox" name="scientificTitle" checked="checked"/>&nbsp;{translate key="proposal.scientificTitle"}
 		</td>
 		<td width="20%" class="value">
-			<input type="checkbox" name="researchField" checked="checked"/>&nbsp;Research Field
+			<input type="checkbox" name="publicTitle"/>&nbsp;{translate key="proposal.publicTitle"}
 		</td>
 		<td width="20%" class="value">
-			<input type="checkbox" name="proposalType" checked="checked"/>&nbsp;Proposal Type
-		</td>
-	</tr>
-	<tr valign="top">
-		<td width="20%" class="value">
-			<input type="checkbox" name="duration" checked="checked"/>&nbsp;Duration
-		</td>
-		<td width="20%" class="value">
-			<input type="checkbox" name="area" checked="checked"/>&nbsp;Geographical Area
-		</td>
-		<td width="20%" class="value">
-			<input type="checkbox" name="dataCollection"/>&nbsp;Data Collection
+			<input type="checkbox" name="researchField" checked="checked"/>&nbsp;{translate key="proposal.researchField"}
 		</td>
 	</tr>
 	<tr valign="top">
 		<td width="20%" class="value">
-			<input type="checkbox" name="status" checked="checked"/>&nbsp;Status
+			<input type="checkbox" name="proposalType" checked="checked"/>&nbsp;{translate key="proposal.proposalType"}
 		</td>
 		<td width="20%" class="value">
-			<input type="checkbox" name="primarySponsor" checked="checked"/>&nbsp;Primary Sponsor
+			<input type="checkbox" name="duration" checked="checked"/>&nbsp;{translate key="search.researchDates"}
 		</td>
 		<td width="20%" class="value">
-			<input type="checkbox" name="fundsRequired" />&nbsp;Funds Required
+			<input type="checkbox" name="area" checked="checked"/>&nbsp;{translate key='proposal.proposalCountry'}
+		</td>
+	</tr>
+	<tr valign="top">
+		<td width="20%" class="value">
+			<input type="checkbox" name="primarySponsor" checked="checked"/>&nbsp;{translate key="proposal.primarySponsor"}
+		</td>
+		<td width="20%" class="value">
+			<input type="checkbox" name="dataCollection"/>&nbsp;{translate key="proposal.dataCollection"}
+		</td>
+		<td width="20%" class="value">
+			<input type="checkbox" name="status" checked="checked"/>&nbsp;{translate key="common.status"}
 		</td>
 	</tr>
 	<tr>
-		<td>
-			<input type="checkbox" name="dateSubmitted" />&nbsp;Date submitted
-		</td>
-		<td colspan="2" class="value">
-			<input type="checkbox" name="studentResearch" checked="checked"/>&nbsp;If student research, Institution & Academic Degree
+		<td colspan="3">
+			<input type="checkbox" name="studentResearch" checked="checked"/>&nbsp;{translate key="search.studentExport"}
 		</td>
 		<td></td>
 	</tr>
@@ -148,7 +142,7 @@ $(document).ready(
 	<td colspan="4" class="endseparator">&nbsp;</td>
 	</tr>
 	</table>
-	<p><input type="submit" value="Export" class="button defaultButton"/>
+	<p><input type="submit" value="{translate key="common.export"}" class="button defaultButton"/>
 </form>
 
 <br/>

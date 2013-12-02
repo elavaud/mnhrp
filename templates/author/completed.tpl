@@ -52,7 +52,7 @@
                         {elseif $status==PROPOSAL_STATUS_COMPLETED}
                             {translate key="submission.status.completed"}<br />
                         {elseif $status==PROPOSAL_STATUS_ARCHIVED}
-                            {assign var="decision" value=$submission->getMostRecentDecision()}
+                            {assign var="decision" value=$submission->getMostRecentDecisionValue()}
                             {if $decision==SUBMISSION_SECTION_DECISION_DECLINED}
                                 {translate key="submission.status.declined"}
                             {elseif $decision==SUBMISSION_SECTION_DECISION_EXEMPTED}

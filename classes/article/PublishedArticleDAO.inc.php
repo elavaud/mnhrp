@@ -96,13 +96,15 @@ class PublishedArticleDAO extends DAO {
 				COALESCE(o.seq, s.seq) AS section_seq,
 				pa.seq
 			FROM	published_articles pa,
-				articles a LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN custom_section_orders o ON (a.section_id = o.section_id AND o.issue_id = ?)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	pa.article_id = a.article_id
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN sections s ON (s.section_id = sdec.section_id)
+                                LEFT JOIN custom_section_orders o ON (sdec.section_id = o.section_id AND o.issue_id = ?)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL 
 				AND pa.issue_id = ?
 				AND a.status <> ' . STATUS_ARCHIVED . '
 			ORDER BY section_seq ASC, pa.seq ASC';
@@ -162,12 +164,13 @@ class PublishedArticleDAO extends DAO {
 			FROM	published_articles pa
 				LEFT JOIN articles a ON pa.article_id = a.article_id
 				LEFT JOIN issues i ON pa.issue_id = i.issue_id
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE 	i.published = 1
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE 	i.published = 1 AND sdec2.section_decision_id IS NULL 
 				' . ($journalId !== null?'AND a.journal_id = ?':'') . '
 				AND a.status <> ' . STATUS_ARCHIVED . '
 			ORDER BY date_published '. ($reverse?'DESC':'ASC'),
@@ -209,12 +212,13 @@ class PublishedArticleDAO extends DAO {
 			FROM	published_articles pa
 				LEFT JOIN articles a ON pa.article_id = a.article_id
 				LEFT JOIN issues i ON pa.issue_id = i.issue_id
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE 	i.published = 1
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE 	i.published = 1 AND sdec2.section_decision_id IS NULL
 				AND a.doi = ?
 				' . ($journalId !== null?'AND a.journal_id = ?':'') . '
 				AND a.status <> ' . STATUS_ARCHIVED . '
@@ -258,13 +262,15 @@ class PublishedArticleDAO extends DAO {
 				pa.seq
 			FROM	published_articles pa,
 				articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN custom_section_orders o ON (a.section_id = o.section_id AND o.issue_id = ?)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	pa.article_id = a.article_id
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN sections s ON (s.section_id = sdec.section_id)
+                                LEFT JOIN custom_section_orders o ON (sdec.section_id = o.section_id AND o.issue_id = ?)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL 
 				AND pa.issue_id = ?
 				AND a.status <> ' . STATUS_ARCHIVED . '
 			ORDER BY section_seq ASC, pa.seq ASC',
@@ -329,14 +335,14 @@ class PublishedArticleDAO extends DAO {
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	published_articles pa,
 				articles a,
-				sections s
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.section_id = s.section_id
-				AND pa.article_id = a.article_id
-				AND a.section_id = ?
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL 
+				AND sdec.section_id = ?
 				AND pa.issue_id = ?
 				AND a.status <> ' . STATUS_ARCHIVED . '
 			ORDER BY pa.seq ASC',
@@ -434,12 +440,13 @@ class PublishedArticleDAO extends DAO {
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	published_articles pa,
 				articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	pa.article_id = a.article_id
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL 
 				AND a.article_id = ?' .
 				($journalId?' AND a.journal_id = ?':''),
 			$params
@@ -494,12 +501,13 @@ class PublishedArticleDAO extends DAO {
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	published_articles pa,
 				articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	pa.article_id = a.article_id
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL 
 				AND pa.public_article_id = ?
 				' . ($journalId?' AND a.journal_id = ?':''),
 			$params
@@ -554,13 +562,14 @@ class PublishedArticleDAO extends DAO {
 			FROM	published_articles pa,
 				issues i,
 				articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
 				LEFT JOIN article_settings atl ON (a.article_id = atl.article_id AND atl.setting_name = ? AND atl.locale = ?)
 				LEFT JOIN article_settings atpl ON (a.article_id = atpl.article_id AND atpl.setting_name = ? AND atpl.locale = a.locale)
-			WHERE	pa.article_id = a.article_id
+			WHERE	pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL 
 				AND i.issue_id = pa.issue_id
 				AND i.published = 1
-				AND s.section_id IS NOT NULL' .
+				AND sdec.section_id IS NOT NULL' .
 				(isset($journalId)?' AND a.journal_id = ?':'') . ' ORDER BY article_title',
 			$params
 		);
@@ -589,7 +598,13 @@ class PublishedArticleDAO extends DAO {
 		$articleIds = array();
 		$functionName = $useCache?'retrieveCached':'retrieve';
 		$result =& $this->$functionName(
-			'SELECT a.article_id AS pub_id FROM published_articles pa, articles a LEFT JOIN sections s ON s.section_id = a.section_id WHERE pa.article_id = a.article_id' . (isset($journalId)?' AND a.journal_id = ?':'') . ' ORDER BY pa.date_published DESC',
+			'SELECT a.article_id AS pub_id 
+                         FROM published_articles pa, articles a 
+			 LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                         LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+                         WHERE pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL' 
+                         . (isset($journalId)?' AND a.journal_id = ?':'') . ' 
+                         ORDER BY pa.date_published DESC',
 			isset($journalId)?$journalId:false
 		);
 
@@ -697,7 +712,11 @@ class PublishedArticleDAO extends DAO {
 	 */
 	function deletePublishedArticlesBySectionId($sectionId) {
 		$result =& $this->retrieve(
-			'SELECT pa.article_id AS article_id FROM published_articles pa, articles a WHERE pa.article_id = a.article_id AND a.section_id = ?', $sectionId
+			'SELECT pa.article_id AS article_id 
+                         FROM published_articles pa, articles a
+			 LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                         LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+                         WHERE pa.article_id = a.article_id AND sdec2.section_decision_id IS NULL AND sdec.section_id = ?', $sectionId
 		);
 
 		while (!$result->EOF) {
@@ -773,7 +792,14 @@ class PublishedArticleDAO extends DAO {
 	 */
 	function resequencePublishedArticles($sectionId, $issueId) {
 		$result =& $this->retrieve(
-			'SELECT pa.pub_id FROM published_articles pa, articles a WHERE a.section_id = ? AND a.article_id = pa.article_id AND pa.issue_id = ? ORDER BY pa.seq',
+			'SELECT pa.pub_id 
+                         FROM published_articles pa, articles a
+			 LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                         LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+                         WHERE sdec.section_id = ? AND sdec2.section_decision_id IS NULL 
+                            AND a.article_id = pa.article_id 
+                            AND pa.issue_id = ? 
+                         ORDER BY pa.seq',
 			array($sectionId, $issueId)
 		);
 

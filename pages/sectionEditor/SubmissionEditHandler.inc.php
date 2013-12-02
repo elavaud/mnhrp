@@ -98,8 +98,8 @@ class SubmissionEditHandler extends SectionEditorHandler {
 
 		$templateMgr->assign('canEditMetadata', true);
 
-        $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
-        $templateMgr->assign_by_ref('riskAssessment', $submission->getRiskAssessment());
+                $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
+                $templateMgr->assign_by_ref('riskAssessment', $submission->getRiskAssessment());
             
 		$templateMgr->display('sectionEditor/submission.tpl');
 	}
@@ -156,13 +156,11 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		$journal =& Request::getJournal();
 		$submission =& $this->submission;
 		$this->setupTemplate(1, $articleId);
+                $user =& Request::getUser();
 
 		Locale::requireComponents(array(LOCALE_COMPONENT_OJS_MANAGER));
-		$sectionEditorSubmissionDao =& DAORegistry::getDAO('SectionEditorSubmissionDAO');		
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
 		$reviewAssignmentDao =& DAORegistry::getDAO('ReviewAssignmentDAO');
 		$reviewFormDao =& DAORegistry::getDAO('ReviewFormDAO');
-		$userDao =& DAORegistry::getDAO('UserDAO');
 
 		$sectionDao =& DAORegistry::getDAO('SectionDAO');
 		$sections =& $sectionDao->getJournalSections($journal->getId());
@@ -172,9 +170,6 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		$reviewAssignments =& $lastDecision->getReviewAssignments();
 		$articleMoreRecent = strtotime($submission->getLastModified())>strtotime($lastDecision->getDateDecided()) ? true : false;
 				
-		$reasons = $submission->getProposalReasonsForExemption();
-		$reasonsMap =& $submission->getReasonsForExemptionMap();
-
 		// Prepare an array to store the 'Notify Reviewer' email logs
 		$notifyReviewerLogs = array();
 		foreach ($reviewAssignments as $reviewAssignment) {
@@ -192,13 +187,10 @@ class SubmissionEditHandler extends SectionEditorHandler {
 			}
 		}
 
-		// get journal published review form titles
-		$reviewFormTitles =& $reviewFormDao->getTitlesByAssocId(ASSOC_TYPE_JOURNAL, $journal->getId(), 1);
 
 		$reviewFormResponseDao =& DAORegistry::getDAO('ReviewFormResponseDAO');
 		$reviewFormResponses = array();
 
-		$reviewFormDao =& DAORegistry::getDAO('ReviewFormDAO');
 		$reviewFormTitles = array();
 
 		foreach ($reviewAssignments as $reviewAssignment) {
@@ -225,14 +217,15 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		$templateMgr->assign('sectionId', $submission->getSectionId());
 		$templateMgr->assign_by_ref('notifyReviewerLogs', $notifyReviewerLogs);
 		$templateMgr->assign_by_ref('submissionFile', $submission->getSubmissionFile());	
-        $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
+                $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
 		$templateMgr->assign_by_ref('suppFiles', $submission->getSuppFiles());
 		$templateMgr->assign_by_ref('reviewFile', $submission->getReviewFile());
 		$templateMgr->assign_by_ref('previousFiles', $submission->getPreviousFiles());
 		$templateMgr->assign_by_ref('copyeditFile', $submission->getFileBySignoffType('SIGNOFF_COPYEDITING_INITIAL'));
 		$templateMgr->assign_by_ref('revisedFile', $submission->getRevisedFile());
 		$templateMgr->assign_by_ref('editorFile', $submission->getEditorFile());
-		$templateMgr->assign('rateReviewerOnQuality', $journal->getSetting('rateReviewerOnQuality'));
+		$templateMgr->assign_by_ref('sectionDecisions', $submission->getDecisions());
+                $templateMgr->assign('rateReviewerOnQuality', $journal->getSetting('rateReviewerOnQuality'));
 		$templateMgr->assign_by_ref('sections', $sections->toArray());
 		$templateMgr->assign('sectionDecisionOptions',SectionEditorSubmission::getEditorDecisionOptions());
 		
@@ -241,18 +234,11 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		$templateMgr->assign('continuingReviewOptions',SectionEditorSubmission::getContinuingReviewOptions());
 		$templateMgr->assign('articleMoreRecent', $articleMoreRecent);
 		$templateMgr->assign('lastDecision', $lastDecision);
-		$templateMgr->assign('reasonsForExemption', $reasons);
-		$templateMgr->assign_by_ref('reasonsMap', $reasonsMap);
 		
 		import('classes.submission.reviewAssignment.ReviewAssignment');
 		$templateMgr->assign_by_ref('reviewerRecommendationOptions', ReviewAssignment::getReviewerRecommendationOptions());
 		$templateMgr->assign_by_ref('reviewerRatingOptions', ReviewAssignment::getReviewerRatingOptions());
 		
-		// Not currently used
-		//$templateMgr->assign('allowRecommendation', $allowRecommendation);
-		//$templateMgr->assign('allowResubmit', $allowResubmit);
-		//$templateMgr->assign('allowCopyedit', $allowCopyedit);
-
 		$templateMgr->assign('articleId', $submission->getId());
 		
 		// Set up required Payment Related Information
@@ -274,10 +260,8 @@ class SubmissionEditHandler extends SectionEditorHandler {
 				$templateMgr->assign_by_ref('publicationPayment', $completedPaymentDAO->getPublicationCompletedPayment ( $journal->getId(), $articleId ));
 			}
 		}
-		
-		// Added by EL on March 13th 2013
-		// Provide links to meetings
-		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
+		$templateMgr->assign_by_ref('userId', $user->getId());
+                $meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$meetings =& $meetingDao->getMeetingsBySubmissionId($articleId);
 		$templateMgr->assign('meetingsCount', count($meetings));
 		$templateMgr->assign_by_ref('meetings', $meetings);
@@ -421,47 +405,42 @@ class SubmissionEditHandler extends SectionEditorHandler {
 
 		$approvalDate = Request::getUserVar('approvalDate'); 
 		
-		$fileName = "finalDecisionFile";
-		if(($submission->getSubmissionStatus() == PROPOSAL_STATUS_EXPEDITED || $submission->getSubmissionStatus() == PROPOSAL_STATUS_FULL_REVIEW) && isset($_FILES[$fileName])) {			
-			if (SectionEditorAction::uploadDecisionFile($articleId, $fileName, $submission->getLastSectionDecisionId()) == '0') Request::redirect(null, null, 'submissionReview', $articleId);
-				
-		}
-		
-		$decision = Request::getUserVar('decision');
+                $decision = Request::getUserVar('decision');
 		$sectionDecisionDao =& DAORegistry::getDAO("SectionDecisionDAO");
 		$previousDecision =& $sectionDecisionDao->getLastSectionDecision($articleId);
-		
+                $pastDecisionResult = $previousDecision->getDecision();
+
+		$fileName = "finalDecisionFile";
+		if(($pastDecisionResult == SUBMISSION_SECTION_DECISION_EXPEDITED || $pastDecisionResult == SUBMISSION_SECTION_DECISION_FULL_REVIEW || ($pastDecisionResult == SUBMISSION_SECTION_DECISION_EXEMPTED && !$previousDecision->getComments())) && isset($_FILES[$fileName])) {			
+			if (SectionEditorAction::uploadDecisionFile($articleId, $fileName, $submission->getLastSectionDecisionId()) == '0') Request::redirect(null, null, 'submissionReview', $articleId);		
+		}
+				
 		//pass lastDecisionId of this article to update existing row in section_decisions
 		if (isset($previousDecision)) {
-			if ($previousDecision->getDecision() == SUBMISSION_SECTION_DECISION_APPROVED
-				|| $previousDecision->getDecision() == SUBMISSION_SECTION_DECISION_RESUBMIT
-				|| $previousDecision->getDecision() == SUBMISSION_SECTION_DECISION_DECLINED
-				|| $previousDecision->getDecision() == SUBMISSION_SECTION_DECISION_EXEMPTED
-				|| $previousDecision->getDecision() == SUBMISSION_SECTION_DECISION_DONE)
+			if ($pastDecisionResult == SUBMISSION_SECTION_DECISION_APPROVED
+				|| $pastDecisionResult == SUBMISSION_SECTION_DECISION_RESUBMIT
+				|| $pastDecisionResult == SUBMISSION_SECTION_DECISION_DECLINED
+				|| ($pastDecisionResult == SUBMISSION_SECTION_DECISION_EXEMPTED && $previousDecision->getComments())
+				|| $pastDecisionResult == SUBMISSION_SECTION_DECISION_DONE)
 			$lastDecisionId = null;
 			else $lastDecisionId = $previousDecision->getId();
 		} else $lastDecisionId = null;
+				
+		$round = $sectionDecisionDao->getRound($articleId, $previousDecision->getReviewType());
 		
-		switch ($submission->getStatus()) {
-			case STATUS_QUEUED:
-				$reviewType = REVIEW_TYPE_INITIAL;
-				break;
-			case STATUS_QUEUED_CR:
-				$reviewType = REVIEW_TYPE_CONTINUING;
-				break;
-			case STATUS_QUEUED_PA:
-				$reviewType = REVIEW_TYPE_AMENDMENT;
-				break;
-			case STATUS_QUEUED_SAE:
-				$reviewType = REVIEW_TYPE_SAE;
-				break;
-			case STATUS_QUEUED_EOS:
-				$reviewType = REVIEW_TYPE_EOS;
-				break;
-		}
-		
-		$round = $sectionDecisionDao->getRound($articleId, $reviewType);
-		
+                $comments = null;
+                if ($pastDecisionResult == SUBMISSION_SECTION_DECISION_EXEMPTED) {
+                    $selectedReasons = Request::getUserVar('exemptionReasons');
+                    if (isset($selectedReasons)) {
+                        $decision = SUBMISSION_SECTION_DECISION_EXEMPTED;
+                        $reasons = 0;
+                        foreach($selectedReasons as $reason) {
+                            $reasons = $reasons + (int) $reason;
+                        }
+                        $comments = $reasons;
+                    }
+                }
+                    
 		switch ($decision) {
 			case SUBMISSION_SECTION_DECISION_APPROVED:
 			case SUBMISSION_SECTION_DECISION_RESUBMIT:
@@ -472,15 +451,10 @@ class SubmissionEditHandler extends SectionEditorHandler {
 			case SUBMISSION_SECTION_DECISION_COMPLETE:
 			case SUBMISSION_SECTION_DECISION_INCOMPLETE:
 			case SUBMISSION_SECTION_DECISION_DONE:
-				if ($reviewType) SectionEditorAction::recordDecision($submission, $decision, $reviewType, $round, $approvalDate, $lastDecisionId);
+                        SectionEditorAction::recordDecision($submission, $decision, $previousDecision->getReviewType(), $round, $comments, $approvalDate, $lastDecisionId);
 				break;
 		}
 		
-		/*Do not start new round of review
-		if($decision == SUBMISSION_SECTION_DECISION_RESUBMIT) {
-			SectionEditorAction::initiateNewReviewRound($submission);
-		}
-		*/
 		switch ($decision) {
 			case SUBMISSION_SECTION_DECISION_APPROVED:
 			case SUBMISSION_SECTION_DECISION_DECLINED:
@@ -494,29 +468,6 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		}
 	}
 	
-	/**
-	 * If proposal is exempted, record reasons for exemption
-	 */
-	function recordReasonsForExemption($args, $request) {
-		$decision = Request::getUserVar('decision');
-		if($decision == SUBMISSION_SECTION_DECISION_EXEMPTED) {
-			$articleId = Request::getUserVar('articleId');			
-			$this->validate($articleId, SECTION_EDITOR_ACCESS_REVIEW);
-			$submission =& $this->submission;
-			$selectedReasons = Request::getUserVar('exemptionReasons');
-			$reasons = 0;
-			foreach($selectedReasons as $reason) {
-				$reasons = $reasons + (int) $reason;
-			}
-			if ($reasons != 0){
-				$submission->setReasonsForExemption($reasons, null);			
-				$articleDao =& DAORegistry::getDAO('ArticleDAO');
-				if($articleDao->insertReasonsForExemption($submission, $reasons)) {
-					Request::redirect(null, null, 'submissionReview', $articleId);
-				}
-			} else Request::redirect(null, null, 'submissionReview', $articleId);
-		}		
-	}
 	
 	function selectReviewers($args) {
 		$articleId = isset($args[0]) ? (int) $args[0] : 0;

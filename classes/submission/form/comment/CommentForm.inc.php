@@ -138,7 +138,7 @@ class CommentForm extends Form {
 		$journal =& Request::getJournal();
 
 		import('classes.mail.ArticleMailTemplate');
-		$email = new ArticleMailTemplate($article, 'SUBMISSION_COMMENT');
+		$email = new ArticleMailTemplate($article, null, 'SUBMISSION_COMMENT');
 		$email->setFrom($this->user->getEmail(), $this->user->getFullName());
 
 		$commentText = $this->getData('comments');

@@ -15,9 +15,19 @@
 // Review type
 define('REVIEW_TYPE_INITIAL', 1); 	// Initial Review
 define('REVIEW_TYPE_CONTINUING', 2);	// Continuing Review
-define('REVIEW_TYPE_AMENDMENT', 3);	// Protocol Amendment
+define('REVIEW_TYPE_AMENDMENT', 3);	// Post-Approval Amendment
 define('REVIEW_TYPE_SAE', 4);	// Serious Adverse Event(s)
 define('REVIEW_TYPE_EOS', 5);	// End of study
+
+
+// Reasons for exemption constants
+
+define ('EXEMPTION_NO_HUMAN_PARTICIPANTS', 1);
+define ('EXEMPTION_ALREADY_EXISTS', 2);
+define ('EXEMPTION_PUBLIC_OFFICIALS', 4);
+define ('EXEMPTION_LIMITED_OBSERVATION', 8);
+define ('EXEMPTION_LIMITED_SURVEILLANCE', 16);
+define ('EXEMPTION_REGISTERED', 32);
 
 
 class SectionDecision extends DataObject {
@@ -121,6 +131,22 @@ class SectionDecision extends DataObject {
 	 */
 	function getDecision() {
 		return $this->getData('decision');
+	}
+
+	/**
+	 * Set comments.
+	 * @param $comments text
+	 */
+	function setComments($comments) {
+		return $this->setData('comments', $comments);
+	}
+
+        /**
+	 * Get comments.
+	 * @return text
+	 */
+	function getComments() {
+		return $this->getData('comments');
 	}
 
 	/**
@@ -258,5 +284,135 @@ class SectionDecision extends DataObject {
 		$article =& $articleDao->getArticle($this->getArticleId());
 		return $article->getLocalizedProposalId();
 	}
-}
+        
+	/**
+	 * Get a map for review type  to locale key.
+	 * @return array
+	 */
+	function &getReviewTypeMap() {
+                return $reviewTypeMap = array(
+                        REVIEW_TYPE_INITIAL => 'submission.initialReview',
+                        REVIEW_TYPE_CONTINUING => 'submission.continuingReview',
+                        REVIEW_TYPE_AMENDMENT => 'submission.protocolAmendment',
+                        REVIEW_TYPE_SAE => 'submission.seriousAdverseEvents',
+                        REVIEW_TYPE_EOS => 'submission.endOfStudy'
+                );
+	}
+	
+	/**
+	 * Get a locale key for the review type
+	 */
+	function getReviewTypeKey() {
+		$reviewTypeMap =& $this->getReviewTypeMap();
+		return $reviewTypeMap[$this->getReviewType()];
+	}
+
+        /**
+	 * Get a map for review status constant to locale key.
+	 * @return array
+	 */
+	function &getReviewStatusMap() {
+                $reviewStatusMap = array(
+                        SUBMISSION_SECTION_NO_DECISION => 'submission.status.submitted',
+                        SUBMISSION_SECTION_DECISION_INCOMPLETE => 'submission.status.incomplete',
+                        SUBMISSION_SECTION_DECISION_COMPLETE => 'submission.status.complete',
+                        SUBMISSION_SECTION_DECISION_EXEMPTED => 'submission.status.exempted',
+                        SUBMISSION_SECTION_DECISION_FULL_REVIEW => 'submission.status.fullReview',
+                        SUBMISSION_SECTION_DECISION_EXPEDITED => 'submission.status.expeditedReview',
+                        SUBMISSION_SECTION_DECISION_APPROVED => 'submission.status.approved',
+                        SUBMISSION_SECTION_DECISION_RESUBMIT => 'submission.status.reviseAndResubmit',
+                        SUBMISSION_SECTION_DECISION_DECLINED => 'submission.status.declined'
+                );
+		return $reviewStatusMap;
+	}
+
+        /**
+	 * Get a locale key for the submission review status
+	 */
+	function getReviewStatusKey() {
+		$reviewStatus = $this->getDecision();
+		$reviewStatusMap =& $this->getReviewStatusMap();
+		return $reviewStatusMap[$reviewStatus];
+	}
+
+
+        /**
+	 * Get the section concerned by this decision
+	 */
+	function getSection() {
+		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		return $sectionDao->getSection($this->getSectionId());
+	}
+   
+        /**
+	 * Get the section acronym concerned by this decision
+	 */
+	function getSectionAcronym() {
+		$section = $this->getSection();
+		return $section->getLocalizedAbbrev();
+	}
+
+        /**
+	 * check if the user is the secretary of the committee concerned by this decision
+	 * @param $userId
+	 */
+	function isSecretary($userId) {
+		$sectionEditorsDao = DAORegistry::getDAO('SectionEditorsDAO');
+		return $sectionEditorsDao->ercSecretaryExists($this->getSectionId(), $userId);
+	}
+        
+        /**
+	 * Get array mapping of selected reasons for exemption
+	 * @return array
+	 */
+	function getProposalReasonsForExemption() {
+		$comments = $this->getComments();
+		$reasons = array();
+		for($i=5; $i>=0; $i--) {
+			$num = pow(2, $i);
+			if($num <= $comments) {
+				$reasons[$num] = 1;
+				$comments = $comments - $num;
+			}
+			else
+				$reasons[$num] = 0;			
+		}
+		return $reasons;
+	}
+	
+	/*
+	 * Get a map for exemption reasons to locale key
+	 * @return array
+	 */	 
+	function &getReasonsForExemptionMap() {
+		static $reasonsForExemptionMap;
+		if (!isset($reasonsForExemptionMap)) {
+			$reasonsForExemptionMap = array(
+				EXEMPTION_NO_HUMAN_PARTICIPANTS => 'editor.article.exemption.noHumanParticipants',
+				EXEMPTION_ALREADY_EXISTS => 'editor.article.exemption.alreadyExists',
+				EXEMPTION_PUBLIC_OFFICIALS => 'editor.article.exemption.publicOfficials',
+				EXEMPTION_LIMITED_OBSERVATION => 'editor.article.exemption.limitedObservation',
+				EXEMPTION_LIMITED_SURVEILLANCE => 'editor.article.exemption.limitedPublicHealthSurveillance',
+				EXEMPTION_REGISTERED => 'editor.article.exemption.registered'			
+			);
+		}
+		return $reasonsForExemptionMap;
+	}  
+
+
+        /*
+	 * Return an array of the reviewAssignments where the reviewer at least answered a form or uploaded a file
+	 * @return int
+	 */	 
+	function &getReviewAssignmentsDone() {
+            $reviewAssignmentsDone = array();
+            $reviewFormResponseDao =& DAORegistry::getDAO('ReviewFormResponseDAO');
+            foreach ($this->reviewAssignments as $reviewAssignment){
+                if (($reviewFormResponseDao->reviewFormResponseExists($reviewAssignment->getId())) || $reviewAssignment->getReviewerFile()) 
+                        $reviewAssignmentsDone[] = $reviewAssignment;
+            }
+            return $reviewAssignmentsDone;
+	}  
+
+        }
 ?>

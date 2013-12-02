@@ -51,7 +51,7 @@ class ReviewerAction extends Action {
 		// he has not previously done so.
 		if ($reviewAssignment->getDateConfirmed() == null) {
 			import('classes.mail.ArticleMailTemplate');
-			$email = new ArticleMailTemplate($reviewerSubmission, $decline?'REVIEW_DECLINE':'REVIEW_CONFIRM');
+			$email = new ArticleMailTemplate($reviewerSubmission, null, $decline?'REVIEW_DECLINE':'REVIEW_CONFIRM');
 			// Must explicitly set sender because we may be here on an access
 			// key, in which case the user is not technically logged in
 			$email->setFrom($reviewer->getEmail(), $reviewer->getFullName());
@@ -160,7 +160,7 @@ class ReviewerAction extends Action {
 		// no recommendation has previously been submitted.
 		if ($reviewAssignment->getRecommendation() === null || $reviewAssignment->getRecommendation === '') {
 			import('classes.mail.ArticleMailTemplate');
-			$email = new ArticleMailTemplate($reviewerSubmission, 'REVIEW_COMPLETE');
+			$email = new ArticleMailTemplate($reviewerSubmission, null, 'REVIEW_COMPLETE');
 			// Must explicitly set sender because we may be here on an access
 			// key, in which case the user is not technically logged in
 			$email->setFrom($reviewer->getEmail(), $reviewer->getFullName());

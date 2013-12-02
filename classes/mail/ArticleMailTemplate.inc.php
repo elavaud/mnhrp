@@ -24,8 +24,11 @@ class ArticleMailTemplate extends MailTemplate {
 
 	/** @var object the associated article */
 	var $article;
+        
+	/** @var object the associated article */
+	var $sectionDecision;
 
-	/** @var object the associated journal */
+        /** @var object the associated journal */
 	var $journal;
 
 	/** @var int Event type of this email */
@@ -48,16 +51,20 @@ class ArticleMailTemplate extends MailTemplate {
 	 * @param $ignorePostedData boolean optional
 	 * @see MailTemplate::MailTemplate()
 	 */
-	function ArticleMailTemplate($article, $emailKey = null, $locale = null, $enableAttachments = null, $journal = null, $includeSignature = true, $ignorePostedData = false) {
+	function ArticleMailTemplate($article, $sectionDecision = null, $emailKey = null, $locale = null, $enableAttachments = null, $journal = null, $includeSignature = true, $ignorePostedData = false) {
 		parent::MailTemplate($emailKey, $locale, $enableAttachments, $journal, $includeSignature, $ignorePostedData);
 		$this->article = $article;
+                if (!$sectionDecision){
+                    $sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
+                    $this->sectionDecision =& $sectionDecisionDao->getLastSectionDecision($article->getId());
+                } else $this->sectionDecision = $sectionDecision;
 	}
 
 	function assignParams($paramArray = array()) {
 		$article =& $this->article;
 		$journal = isset($this->journal)?$this->journal:Request::getJournal();
 		$sectionDao =& DAORegistry::getDAO('SectionDAO');
-		$section =& $sectionDao->getSection($article->getSectionId());
+		$section =& $sectionDao->getSection($this->sectionDecision->getSectionId());
 		$abstract =& $article->getLocalizedAbstract();
 		$paramArray['articleTitle'] = strip_tags($abstract->getScientificTitle());
 		$paramArray['articleId'] = $article->getProposalId(Locale::getLocale());
@@ -190,7 +197,7 @@ class ArticleMailTemplate extends MailTemplate {
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
 		$article =& $articleDao->getArticle($articleId);
 		$sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
-		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $article->getSectionId());
+		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $this->sectionDecision->getSectionId());
 		foreach ($sectionEditors as $sectionEditor){
 			$this->addRecipient($sectionEditor->getEmail(), $sectionEditor->getFullName());
 			$returner[] = $sectionEditor;			
@@ -204,7 +211,7 @@ class ArticleMailTemplate extends MailTemplate {
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
 		$article =& $articleDao->getArticle($articleId);
 		$sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
-		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $article->getSectionId());
+		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $this->sectionDecision->getSectionId());
 		foreach ($sectionEditors as $sectionEditor){
 			$this->addRecipient($sectionEditor->getEmail(), $sectionEditor->getFullName());
 			$returner[] =& $sectionEditor;			
@@ -218,7 +225,7 @@ class ArticleMailTemplate extends MailTemplate {
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
 		$article =& $articleDao->getArticle($articleId);
 		$sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
-		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $article->getSectionId());
+		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $this->sectionDecision->getSectionId());
 		foreach ($sectionEditors as $sectionEditor){
 			$this->addCc($sectionEditor->getEmail(), $sectionEditor->getFullName());
 			$returner[] =& $sectionEditor;			
@@ -232,7 +239,7 @@ class ArticleMailTemplate extends MailTemplate {
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
 		$article =& $articleDao->getArticle($articleId);
 		$sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
-		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $article->getSectionId());
+		$sectionEditors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $this->sectionDecision->getSectionId());
 		foreach ($sectionEditors as $sectionEditor){
 			$this->addCc($sectionEditor->getEmail(), $sectionEditor->getFullName());
 			$returner[] =& $sectionEditor;			

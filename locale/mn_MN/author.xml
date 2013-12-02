@@ -2,17 +2,17 @@
 <!DOCTYPE locale SYSTEM "../../lib/pkp/dtd/locale.dtd">
 
 <!--
-  * ojs2-devel/locale/en_US/author.xml
+  * ojs2-devel/locale/mn_MN/author.xml
   *
   * Copyright (c) 2003-2011 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
-  * Localization strings for the en_US (English) locale.
-  *
+  * Localization strings for the mn_MN (Mongolian) locale.
+  * Under translation
   * $Id$
   -->
 
-<locale name="en_US" full_name ="U.S. English">
+<locale name="mn_MN" full_name ="Mongolian">
 	<message key="author.submit">New Proposal</message>
 	<message key="author.track">Active Proposals</message>
 	<message key="author.competingInterests"><![CDATA[Competing&nbsp;interests <a target="_new" class="action" href="{$competingInterestGuidelinesUrl}">CI&nbsp;Policy</a>]]></message>
@@ -94,7 +94,8 @@
 	<message key="author.submit.coverageInstructions">Refers to geo-spatial location, chronological or historical coverage, and/or characteristics of research sample.</message>
 	<message key="author.submit.subjectClassInstructions">Use the hyperlinked classification system to select classification terms and, if appropriate, numbers.</message>
 	<message key="author.submit.languageInstructions"><![CDATA[English=en; French=fr; Spanish=es. <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php" target="_blank">Additional codes</a>.]]></message>
-    
+
+    <message key="author.submit.form.abstractRequiredFields">The scientific title, public title, background, objectives, study methods, expected outcomes and keywords are required, if multiple languages in each language.</message>    
 	<message key="author.submit.form.authorRequired">At least one investigator is required.</message>
 	<message key="author.submit.form.authorRequiredFields">The first name, last name, affiliation, phone number, and email address of each investigator is required.</message>
     <message key="author.submit.uploadWithdrawReport">Upload withdraw report</message>
@@ -112,6 +113,8 @@
         <message key="author.submit.form.studentInitiatedResearch">Please select Yes or No (Student Initiated Research).</message>
         <message key="author.submit.form.studentInstitution">Please specify the institution of the student.</message>
         <message key="author.submit.form.academicDegree">Please specify the academic degree of the student.</message>
+        <message key="author.submit.form.supervisorName">Please provide the name of the academic supervisor.</message>
+        <message key="author.submit.form.supervisorEmail">Please provide the email of the academic supervisor.</message>
         <message key="author.submit.form.ethicsCommittee">Please select an Ethics Committee.</message>
         <message key="author.submit.form.dataCollection">Please select the Data Collection.</message>
 	    <message key="author.submit.form.abstractRequired">Please enter the abstract of your research proposal.</message>
@@ -125,7 +128,7 @@
         <message key="author.submit.form.endDateRequired">Please enter the end date of your research proposal.</message>
         <message key="author.submit.form.fundsRequiredRequired">Please enter the funds required for your research.</message>
         <message key="author.submit.form.selectedCurrency">Please select the currency.</message>
-        <message key="author.submit.form.proposalCountryRequired">Please select at least one region for this proposal.</message>
+        <message key="author.submit.form.geoAreaRquired">Please select at least one geographical area for this proposal.</message>
         <message key="author.submit.form.withHumanSubjectsRequired">Please indicate if the research involves human subjects.</message>
         <message key="author.submit.form.proposalTypeRequired">Please enter the research proposal type.</message>
         <message key="author.submit.form.otherProposalTypeRequired">Please specify the other proposal type.</message>

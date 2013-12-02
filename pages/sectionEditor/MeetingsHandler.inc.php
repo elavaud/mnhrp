@@ -16,7 +16,7 @@ define('SECTION_EDITOR_ACCESS_REVIEW', 0x00002);
 
 // Filter section
 define('FILTER_SECTION_ALL', 0);
-	
+
 import('classes.submission.sectionEditor.SectionEditorAction');
 
 import('classes.handler.Handler');
@@ -38,9 +38,9 @@ class MeetingsHandler extends Handler {
 		// FIXME This is kind of evil
 		$page = Request::getRequestedPage();
 		if ( $page == 'sectionEditor' )
-		$this->addCheck(new HandlerValidatorRoles($this, true, null, null, array(ROLE_ID_SECTION_EDITOR)));
+                        $this->addCheck(new HandlerValidatorRoles($this, true, null, null, array(ROLE_ID_SECTION_EDITOR)));
 		elseif ( $page == 'editor' )
-		$this->addCheck(new HandlerValidatorRoles($this, true, null, null, array(ROLE_ID_EDITOR)));
+                        $this->addCheck(new HandlerValidatorRoles($this, true, null, null, array(ROLE_ID_EDITOR)));
 	
 	}
 

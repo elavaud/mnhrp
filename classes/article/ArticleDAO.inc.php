@@ -23,7 +23,9 @@ class ArticleDAO extends DAO {
 	
 	var $proposalAbstractDao;
 		
-	var $cache;
+	var $proposalDetailsDao;
+
+        var $cache;
 
 	function _cacheMiss(&$cache, $id) {
 		$article =& $this->getArticle($id, null, false);
@@ -47,7 +49,8 @@ class ArticleDAO extends DAO {
 		$this->authorDao =& DAORegistry::getDAO('AuthorDAO');
 		$this->riskAssessmentDao =& DAORegistry::getDAO('RiskAssessmentDAO');
 		$this->proposalAbstractDao =& DAORegistry::getDAO('ProposalAbstractDAO');
-	}
+		$this->proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
+        }
 
 	/**
 	 * Get a list of field names for which data is localized.
@@ -55,7 +58,7 @@ class ArticleDAO extends DAO {
 	 */
 	function getLocaleFieldNames() {
 
-		return array('studentInitiatedResearch', 'studentInstitution', 'academicDegree', 'coverPageAltText', 'showCoverPage', 'hideCoverPageToc', 'hideCoverPageAbstract', 'originalFileName', 'fileName', 'width', 'height', 'discipline', 'subjectClass', 'subject', 'coverageGeo', 'coverageChron', 'coverageSample', 'type', 'sponsor', 'startDate', 'endDate', 'fundsRequired', 'selectedCurrency', 'primarySponsor', 'secondarySponsors', 'multiCountryResearch', 'multiCountry', 'researchField', 'otherResearchField', 'nationwide', 'withHumanSubjects', 'proposalType', 'otherProposalType', 'proposalCountry', 'dataCollection', 'submittedAsPi', 'reviewedByOtherErc', 'otherErcDecision', 'rtoOffice', 'proposalId', 'reasonsForExemption', 'withdrawReason', 'withdrawComments', 'approvalDate', 'industryGrant', 'nameOfIndustry', 'internationalGrant', 'internationalGrantName', 'mohGrant', 'governmentGrant', 'governmentGrantName', 'universityGrant', 'selfFunding', 'otherGrant', 'specifyOtherGrant'
+		return array('coverPageAltText', 'showCoverPage', 'hideCoverPageToc', 'hideCoverPageAbstract', 'originalFileName', 'fileName', 'width', 'height', 'discipline', 'subjectClass', 'subject', 'coverageGeo', 'coverageChron', 'coverageSample', 'type', 'sponsor', 'fundsRequired', 'selectedCurrency', 'proposalId', 'withdrawReason', 'withdrawComments', 'industryGrant', 'nameOfIndustry', 'internationalGrant', 'internationalGrantName', 'mohGrant', 'governmentGrant', 'governmentGrantName', 'universityGrant', 'selfFunding', 'otherGrant', 'specifyOtherGrant'
                         );
 	}
 
@@ -101,12 +104,13 @@ class ArticleDAO extends DAO {
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	article_id = ?';
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	a.article_id = ? AND sdec2.section_decision_id IS NULL';
 		if ($journalId !== null) {
 			$sql .= ' AND a.journal_id = ?';
 			$params[] = $journalId;
@@ -144,10 +148,8 @@ class ArticleDAO extends DAO {
 	function _articleFromRow(&$article, &$row) {
 		
 		if (isset($row['article_id'])) $article->setId($row['article_id']);
-		if (isset($row['locale'])) $article->setLocale($row['locale']);
 		if (isset($row['user_id'])) $article->setUserId($row['user_id']);
 		if (isset($row['journal_id'])) $article->setJournalId($row['journal_id']);
-		if (isset($row['section_id'])) $article->setSectionId($row['section_id']);
 		if (isset($row['section_title'])) $article->setSectionTitle($row['section_title']);
 		if (isset($row['section_abbrev'])) $article->setSectionAbbrev($row['section_abbrev']);
 		if (isset($row['doi'])) $article->setStoredDOI($row['doi']);
@@ -174,9 +176,11 @@ class ArticleDAO extends DAO {
 
 		$article->setRiskAssessment($this->riskAssessmentDao->getRiskAssessmentByArticleId($row['article_id']));
 		
-		$article->setAbstract($this->proposalAbstractDao->getAbstractByArticleId($row['article_id'], Locale::getLocale()), Locale::getLocale());
+		$article->setAbstracts($this->proposalAbstractDao->getAbstractsByArticle($row['article_id']));
 		
-		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
+		$article->setProposalDetails($this->proposalDetailsDao->getProposalDetailsByArticleId($row['article_id']));
+
+                $sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 		$article->setProposalStatus($sectionDecisionDao->getProposalStatus($article->getId()));
 
 		$this->getDataObjectSettings('article_settings', 'article_id', $row['article_id'], $article);
@@ -193,15 +197,14 @@ class ArticleDAO extends DAO {
 		$article->stampModified();
 		$this->update(
 		sprintf('INSERT INTO articles
-				(locale, user_id, journal_id, section_id, language, comments_to_ed, citations, date_submitted, date_status_modified, last_modified, status, submission_progress, submission_file_id, revised_file_id, review_file_id, editor_file_id, pages, fast_tracked, hide_author, comments_status, doi)
+				(locale, user_id, journal_id, language, comments_to_ed, citations, date_submitted, date_status_modified, last_modified, status, submission_progress, submission_file_id, revised_file_id, review_file_id, editor_file_id, pages, fast_tracked, hide_author, comments_status, doi)
 				VALUES
-				(?, ?, ?, ?, ?, ?, ?, %s, %s, %s, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				(?, ?, ?, ?, ?, ?, %s, %s, %s, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 		$this->datetimeToDB($article->getDateSubmitted()), $this->datetimeToDB($article->getDateStatusModified()), $this->datetimeToDB($article->getLastModified())),
 		array(
 			$article->getLocale(),
 			$article->getUserId(),
 			$article->getJournalId(),
-			$article->getSectionId(),
 			$article->getLanguage(),
 			$article->getCommentsToEditor(),
 			$article->getCitations(),
@@ -242,7 +245,6 @@ class ArticleDAO extends DAO {
 		sprintf('UPDATE articles
 				SET	locale = ?,
 					user_id = ?,
-					section_id = ?,
 					language = ?,
 					comments_to_ed = ?,
 					citations = ?,
@@ -265,7 +267,6 @@ class ArticleDAO extends DAO {
 		array(
 			$article->getLocale(),
 			$article->getUserId(),
-			$article->getSectionId(),
 			$article->getLanguage(),
 			$article->getCommentsToEditor(),
 			$article->getCitations(),
@@ -296,29 +297,46 @@ class ArticleDAO extends DAO {
 			}
 		}
 
-		// update abstract for this article
-		$abstract =& $article->getAbstract(Locale::getLocale());
-		if ($this->proposalAbstractDao->abstractExists($article->getId(), Locale::getLocale())) {
-			$this->proposalAbstractDao->updateAbstract($abstract);
-		} elseif ($abstract->getArticleId() != null) {
-			$this->proposalAbstractDao->insertAbstract($abstract);
-		}
+		// update abstracts for this article
+		$abstracts =& $article->getAbstracts();
+		foreach ($abstracts as $abstract) {
+			if ($abstract->getAbstractId() > 0) {
+				$this->proposalAbstractDao->updateAbstract($abstract);
+			} else {
+				$this->proposalAbstractDao->insertAbstract($abstract);
+			}
+                }
 		
 		// update risk assessment for this article
 		$riskAssessment =& $article->getRiskAssessment();
 		if ($this->riskAssessmentDao->riskAssessmentExists($article->getId())) {
 			$this->riskAssessmentDao->updateRiskAssessment($riskAssessment);
-		} elseif ($riskAssessment->getArticleId() != null) {
+		} elseif ($riskAssessment->getArticleId() > 0) {
 			$this->riskAssessmentDao->insertRiskAssessment($riskAssessment);
 		}
-			
+                
+                // update proposalDetails for this article
+		$proposalDetails =& $article->getProposalDetails();
+		if ($this->proposalDetailsDao->proposalDetailsExists($article->getId())) {
+			$this->proposalDetailsDao->updateProposalDetails($proposalDetails);
+		} elseif ($proposalDetails->getArticleId() > 0) {
+			$this->proposalDetailsDao->insertProposalDetails($proposalDetails);
+		}
+
 		// Remove deleted authors
 		$removedAuthors = $article->getRemovedAuthors();
 		for ($i=0, $count=count($removedAuthors); $i < $count; $i++) {
 			$this->authorDao->deleteAuthorById($removedAuthors[$i], $article->getId());
 		}
 
-		// Update author sequence numbers
+		// Remove deleted abstracts
+		$removedAbstracts = $article->getRemovedAbstracts();
+		foreach ($removedAbstracts as $removedAbstract) {
+			$this->proposalAbstractDao->deleteAbstractsByLocaleAndArticleId($removedAbstract, $article->getId());
+		}
+
+                
+                // Update author sequence numbers
 		$this->authorDao->resequenceAuthors($article->getId());
 
 		$this->flushCache();
@@ -387,9 +405,11 @@ class ArticleDAO extends DAO {
 		$suppFileDao =& DAORegistry::getDAO('SuppFileDAO');
 		$suppFileDao->deleteSuppFilesByArticle($articleId);
 
-		$this->proposalAbstractDao->deleteAbstract($articleId);
+		$this->proposalAbstractDao->deleteAbstractsByArticleId($articleId);
 
 		$this->riskAssessmentDao->deleteRiskAssessment($articleId);
+
+                $this->proposalDetailsDao->deleteProposalDetails($articleId);
 
 		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 		$sectionDecisionDao->deleteSectionDecisionsByArticleId($articleId);
@@ -444,12 +464,13 @@ class ArticleDAO extends DAO {
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			' . ($journalId !== null ? 'WHERE a.journal_id = ?' : ''),
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			' . ($journalId !== null ? 'WHERE a.journal_id = ?' : '') . ' AND sdec2.section_decision_id IS NULL',
 		$params
 		);
 
@@ -498,12 +519,13 @@ class ArticleDAO extends DAO {
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.user_id = ?' .
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	a.user_id = ? AND sdec2.section_decision_id IS NULL' .
 		(isset($journalId)?' AND a.journal_id = ?':''),
 		$params
 		);
@@ -605,7 +627,10 @@ class ArticleDAO extends DAO {
 	/**
 	 * Removes articles from a section by section ID
 	 * @param $sectionId int
-	 */
+         * 
+         * Should de modified because no anymore section ID
+         * -> move to sectionDecisionDAO ?
+	 
 	function removeArticlesFromSection($sectionId) {
 		$this->update(
 			'UPDATE articles SET section_id = null WHERE section_id = ?', $sectionId
@@ -613,7 +638,8 @@ class ArticleDAO extends DAO {
 
 		$this->flushCache();
 	}
-
+        */
+        
 	/**
 	 * Get the ID of the last inserted article.
 	 * @return int
@@ -635,207 +661,6 @@ class ArticleDAO extends DAO {
 		unset($cache);
 	}
 
-	/*******************************************************************************************
-	 *  Added by:  Anne Ivy Mirasol
-	 *  Last updated: April 25, 2011
-	 ******************************************************************************************/
-
-	/**
-	 * Get all possible proposal types.
-	 * @param none
-	 * @return array proposalTypes
-	 */
-	function getProposalTypes() {
-		$locale = Locale::getLocale();
-		$filename = "lib/pkp/locale/".$locale."/proposaltypes.xml";
-
-		$xmlDao = new XMLDAO();
-		$data = $xmlDao->parseStruct($filename, array('proposaltypes', 'proposaltype'));
-
-		$proposalTypes = array();
-		if (isset($data['proposaltypes'])) {
-			$i=0;
-			foreach ($data['proposaltype'] as $proposalTypeData) {
-				$proposalType['code'] = $proposalTypeData['attributes']['code'];
-				$proposalType['name'] = $proposalTypeData['attributes']['name'];
-				array_push($proposalTypes, $proposalType);
-			}
-			$i++;
-		}
-
-
-		return $proposalTypes;
-
-	}
-	
-	/**********************************************************************
-	 * Get proposal type by code
-	 * Added by igm 9/28/11
-         * Last updated Jan 30 2012, to support multiple proposal types
-	 ***********************************************************************/
-	function getProposalType($code) {
-                $proposalTypeCodeArray = explode("+", $code);
-                $proposalTypeTextArray = array();
-                foreach($proposalTypeCodeArray as $ptypeCode) {
-                    $typeText = $this->getProposalTypeSingle($ptypeCode);
-                    array_push($proposalTypeTextArray, $typeText);
-                }
-                
-                $proposalTypeText = "";
-                foreach($proposalTypeTextArray as $i => $ptype) {
-                    $proposalTypeText = $proposalTypeText . $ptype;
-                    if($i < count($proposalTypeTextArray)-1) $proposalTypeText = $proposalTypeText . ", ";
-                }
-
-                return $proposalTypeText;
-	}
-
-        function getProposalTypeSingle($code) {
-            $proposalTypes = $this->getProposalTypes();
-            foreach($proposalTypes as $pt) {
-                if ($pt['code'] == $code) {
-                    return $pt['name'];
-                }
-            }
-            return $code;
-        }
-
-
-
-
-	/*******************************************************************************************
-	 *  Added by:  el
-	 ******************************************************************************************/
-
-	/**
-	 * Get all possible research fields.
-	 * @param none
-	 * @return array researchFields
-	 */
-	function getResearchFields() {
-		$locale = Locale::getLocale();
-		$filename = "lib/pkp/locale/".$locale."/researchFields.xml";
-
-		$xmlDao = new XMLDAO();
-		$data = $xmlDao->parseStruct($filename, array('researchFields', 'researchField'));
-
-		$researchFields = array();
-		if (isset($data['researchFields'])) {
-			$i=0;
-			foreach ($data['researchField'] as $researchFieldData) {
-				$researchField['code'] = $researchFieldData['attributes']['code'];
-				$researchField['name'] = $researchFieldData['attributes']['name'];
-				array_push($researchFields, $researchField);
-			}
-			$i++;
-		}
-
-
-		return $researchFields;
-
-	}
-	
-	/**********************************************************************
-	 * Get research field by code
-	 * Added by el
-	 ***********************************************************************/
-	function getResearchField($code) {
-                $researchFieldCodeArray = explode("+", $code);
-                $researchFieldTextArray = array();
-                foreach($researchFieldCodeArray as $rFieldCode) {
-                    $fieldText = $this->getResearchFieldSingle($rFieldCode);
-                    array_push($researchFieldTextArray, $fieldText);
-                }
-                
-                $researchFieldText = "";
-                foreach($researchFieldTextArray as $i => $rField) {
-                    $researchFieldText = $researchFieldText . $rField;
-                    if($i < count($researchFieldTextArray)-1) $researchFieldText = $researchFieldText . ", ";
-                }
-
-                return $researchFieldText;
-	}
-
-        function getResearchFieldSingle($code) {
-            $researchFields = $this->getResearchFields();
-            foreach($researchFields as $rf) {
-                if ($rf['code'] == $code) {
-                    return $rf['name'];
-                }
-            }
-            return $code;
-        }
-        
-
-	/*******************************************************************************************
-	 *  Added by:  el
-	 ******************************************************************************************/
-
-	/**
-	 * Get all agencies.
-	 * @param none
-	 * @return array agencies
-	 */
-	function getAgencies() {
-		$locale = Locale::getLocale();
-		$filename = "lib/pkp/locale/".$locale."/agencies.xml";
-
-		$xmlDao = new XMLDAO();
-		$data = $xmlDao->parseStruct($filename, array('agencies', 'agency'));
-
-		$agencies = array();
-		if (isset($data['agencies'])) {
-			$i=0;
-			foreach ($data['agency'] as $agencyData) {
-				$agency['code'] = $agencyData['attributes']['code'];
-				$agency['name'] = $agencyData['attributes']['name'];
-				array_push($agencies, $agency);
-			}
-			$i++;
-		}
-
-
-		return $agencies;
-
-	}
-	
-	/**********************************************************************
-	 * Get agency by code
-	 * Added by el
-	 ***********************************************************************/
-	function getAgency($code) {
-                $agencyCodeArray = explode("+", $code);
-                $agencyTextArray = array();
-                foreach($agencyCodeArray as $agencyCode) {
-                    $aText = $this->getAgencySingle($agencyCode);
-                    array_push($agencyTextArray, $aText);
-                }
-                
-                $agencyText = "";
-                foreach($agencyTextArray as $i => $agency) {
-                    $agencyText = $agencyText . $agency;
-                    if($i < count($agencyTextArray)-1) $agencyText = $agencyText . ", ";
-                }
-
-                return $agencyText;
-	}
-
-        function getAgencySingle($code) {
-            $agencies = $this->getAgencies();
-            foreach($agencies as $a) {
-                if ($a['code'] == $code) {
-                    return $a['name'];
-                }
-            }
-            return $code;
-        }
-
-	/*******************************************************************************************/
-	/*
-	 *  Added by:  Anne Ivy Mirasol
-	 *  Last updated: May 4, 2011
-	 *
-	 ******************************************************************************************/
 
 	/**
 	 * Get the number of submissions for the year.
@@ -968,20 +793,6 @@ class ArticleDAO extends DAO {
 		$this->flushCache();
 	}
 	
-	/**
-	 * Insert reasons for exemption in article_settings
-	 * @return articleId int
-	 * Added by aglet
-	 * Last Update: 6/21/2011
-	 */
-	function insertReasonsForExemption($article, $reasons) {
-		$this->update('INSERT INTO article_settings (article_id, locale, setting_name, setting_value, setting_type) values (?, ?, ?, ?, ?)', array($article->getId(), $article->getLocale(), 'reasonsForExemption', (int) $reasons, 'int')
-		);
-		
-		$this->flushCache();
-		return $article->getId();
-	}
-
 
         /**
          *  Added by:  Anne Ivy Mirasol
@@ -1000,33 +811,11 @@ class ArticleDAO extends DAO {
         }
  
 	
-	function searchProposalsPublic($query, $dateFrom, $dateTo, $country, $status = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function searchProposalsPublic($query, $dateFrom, $dateTo, $geoAreas, $status = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		
 		$locale = Locale::getLocale();
 
 		$params = array(
-				$locale,
-				'proposalCountry',
-				'proposalCountry',
-				$locale,
-				'startDate',
-				'startDate',
-				$locale,
-				'endDate',
-				'endDate',
-				$locale,
-				'primarySponsor',
-				'primarySponsor',
-				$locale,
-				'otherPrimarySponsor',
-				'otherPrimarySponsor',
-				$locale,
-				'multiCountryResearch',
-				'multiCountryResearch',
-				$locale,
-				'researchField',
-				'researchField',
-				$locale,
 				SUBMISSION_SECTION_DECISION_APPROVED,
 				SUBMISSION_SECTION_DECISION_EXEMPTED,
 				SUBMISSION_SECTION_DECISION_DONE
@@ -1037,42 +826,28 @@ class ArticleDAO extends DAO {
 		$sql = 'select distinct 
 				a.article_id, a.status,
 				a.date_submitted as date_submitted,
-				COALESCE(abl.clean_scientific_title, abpl.clean_scientific_title) AS scientific_title,
-				COALESCE(abl.keywords, abpl.keywords) AS keywords,
-				COALESCE(appc.setting_value, apc.setting_value) AS country,
-				COALESCE(asdl.setting_value, asdpl.setting_value) AS start_date,
-				COALESCE(aedl.setting_value, aedpl.setting_value) AS end_date,
-				COALESCE(apsl.setting_value, apspl.setting_value) AS primarysponsor,
-				COALESCE(aopsl.setting_value, aopspl.setting_value) AS otherprimarysponsor,
-				COALESCE(amcl.setting_value, amcpl.setting_value) AS multicountryresearch,
-				COALESCE(arfl.setting_value, arfpl.setting_value) AS researchfield
+				ab.clean_scientific_title AS scientific_title,
+				ab.keywords AS keywords,
+				ad.geo_areas AS geo_areas,
+				ad.start_date AS start_date,
+				ad.end_date AS end_date,
+				ad.primary_sponsor AS primarysponsor,
+				ad.multi_country AS multicountryresearch,
+				ad.research_field AS researchfield
 			FROM articles a
-				LEFT JOIN article_abstract abpl ON (abpl.article_id = a.article_id AND abpl.locale = a.locale)
-				LEFT JOIN article_abstract abl ON (abl.article_id = a.article_id AND abl.locale = ?)
-				LEFT JOIN article_settings appc ON (a.article_id = appc.article_id AND appc.setting_name = ? AND appc.locale = a.locale)
-				LEFT JOIN article_settings apc ON (a.article_id = apc.article_id AND apc.setting_name = ? AND apc.locale = ?)
-				LEFT JOIN article_settings asdl ON (a.article_id = asdl.article_id AND asdl.setting_name = ? AND asdl.locale = a.locale)
-				LEFT JOIN article_settings asdpl ON (a.article_id = asdpl.article_id AND asdpl.setting_name = ? AND asdpl.locale = ?)
-				LEFT JOIN article_settings aedl ON (a.article_id = aedl.article_id AND aedl.setting_name = ? AND aedl.locale = a.locale)
-				LEFT JOIN article_settings aedpl ON (a.article_id = aedpl.article_id AND aedpl.setting_name = ? AND aedpl.locale = ?)
-				LEFT JOIN article_settings apsl ON (a.article_id = apsl.article_id AND apsl.setting_name = ? AND apsl.locale = a.locale)
-				LEFT JOIN article_settings apspl ON (a.article_id = apspl.article_id AND apspl.setting_name = ? AND apspl.locale = ?)
-				LEFT JOIN article_settings aopsl ON (a.article_id = aopsl.article_id AND aopsl.setting_name = ? AND aopsl.locale = a.locale)
-				LEFT JOIN article_settings aopspl ON (a.article_id = aopspl.article_id AND aopspl.setting_name = ? AND aopspl.locale = ?)
-				LEFT JOIN article_settings amcl ON (a.article_id = amcl.article_id AND amcl.setting_name = ? AND amcl.locale = a.locale)
-				LEFT JOIN article_settings amcpl ON (a.article_id = amcpl.article_id AND amcpl.setting_name = ? AND amcpl.locale = ?)
-				LEFT JOIN article_settings arfl ON (a.article_id = arfl.article_id AND arfl.setting_name = ? AND arfl.locale = a.locale)
-				LEFT JOIN article_settings arfpl ON (a.article_id = arfpl.article_id AND arfpl.setting_name = ? AND arfpl.locale = ?)
+				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
+                                LEFT JOIN article_details ad ON (ad.article_id = a.article_id)
 				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
-			WHERE (sdec.decision = ? 
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+			WHERE sdec2.section_decision_id IS NULL AND (sdec.decision = ? 
 				OR sdec.decision = ? 
 				OR sdec.decision = ?)';
 		
 		if (!empty($query)) {
 			$searchSql .= ' AND (
-				LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) LIKE LOWER ("%'.$query.'%")
-				OR LOWER(COALESCE(abl.public_title, abpl.public_title)) LIKE LOWER ("%'.$query.'%")
-				OR LOWER(COALESCE(abl.keywords, abpl.keywords)) LIKE LOWER ("%'.$query.'%")
+				LOWER(ab.scientific_title) LIKE LOWER ("%'.$query.'%")
+				OR LOWER(ab.public_title) LIKE LOWER ("%'.$query.'%")
+				OR LOWER(ab.keywords) LIKE LOWER ("%'.$query.'%")
 			)';
 		}
 		
@@ -1080,26 +855,26 @@ class ArticleDAO extends DAO {
 		if (!empty($dateFrom) || !empty($dateTo)){
 			if (!empty($dateFrom)) {
 				$searchSql .= ' AND (
-					STR_TO_DATE(COALESCE(asdl.setting_value, asdpl.setting_value), "%d-%b-%Y") >= ' .
+					ad.start_date >= ' .
 					$this->datetimeToDB($dateFrom) .
 				')';
 			}
 			if (!empty($dateTo)) {
 				$searchSql .= ' AND (
-					STR_TO_DATE(COALESCE(asdl.setting_value, asdpl.setting_value), "%d-%b-%Y") <= ' .
+					ad.start_date <= ' .
 					$this->datetimeToDB($dateTo) .
 				')';
 			}
 		}
 		
-		if ($country != 'ALL') $searchSql .= ' AND LOWER(COALESCE(appc.setting_value, apc.setting_value)) LIKE LOWER ("%'.$country.'%")';
+		if ($geoAreas != 'ALL') $searchSql .= ' AND LOWER(ad.geo_areas) LIKE LOWER ("%'.$geoAreas.'%")';
 				
 		
 		if ($status == 1) $searchSql .= ' AND a.status = ' . STATUS_COMPLETED;
 		elseif ($status == 2) $searchSql .= ' AND a.status <> ' . STATUS_COMPLETED;
 
 		$result =& $this->retrieveRange(
-			$sql . ' ' . $searchSql . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
+			$sql . ' ' . $searchSql. ' GROUP BY a.article_id' . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
 			count($params)===1?array_shift($params):$params,
 			$rangeInfo
 		);
@@ -1124,14 +899,14 @@ class ArticleDAO extends DAO {
 		
 		$searchSqlBeg = "select distinct a.article_id, 
 						ab.keywords as keywords, 
-						ab.scientific_title as scientific_title, 
-						startdate.setting_value as start_date";
-		$searchSqlMid = " FROM articles a 
-						inner join section_decisions sd on (sd.article_id = a.article_id)
-						left join article_abstract ab on (ab.article_id = a.article_id)
-						left join article_settings region on (region.article_id = a.article_id and region.setting_name = 'proposalCountry')
-						left join article_settings startdate on (startdate.article_id = a.article_id and startdate.setting_name = 'startDate')";
-		$searchSqlEnd = " WHERE (sd.decision = '1' || sd.decision = '6' || sd.decision = '9')";
+                                                ab.clean_scientific_title AS scientific_title,
+						ad.start_date as start_date";
+		$searchSqlMid = " FROM articles a
+                                        LEFT JOIN article_details ad ON (ad.article_id = a.article_id)                    
+                                        LEFT JOIN article_student as ON (as.article_id = a.article_id)                    
+                                        LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                        LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)";
+		$searchSqlEnd = " WHERE sdec2.section_decision_id IS NULL AND (sd.decision = '1' || sd.decision = '6' || sd.decision = '9')";
 
 		if ($investigatorName == true || $investigatorAffiliation == true || $investigatorEmail == true){
 			$searchSqlMid .= " left join authors investigator on (investigator.submission_id = a.article_id and investigator.primary_contact = '1')";
@@ -1141,28 +916,23 @@ class ArticleDAO extends DAO {
 		}
 		
 		if ($researchField == true){
-			$searchSqlBeg .= ", researchfield.setting_value as researchfield";
-			$searchSqlMid .= " left join article_settings researchfield on (researchfield.article_id = a.article_id and researchfield.setting_name = 'researchField')";
+			$searchSqlBeg .= ", ad.research_fields as researchfield";
 		}
 		
 		if ($proposalType == true){
-			$searchSqlBeg .= ", proposaltype.setting_value as proposaltype";
-			$searchSqlMid .= " left join article_settings proposaltype on (proposaltype.article_id = a.article_id and proposaltype.setting_name = 'proposalType')";		
+			$searchSqlBeg .= ", ad.proposal_types as proposaltype";
 		}
 		
 		if ($duration == true){
-			$searchSqlBeg .= ", enddate.setting_value as end_date";
-			$searchSqlMid .= " left join article_settings enddate on (enddate.article_id = a.article_id and enddate.setting_name = 'endDate')";
+			$searchSqlBeg .= ", ad.end_date as end_date";
 		}
 		
 		if ($area == true){
-			$searchSqlBeg .= ", region.setting_value as country, multicountry.setting_value as multicountryresearch, nationwide.setting_value as nationwide";
-			$searchSqlMid .= " left join article_settings multicountry on (multicountry.article_id = a.article_id and multicountry.setting_name = 'multiCountryResearch') left join article_settings nationwide on (nationwide.article_id = a.article_id and nationwide.setting_name = 'nationwide')";		
+			$searchSqlBeg .= ", ad.geo_areas as geoareas, ad.multi_country as multicountryresearch, ad.nationwide as nationwide";
 		}
 				
 		if ($dataCollection == true){
-			$searchSqlBeg .= ", datacollection.setting_value as datacollection";
-			$searchSqlMid .= " left join article_settings datacollection on (datacollection.article_id = a.article_id and datacollection.setting_name = 'dataCollection')";
+			$searchSqlBeg .= ", ad.data_collection as datacollection";
 		}
 
 		if ($status == true){
@@ -1170,20 +940,13 @@ class ArticleDAO extends DAO {
 		}
 				
 		if ($studentResearch == true){
-			$searchSqlBeg .= ", studentinstitution.setting_value as studentinstitution, academicdegree.setting_value as academicdegree";
-			$searchSqlMid .= " left join article_settings studentinstitution on (studentinstitution.article_id = a.article_id and studentinstitution.setting_name = 'studentInstitution') left join article_settings academicdegree on (academicdegree.article_id = a.article_id and academicdegree.setting_name = 'academicDegree')";
+			$searchSqlBeg .= ", ad.student as studentresearch, as.institution as institution, as.degree as academicdegree";
 		}
 				
 		if ($primarySponsor == true){
-			$searchSqlBeg .= ", primarysponsor.setting_value as primarysponsor, otherprimarysponsor.setting_value as otherprimarysponsor";
-			$searchSqlMid .= " left join article_settings primarysponsor on (primarysponsor.article_id = a.article_id and primarysponsor.setting_name = 'primarySponsor') left join article_settings otherprimarysponsor on (otherprimarysponsor.article_id = a.article_id and otherprimarysponsor.setting_name = 'otherPrimarySponsor')";
+			$searchSqlBeg .= ", ad.primary_sponsor as primarysponsor";
 		}
-		
-		if ($fundsRequired == true){
-			$searchSqlBeg .= ", funds.setting_value as funds, currency.setting_value as currency";
-			$searchSqlMid .= " left join article_settings funds on (funds.article_id = a.article_id and funds.setting_name = 'fundsRequired') left join article_settings currency on (currency.article_id = a.article_id and currency.setting_name = 'selectedCurrency')";		
-		}
-								
+										
 		if ($dateSubmitted == true){
 			$searchSqlBeg .= ", a.date_submitted as date_submitted";
 		}	
@@ -1196,10 +959,10 @@ class ArticleDAO extends DAO {
 		
 		if ($fromDate != "--" || $toDate != "--"){
 			if ($fromDate != "--" && $fromDate != null) {
-				$searchSqlEnd .= " AND (STR_TO_DATE(startdate.setting_value, '%d-%b-%Y') >= " . $this->datetimeToDB($fromDate).")";
+				$searchSqlEnd .= " AND (ad.start_date >= " . $this->datetimeToDB($fromDate).")";
 			}
 			if ($toDate != "--" && $toDate != null) {
-				$searchSqlEnd .= " AND (STR_TO_DATE(startdate.setting_value, '%d-%b-%Y') <= " . $this->datetimeToDB($toDate).")";
+				$searchSqlEnd .= " AND (ad.end_date <= " . $this->datetimeToDB($toDate).")";
 			}
 		}
 		
@@ -1208,7 +971,7 @@ class ArticleDAO extends DAO {
 		if ($statusFilter == 1) $searchSqlEnd .= " AND a.status = 11";
 		else if ($statusFilter == 2) $searchSqlEnd .= " AND a.status <> 11";		
 		
-		$searchSql = $searchSqlBeg.$searchSqlMid.$searchSqlEnd;
+		$searchSql = $searchSqlBeg.$searchSqlMid.$searchSqlEnd.' GROUP BY a.article_id';
 		
 		$result =& $this->retrieve($searchSql);
 		
@@ -1233,26 +996,12 @@ class ArticleDAO extends DAO {
 		if (isset($row['article_id'])) $article->setId($row['article_id']);
 		if (isset($row['proposalid'])) $article->setProposalId($row['proposalid'], $article->getLocale());
 		if (isset($row['date_submitted'])) $article->setDateSubmitted($this->datetimeFromDB($row['date_submitted']));
-		if (isset($row['country'])) $article->setProposalCountry($row['country'], $article->getLocale());
 		if (isset($row['efname']) or isset($row['elname'])) $article->setPrimaryEditor($row['efname']." ".$row['elname']);
 		if (isset($row['afname']) or isset($row['alname'])) $article->setPrimaryAuthor($row['afname']." ".$row['alname']);
-		if (isset($row['start_date'])) $article->setStartDate($this->datetimeFromDB($row['start_date']), $article->getLocale());
-		if (isset($row['end_date'])) $article->setEndDate($this->datetimeFromDB($row['end_date']), $article->getLocale());
 		if (isset($row['decision'])) $article->setProposalStatus($row['decision']);
 		if (isset($row['date_decided'])) $article->setDateStatusModified($this->datetimeFromDB($row['date_decided']));
 		if (isset($row['email'])) $article->setAuthorEmail($row['email']);
-		if (isset($row['multicountryresearch'])) $article->setMultiCountryResearch($row['multicountryresearch'], $article->getLocale());
-		if (isset($row['nationwide'])) $article->setNationwide($row['nationwide'], $article->getLocale());
-		if (isset($row['primarysponsor'])) $article->setPrimarySponsor($row['primarysponsor'], $article->getLocale());
-		if (isset($row['otherprimarysponsor'])) $article->setOtherPrimarySponsor($row['otherprimarysponsor'], $article->getLocale());
-		if (isset($row['researchfield'])) $article->setResearchField($row['researchfield'], $article->getLocale());
 		if (isset($row['investigatoraffiliation'])) $article->setInvestigatorAffiliation($row['investigatoraffiliation']);
-		if (isset($row['proposaltype'])) $article->setProposalType($row['proposaltype'], $article->getLocale());
-		if (isset($row['datacollection'])) $article->setDataCollection($row['datacollection'], $article->getLocale());
-		if (isset($row['studentinstitution'])) $article->setStudentInstitution($row['studentinstitution'], $article->getLocale());
-		if (isset($row['academicdegree'])) $article->setAcademicDegree($row['academicdegree'], $article->getLocale());
-		if (isset($row['funds'])) $article->setFundsRequired($row['funds'], $article->getLocale());
-		if (isset($row['currency'])) $article->setSelectedCurrency($row['currency'], $article->getLocale());
 		
 		import('classes.article.ProposalAbstract');
 		$abstract = new ProposalAbstract();
@@ -1260,8 +1009,9 @@ class ArticleDAO extends DAO {
 		if (isset($row['scientific_title'])) $abstract->setScientificTitle($row['scientific_title']);
 		if (isset($row['keywords'])) $abstract->setKeywords($row['keywords']);
 		
-		$article->setAbstract($abstract, $article->getLocale());
-				
+		$article->setAbstracts($this->proposalAbstractDao->getAbstractsByArticle($row['article_id']));
+                $article->setProposalDetails($this->proposalDetailsDao->getProposalDetailsByArticleId($row['article_id']));
+
 		HookRegistry::call('ArticleDAO::_returnSearchArticleFromRow', array(&$article, &$row));
 	}
 

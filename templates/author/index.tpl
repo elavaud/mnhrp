@@ -32,7 +32,7 @@
 
 <br />
 <form method="post" name="submit" action="{url op="index" path=$pageToDisplay}">
-	<input type="hidden" name="sort" value="id"/>
+	<input type="hidden" name="sort" value="title"/>
 	<input type="hidden" name="sortDirection" value="ASC"/>
 	<select name="searchField" size="1" class="selectMenu" style="display: none;">
 		{html_options_translate options=$fieldOptions selected=$searchField}

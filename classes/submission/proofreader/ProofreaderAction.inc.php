@@ -61,7 +61,7 @@ class ProofreaderAction extends Action {
 		$ccs = array();
 
 		import('classes.mail.ArticleMailTemplate');
-		$email = new ArticleMailTemplate($sectionEditorSubmission, $mailType);
+		$email = new ArticleMailTemplate($sectionEditorSubmission, null, $mailType);
 
 		switch($mailType) {
 			case 'PROOFREAD_AUTHOR_REQUEST':

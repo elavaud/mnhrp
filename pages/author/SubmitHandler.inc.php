@@ -30,7 +30,7 @@ class SubmitHandler extends AuthorHandler {
 
 
     function resubmit($args, $request, $reviewType = STATUS_QUEUED) {
-		$articleDAO = DAORegistry::getDAO('ArticleDAO');
+	$articleDAO = DAORegistry::getDAO('ArticleDAO');
         $articleId = isset($args[0]) ? (int) $args[0] : 0;
 
         $sectionDecisionDao = DAORegistry::getDAO('SectionDecisionDAO');
@@ -38,18 +38,26 @@ class SubmitHandler extends AuthorHandler {
 
         $authorSubmissionDao =& DAORegistry::getDAO('AuthorSubmissionDAO');
         $authorSubmission = $authorSubmissionDao->getAuthorSubmission($articleId);
+        $lastDecisionValue = $lastDecision->getDecision();
 
-        if (
-        	$sectionDecisionDao->getProposalStatus($articleId) == PROPOSAL_STATUS_RETURNED 
-        	|| ($lastDecision->getDecision() == SUBMISSION_SECTION_DECISION_RESUBMIT 
-        		&& !($articleDAO->isProposalResubmitted($articleId))) 
-        	|| ($lastDecision->getDecision() == SUBMISSION_SECTION_DECISION_APPROVED 
-        		&& $authorSubmission->isSubmissionDue())
-        ) {
+        if ($lastDecisionValue == SUBMISSION_SECTION_DECISION_INCOMPLETE || $lastDecisionValue == SUBMISSION_SECTION_DECISION_RESUBMIT) {
+            $newSectionDecision =& new SectionDecision();
+            $newSectionDecision->setArticleId($articleId);
+            $newSectionDecision->setReviewType($lastDecision->getReviewType());
+            $newSectionDecision->setRound($lastDecision->getRound()+1);
+            $newSectionDecision->setSectionId($lastDecision->getSectionId());
+            $newSectionDecision->setDecision(0);
+            $newSectionDecision->setDateDecided(date(Core::getCurrentDate()));
+            
             $step = 2;
-            $articleDAO->changeArticleStatus($reviewType, $step);
-            $articleDAO->changeArticleProgress($articleId, $step);
-           
+            $authorSubmission->addDecision($newSectionDecision);    
+            $authorSubmission->setStatus(STATUS_QUEUED);
+            $authorSubmission->setSubmissionProgress($step);
+            $authorSubmission->setDateStatusModified(date(Core::getCurrentDate()));
+            $authorSubmission->setLastModified(date(Core::getCurrentDate()));
+                        
+            $authorSubmissionDao->updateAuthorSubmission($authorSubmission);
+            
             Request::redirect(null, null, 'submit', $step, array('articleId' => $articleId));
         }
         else
@@ -412,7 +420,7 @@ class SubmitHandler extends AuthorHandler {
 	 */
 	function validate($articleId = null, $step = false, $reason = null) {
 		parent::validate($reason);
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
+		$authorSubmissionDao =& DAORegistry::getDAO('AuthorSubmissionDAO');
 		$user =& Request::getUser();
 		$journal =& Request::getJournal();
 
@@ -424,7 +432,7 @@ class SubmitHandler extends AuthorHandler {
 
 		// Check that article exists for this journal and user and that submission is incomplete
 		if (isset($articleId)) {
-			$article =& $articleDao->getArticle((int) $articleId);
+			$article =& $authorSubmissionDao->getAuthorSubmission((int) $articleId);
 			if (!$article || $article->getUserId() !== $user->getId() || $article->getJournalId() !== $journal->getId() || ($step !== false && $step > $article->getSubmissionProgress())) {
 				Request::redirect(null, null, 'submit');
 			}

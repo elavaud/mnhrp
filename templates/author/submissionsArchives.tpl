@@ -1,7 +1,7 @@
 {**
- * toSubmit.tpl
+ * submissionsArchives.tpl
  *
- * Show the details of proposals to submit.
+ * Show the details of archived proposals.
  *
  * $Id$
  *}
@@ -17,26 +17,24 @@
 	</tr>
 	<tr><td class="headseparator" colspan="4">&nbsp;</td></tr>
 {iterate from=submissions item=submission}
-	{assign var="articleId" value=$submission->getArticleId()}
+	{assign var="status" value=$submission->getStatus()}
+
+    {assign var="lastDecision" value=$submission->getLastSectionDecision()}
+    {assign var="decisionValue" value=$lastDecision->getDecision()}
+
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-    {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+    {assign var="articleId" value=$submission->getArticleId()}
+    {assign var="proposalId" value=$submission->getLocalizedProposalId()}
+
 	<tr valign="top">
 		<td>{$proposalId|escape}</td>
 		<td>{$submission->getDateSubmitted()|date_format:$dateFormatShort}</td>
-		<td><a href="{url op="submission" path=$articleId}" class="action">{$abstract->getScientificTitle()|escape}</a></td>
-		{assign var="status" value=$submission->getSubmissionStatus()}
+		<td><a href="{url op="submission" path=$articleId}" class="action">{$abstract->getScientificTitle()|truncate:60:"..."|escape}</a></td>
 		<td align="right">
-        	{if $status==PROPOSAL_STATUS_WITHDRAWN}
+        	{if $status==STATUS_WITHDRAWN}
             	{translate key="submission.status.withdrawn"}
-            {elseif $status==PROPOSAL_STATUS_COMPLETED}
-                {translate key="submission.status.completed"}<br />
-            {elseif $status==PROPOSAL_STATUS_ARCHIVED || $status==PROPOSAL_STATUS_REVIEWED}
-                {assign var="decision" value=$submission->getMostRecentDecision()}
-            	{if $decision==SUBMISSION_SECTION_DECISION_DECLINED}
-                    {translate key="submission.status.declined"}
-                {elseif $decision==SUBMISSION_SECTION_DECISION_EXEMPTED}
-                    {translate key="submission.status.exempted"}
-                 {/if}
+            {elseif $status==STATUS_ARCHIVED || $status==STATUS_REVIEWED || $status==STATUS_COMPLETED}
+            	{translate key=$lastDecision->getReviewStatusKey()}
             {else}
             	BUG!
 			{/if}

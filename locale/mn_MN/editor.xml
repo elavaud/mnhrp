@@ -54,6 +54,7 @@
 	<message key="editor.article.enterRecommendation">Enter Recommendation</message>
 	<message key="editor.article.enterReviewerRecommendation">Enter Reviewer Recommendation</message>
     <message key="editor.article.ethicsCommittee">Ethics Review Committee</message>
+    <message key="editor.article.committee">Review Committee</message>
 	<message key="editor.article.exemption.alreadyExists">The data (including health-care records and specimens) being studied already exist and are either publicly available or are recorded by the investigator in such a manner as to be unidentifiable.</message>
 	<message key="editor.article.exemption.instructions">(Please check all that apply)</message>
 	<message key="editor.article.exemption.limitedObservation">The intervention is limited to the observation of public behavior.</message>
@@ -62,6 +63,8 @@
 	<message key="editor.article.exemption.publicOfficials">Public officials are interviewed in their official capacity on issues that are in the public domain.</message>
 	<message key="editor.article.exemption.registered">Proposals registered in the Health Research Portal when the study has been reviewed and approved by one of the committee.</message>
 	<message key="editor.article.finalDecision">Final Decision</message>
+	<message key="editor.article.finalDecisionFile">Decision File</message>
+	<message key="editor.article.finalDecisionFileInstruct">Click on the file to upload the final decision of this committee</message>
 	<message key="editor.article.hideCoverPageAbstract">Do not display cover image in article abstract view.</message>
 	<message key="editor.article.hideCoverPageToc">Do not display cover image thumbnail in table of contents.</message>
 	<message key="editor.article.hideTocAuthorDescription">Omit author names from issue table of contents</message>
@@ -79,6 +82,8 @@
 	<message key="editor.article.numberOfWeeks">Number of Weeks</message>
     <message key="editor.article.payment.paymentConfirm">Please confirm the payment of the proposal review fee.</message>
     <message key="editor.article.payment.publicationFeeNotPaid">Publication Fee not paid. To schedule item for publication notify author to pay fee or waive fee.</message>
+	<message key="editor.article.peerReviews">Peer Reviews</message>
+	<message key="editor.article.peerReviewsInstruct">Peer reviews during this decision</message>
 	<message key="editor.article.proofreaderComments">Proofreader Comments</message>
 	<message key="editor.article.proposalResubmitted">(Resubmitted proposal)</message>
 	<message key="editor.article.rateReviewer">Reviewer rating</message>

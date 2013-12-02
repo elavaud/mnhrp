@@ -150,7 +150,7 @@ class ArticleHandler extends Handler {
 			// FIXME: We only display the edited raw citations right now. We also want
 			// to allow for generated citations to be displayed here (including a way for
 			// the reader to choose any of the installed citation styles for output), see #5938.
-			$citationDao =& DAORegistry::getDAO('CitationDAO'); /* @var $citationDao CitationDAO */
+			$citationDao =& DAORegistry::getDAO('CitationDAO'); // @var $citationDao CitationDAO 
 			$citationFactory =& $citationDao->getObjectsByAssocId(ASSOC_TYPE_ARTICLE, $article->getId());
 			$templateMgr->assign('citationFactory', $citationFactory);
 
@@ -228,7 +228,8 @@ class ArticleHandler extends Handler {
 
 		$templateMgr->display('article/article.tpl');
 	}
-
+        
+        
 	/**
 	 * Article interstitial page before PDF is shown
 	 * @param $args array

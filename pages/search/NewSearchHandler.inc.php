@@ -261,7 +261,7 @@ class NewSearchHandler extends Handler {
 				} elseif ($index == 'proposal_type') {
 					$columns[$index] = $result->getLocalizedProposalTypeText();
 				} elseif ($index == "duration") {
-					$columns[$index] = date("d M Y", strtotime($result->getStartDate()))." to ".date("d M Y", strtotime($result->getEndDate()));
+					$columns[$index] = date("d M Y", strtotime($result->getLocalizedStartDate()))." to ".date("d M Y", strtotime($result->getLocalizedEndDate()));
 				} elseif ($index == 'area') {
 					if ($result->getLocalizedMultiCountryResearch() == "Yes") $columns[$index] = "Multi-country Research";
 					elseif ($result->getLocalizedNationwide() != "No") $columns[$index] = "Nationwide Research";

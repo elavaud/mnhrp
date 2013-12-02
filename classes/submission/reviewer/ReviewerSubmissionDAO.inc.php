@@ -61,13 +61,14 @@ class ReviewerSubmissionDAO extends DAO {
 			FROM	articles a
 				LEFT JOIN section_decisions sd ON (a.article_id = sd.article_id)
 				LEFT JOIN review_assignments r ON (sd.section_decision_id = r.decision_id)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
 				LEFT JOIN users u ON (r.reviewer_id = u.user_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	r.review_id = ?',
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	r.review_id = ? AND sdec2.section_decision_id IS NULL',
 			array(
 				'title',
 				$primaryLocale,
@@ -106,12 +107,13 @@ class ReviewerSubmissionDAO extends DAO {
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.article_id = ?',
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	a.article_id = ? AND sdec2.section_decision_id IS NULL',
 			array(
 				'title',
 				$primaryLocale,
@@ -231,21 +233,22 @@ class ReviewerSubmissionDAO extends DAO {
 		$sql = 'SELECT	a.*,
 				r.*,
 				u.first_name, u.last_name,
-				COALESCE(abl.clean_scientific_title, abpl.clean_scientific_title) AS submission_title,
+				ab.clean_scientific_title AS submission_title,
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
 				LEFT JOIN section_decisions sd ON (a.article_id = sd.article_id)
 				LEFT JOIN review_assignments r ON (sd.section_decision_id = r.decision_id)
-				LEFT JOIN article_abstract abpl ON (abpl.article_id = a.article_id AND abpl.locale = a.locale)
-				LEFT JOIN article_abstract abl ON (abl.article_id = a.article_id AND abl.locale = ?)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
+				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
 				LEFT JOIN users u ON (r.reviewer_id = u.user_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.journal_id = ? AND
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	a.journal_id = ? AND 
+                                sdec2.section_decision_id IS NULL AND
 				r.reviewer_id = ? AND
 				r.decision_id = ? AND
 				r.date_notified IS NOT NULL';
@@ -255,10 +258,10 @@ class ReviewerSubmissionDAO extends DAO {
 		} else {
 			$sql .= ' AND (r.date_completed IS NOT NULL OR r.cancelled = 1 OR r.declined = 1)';
 		}
+                $sql .= ' GROUP BY a.article_id';
 		$result =& $this->retrieve(
 			$sql,
 			array(
-				$locale,
 				'title', // Section title
 				$primaryLocale,
 				'title',
@@ -294,7 +297,6 @@ class ReviewerSubmissionDAO extends DAO {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$locale = Locale::getLocale();
 		$params = array(
-				$locale,
 				'proposalCountry',
 				'proposalCountry',
 				$locale,
@@ -305,12 +307,12 @@ class ReviewerSubmissionDAO extends DAO {
 		if (!empty($search)) switch ($searchField) {
 			case SUBMISSION_FIELD_TITLE:
 				if ($searchMatch === 'is') {
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) = LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) = LOWER(?)';
 				} elseif ($searchMatch === 'contains') {
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) LIKE LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
 					$search = '%' . $search . '%';
 				} else { // $searchMatch === 'startsWith'
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) LIKE LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
 					$search = $search . '%';
 				}
 				$params[] = $search;
@@ -348,13 +350,12 @@ class ReviewerSubmissionDAO extends DAO {
 		$sql = 'SELECT	DISTINCT a.*,
 				r.*,
 				u.first_name, u.last_name,
-				COALESCE(abl.clean_scientific_title, abpl.clean_scientific_title) AS submission_title
+				ab.clean_scientific_title AS submission_title
 			FROM	articles a
 				LEFT JOIN section_decisions sd ON (a.article_id = sd.article_id)
 				LEFT JOIN authors aa ON (aa.submission_id = a.article_id AND aa.primary_contact = 1)
 				LEFT JOIN review_assignments r ON (sd.section_decision_id = r.decision_id)
-				LEFT JOIN article_abstract abpl ON (abpl.article_id = a.article_id AND abpl.locale = a.locale)
-				LEFT JOIN article_abstract abl ON (abl.article_id = a.article_id AND abl.locale = ?)
+				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
 				LEFT JOIN article_settings appc ON (a.article_id = appc.article_id AND appc.setting_name = ? AND appc.locale = a.locale)
 				LEFT JOIN article_settings apc ON (a.article_id = apc.article_id AND apc.setting_name = ? AND apc.locale = ?)
 				LEFT JOIN users u ON (r.reviewer_id = u.user_id)
@@ -370,7 +371,7 @@ class ReviewerSubmissionDAO extends DAO {
 		}
 		
 		$result =& $this->retrieveRange(
-			$sql . ' ' . $searchSql . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
+			$sql . ' ' . $searchSql. ' GROUP BY a.article_id' . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
 			count($params)===1?array_shift($params):$params,
 			$rangeInfo
 		);
@@ -392,7 +393,6 @@ class ReviewerSubmissionDAO extends DAO {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$locale = Locale::getLocale();
 		$params = array(
-				$locale,
 				$journalId,
 				$reviewerId);
 		$searchSql = '';
@@ -400,12 +400,12 @@ class ReviewerSubmissionDAO extends DAO {
 		if (!empty($search)) switch ($searchField) {
 			case SUBMISSION_FIELD_TITLE:
 				if ($searchMatch === 'is') {
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) = LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) = LOWER(?)';
 				} elseif ($searchMatch === 'contains') {
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) LIKE LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
 					$search = '%' . $search . '%';
-				} else { // $searchMatch === 'startsWith'
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) LIKE LOWER(?)';
+				} else {
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
 					$search = $search . '%';
 				}
 				$params[] = $search;
@@ -416,11 +416,10 @@ class ReviewerSubmissionDAO extends DAO {
 		}
 		
 		$sql = 'SELECT	DISTINCT a.*,
-				COALESCE(abl.clean_scientific_title, abpl.clean_scientific_title) AS submission_title
+				ab.clean_scientific_title AS submission_title
 			FROM	articles a
 				LEFT JOIN authors aa ON (aa.submission_id = a.article_id AND aa.primary_contact = 1)
-				LEFT JOIN article_abstract abpl ON (abpl.article_id = a.article_id AND abpl.locale = a.locale)
-				LEFT JOIN article_abstract abl ON (abl.article_id = a.article_id AND abl.locale = ?)
+				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
 				LEFT JOIN meeting_submissions ms ON (a.article_id = ms.submission_id)
 				LEFT JOIN meeting_attendance ma ON (ms.meeting_id = ma.meeting_id)
 			WHERE	a.journal_id = ? AND
@@ -428,7 +427,7 @@ class ReviewerSubmissionDAO extends DAO {
 				AND EXISTS (SELECT NULL FROM erc_reviewers er WHERE er.user_id = ma.user_id)';	
 		
 		$result =& $this->retrieveRange(
-			$sql . ' ' . $searchSql . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
+			$sql . ' ' . $searchSql. ' GROUP BY a.article_id' . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
 			count($params)===1?array_shift($params):$params,
 			$rangeInfo
 		);
@@ -472,7 +471,6 @@ class ReviewerSubmissionDAO extends DAO {
 			FROM	articles a
 				LEFT JOIN section_decisions sd ON (a.article_id = sd.article_id)
 				LEFT JOIN review_assignments r ON (sd.section_decision_id = r.decision_id)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
 				LEFT JOIN users u ON (r.reviewer_id = u.user_id)
 			WHERE	a.journal_id = ? AND
 				r.reviewer_id = ? AND
@@ -507,7 +505,6 @@ class ReviewerSubmissionDAO extends DAO {
 
 		$sql = 'SELECT	r.date_completed, r.declined, r.cancelled, sd.decision
 			FROM	articles a
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
 				LEFT JOIN section_decisions sd ON (sd.article_id = a.article_id)
 				LEFT JOIN review_assignments r ON (sd.section_decision_id = r.decision_id)
 				LEFT JOIN users u ON (r.reviewer_id = u.user_id)

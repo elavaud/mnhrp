@@ -21,6 +21,23 @@ class ProposalAbstract extends DataObject {
 	}
 
 	/**
+	 * Get abstract id.
+	 * @return int
+	 */
+	function getAbstractId() {
+		return $this->getData('abstractId');
+	}
+
+	/**
+	 * Set abstract id.
+	 * @param $abstractId int
+	 */
+	function setAbstractId($abstractId) {
+		return $this->setData('abstractId', $abstractId);
+	}
+
+        
+        /**
 	 * Get article id.
 	 * @return int
 	 */

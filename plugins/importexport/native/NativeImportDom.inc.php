@@ -644,7 +644,6 @@ class NativeImportDom {
 		$article->setLocale($journalPrimaryLocale); // FIXME in bug #5543
 		$article->setJournalId($journal->getId());
 		$article->setUserId($user->getId());
-		$article->setSectionId($section->getId());
 		$article->setStatus(STATUS_PUBLISHED);
 		$article->setSubmissionProgress(0);
 		$article->setDateSubmitted(Core::getCurrentDate());

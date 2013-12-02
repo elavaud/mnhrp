@@ -67,8 +67,8 @@ class SubmissionReviewHandler extends ReviewerHandler {
 		$articleFileDao =& DAORegistry::getDao('ArticleFileDAO');
 		$templateMgr->assign_by_ref('previousFiles', $articleFileDao->getPreviousFilesByArticleId($submission->getId()));
 
-        $templateMgr->assign_by_ref('riskAssessment', $submission->getRiskAssessment());
-        $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
+                $templateMgr->assign_by_ref('riskAssessment', $submission->getRiskAssessment());
+                $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
             			
 		$templateMgr->assign_by_ref('journal', $journal);
 		$templateMgr->assign_by_ref('reviewGuidelines', $journal->getLocalizedSetting('reviewGuidelines'));
@@ -87,8 +87,6 @@ class SubmissionReviewHandler extends ReviewerHandler {
 	function confirmReview($args = null) {
 		$reviewId = Request::getUserVar('reviewId');
 		$declineReview = Request::getUserVar('declineReview');
-
-		$reviewerSubmissionDao =& DAORegistry::getDAO('ReviewerSubmissionDAO');
 
 		$this->validate($reviewId);
 		$reviewerSubmission =& $this->submission;
@@ -115,7 +113,7 @@ class SubmissionReviewHandler extends ReviewerHandler {
 		$this->validate($reviewId);
 		$reviewerSubmission =& $this->submission;
 		
-		$meetingDao =& DAORegistry::getDAO('ReviewerSubmissionDAO');
+		$reviewerSubmissionDao =& DAORegistry::getDAO('ReviewerSubmissionDAO');
 		
 		$reviewerSubmission->setIsAttending(Request::getUserVar('isAttending'));
 		$reviewerSubmission->setRemarks(Request::getUserVar('remarks'));				

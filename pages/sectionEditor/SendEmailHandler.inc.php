@@ -24,6 +24,7 @@ class SendEmailHandler extends Handler {
 	 * Constructor
 	 **/
 	function SendEmailHandler() {
+            
 		parent::Handler();
 		
 		$this->addCheck(new HandlerValidatorJournal($this));

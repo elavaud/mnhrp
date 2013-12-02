@@ -78,17 +78,19 @@ class SectionDecisionDAO extends DAO{
 		$this->update(
 			sprintf('
 				INSERT INTO section_decisions 
-					(article_id, review_type, round, section_id, decision, date_decided) 
+					(article_id, review_type, round, section_id, decision, comments, date_decided) 
 				VALUES 
-					(?, ?, ?, ?, ?, %s)', 
+					(?, ?, ?, ?, ?, ?, %s)', 
 			$this->datetimeToDB($sectionDecision->getDateDecided())), 
 			array(
 				(int) $sectionDecision->getArticleId(),
 				(int) $sectionDecision->getReviewType(),
 				(int) $sectionDecision->getRound(),
 				(int) $sectionDecision->getSectionId(),
-				(int) $sectionDecision->getDecision()
-			)
+				(int) $sectionDecision->getDecision(),
+				$sectionDecision->getComments()
+
+                       )
 		);
 	
 		return true;
@@ -102,10 +104,10 @@ class SectionDecisionDAO extends DAO{
 		$this->update(
 			sprintf('
 				UPDATE section_decisions SET
-					review_type = ?, round = ?, section_id = ?, decision = ?, date_decided = %s
+					review_type = ?, round = ?, section_id = ?, decision = ?, comments = ?, date_decided = %s
 				WHERE section_decision_id = ?',
 			$this->datetimeToDB($sectionDecision->getDateDecided())),
-			array($sectionDecision->getReviewType(), $sectionDecision->getRound(), $sectionDecision->getSectionId(), $sectionDecision->getDecision(), $sectionDecision->getId())
+			array($sectionDecision->getReviewType(), $sectionDecision->getRound(), $sectionDecision->getSectionId(), $sectionDecision->getDecision(), $sectionDecision->getComments(), $sectionDecision->getId())
 		);
 
 		foreach ($sectionDecision->getReviewAssignments() as $reviewAssignment) {
@@ -161,7 +163,8 @@ class SectionDecisionDAO extends DAO{
 		$sectionDecision->setRound($row['round']);
 		$sectionDecision->setSectionId($row['section_id']);
 		$sectionDecision->setDecision($row['decision']);
-		$sectionDecision->setDateDecided($this->datetimeFromDB($row['date_decided']));
+		$sectionDecision->setComments($row['comments']);
+                $sectionDecision->setDateDecided($this->datetimeFromDB($row['date_decided']));
 
 		$sectionDecision->setReviewAssignments($this->reviewAssignmentDao->getReviewAssignmentsByDecisionId($row['section_decision_id']));
 

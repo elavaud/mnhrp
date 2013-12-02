@@ -123,7 +123,7 @@ class AuthorAction extends Action {
 
 		$user =& Request::getUser();
 		import('classes.mail.ArticleMailTemplate');
-		$email = new ArticleMailTemplate($authorSubmission, 'COPYEDIT_AUTHOR_COMPLETE');
+		$email = new ArticleMailTemplate($authorSubmission, null, 'COPYEDIT_AUTHOR_COMPLETE');
 
 		$copyeditor = $authorSubmission->getUserBySignoffType('SIGNOFF_COPYEDITING_INITIAL');
 
@@ -329,15 +329,8 @@ class AuthorAction extends Action {
 		import('classes.mail.ArticleMailTemplate');
 		$email = new ArticleMailTemplate($authorSubmission);
 
-			// Removed by EL on February 17th 2013
-			// No edit assignments anymore
-			//$edit Assignments = $authorSubmission->get Edit Assignments();
-			//$editors = array();
-			//foreach ($edit Assignments as $edit Assignment) {
-				//array_push($editors, $userDao->getUser($edit Assignment->getEditorId()));
-			//}
-			$sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
-			$editors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $authorSubmission->getSectionId());	
+		$sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
+		$editors =& $sectionEditorsDao->getEditorsBySectionId($journal->getId(), $authorSubmission->getSectionId());	
 
 		if ($send && !$email->hasErrors()) {
 			HookRegistry::call('AuthorAction::emailEditorDecisionComment', array(&$authorSubmission, &$email));

@@ -187,7 +187,7 @@ $(document).ready(function() {
 </form>
 </div>
 
-{if !$reviewAssignment->getDateCompleted() &&  ($reviewAssignment->getDeclined() != 1) && (!$reviewAssignment->getCancelled() || ($reviewAssignment->getCancelled() == 0)) && (($submission->getMostRecentDecision() == 7) || ($submission->getMostRecentDecision() == 8))}
+{if !$reviewAssignment->getDateCompleted() &&  ($reviewAssignment->getDeclined() != 1) && (!$reviewAssignment->getCancelled() || ($reviewAssignment->getCancelled() == 0)) && (($submission->getMostRecentDecisionValue() == 7) || ($submission->getMostRecentDecisionValue() == 8))}
 <div class="separator"></div>
 
 <div id="reviewSteps">

@@ -26,7 +26,7 @@
 {iterate from=submissions1 item=submission}	
 	{assign var="status" value=$submission->getSubmissionStatus()}
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-        {assign var="decision" value=$submission->getMostRecentDecision() }
+        {assign var="decision" value=$submission->getMostRecentDecisionValue() }
 
         {if ($status!=PROPOSAL_STATUS_DRAFT && $status!=PROPOSAL_STATUS_REVIEWED && $status != PROPOSAL_STATUS_EXEMPTED) || $decision==SUBMISSION_SECTION_DECISION_RESUBMIT}		
 			{assign var="count" value=$count+1}
@@ -83,7 +83,7 @@
 {iterate from=submissions2 item=submission}	
 	{assign var="status" value=$submission->getSubmissionStatus()}
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-     {assign var="decision" value=$submission->getMostRecentDecision() }
+     {assign var="decision" value=$submission->getMostRecentDecisionValue() }
 
         {if ($status==PROPOSAL_STATUS_REVIEWED && $decision==SUBMISSION_SECTION_DECISION_APPROVED)}
         	{assign var="count" value=$count+1}		
@@ -137,7 +137,7 @@
 {iterate from=submissions3 item=submission}	
 	{assign var="status" value=$submission->getSubmissionStatus()}
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-        {assign var="decision" value=$submission->getMostRecentDecision() }
+        {assign var="decision" value=$submission->getMostRecentDecisionValue() }
 
         {if ($status==PROPOSAL_STATUS_REVIEWED && $decision==SUBMISSION_SECTION_DECISION_DECLINED)}		
 			
@@ -191,7 +191,7 @@
 {iterate from=submissions4 item=submission}	
 	{assign var="status" value=$submission->getSubmissionStatus()}
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-        {assign var="decision" value=$submission->getMostRecentDecision() }
+        {assign var="decision" value=$submission->getMostRecentDecisionValue() }
 
         {if $status==PROPOSAL_STATUS_EXEMPTED}		
 			

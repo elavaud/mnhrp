@@ -26,7 +26,8 @@ class JournalSetupStep3Form extends JournalSetupForm {
 			array(
 				'authorGuidelines' => 'string',
 				'submissionChecklist' => 'object',
-				'copyrightNotice' => 'string',
+                                'abstractLocales' => 'array',
+                                'copyrightNotice' => 'string',
 				'includeCreativeCommons' => 'bool',
 				'copyrightNoticeAgree' => 'bool',
 				'requireAuthorCompetingInterests' => 'bool',
@@ -119,7 +120,7 @@ class JournalSetupStep3Form extends JournalSetupForm {
 			}
 			$templateMgr->assign_by_ref('metaCitationOutputFilters', $metaCitationOutputFilters);
 		}
-
+                
 		parent::display($request, $dispatcher);
 	}
 }

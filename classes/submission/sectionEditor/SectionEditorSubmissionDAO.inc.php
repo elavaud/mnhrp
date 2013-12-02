@@ -63,25 +63,10 @@ class SectionEditorSubmissionDAO extends DAO {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$locale = Locale::getLocale();
 		$result =& $this->retrieve(
-			'SELECT	a.*,
-				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
-				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
+			'SELECT	a.*
 			FROM	articles a
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
 			WHERE	a.article_id = ?',
 			array(
-				'title',
-				$primaryLocale,
-				'title',
-				$locale,
-				'abbrev',
-				$primaryLocale,
-				'abbrev',
-				$locale,
 				$articleId
 			)
 		);
@@ -168,7 +153,6 @@ class SectionEditorSubmissionDAO extends DAO {
 			$article =& $this->articleDao->getArticle($sectionEditorSubmission->getArticleId());
 
 			// Only update fields that can actually be edited.
-			$article->setSectionId($sectionEditorSubmission->getSectionId());
 			$article->setReviewFileId($sectionEditorSubmission->getReviewFileId());
 			$article->setEditorFileId($sectionEditorSubmission->getEditorFileId());
 			$article->setStatus($sectionEditorSubmission->getStatus());
@@ -195,27 +179,14 @@ class SectionEditorSubmissionDAO extends DAO {
 		$sectionEditorSubmissions = array();
 
 		$result =& $this->retrieve(
-			'SELECT	a.*,
-				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
-				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
+			'SELECT	a.*
 			FROM	articles a
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.journal_id = ?
-				AND a.section_id = ?
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+				LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+                        WHERE	sdec2.section_decision_id IS NULL AND a.journal_id = ?
+				AND sdec.section_id = ?
 				AND a.status = ?',
 			array(
-				'title',
-				$primaryLocale,
-				'title',
-				$locale,
-				'abbrev',
-				$primarylocale,
-				'abbrev',
-				$locale,
 				$journalId,
 				$sectionId,
 				$status
@@ -236,29 +207,8 @@ class SectionEditorSubmissionDAO extends DAO {
 	/**
 	 * Retrieve unfiltered section editor submissions
 	 */
-	function &_getUnfilteredSectionEditorSubmissions($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $additionalWhereSql = '', $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
-		$primaryLocale = Locale::getPrimaryLocale();
-		$locale = Locale::getLocale();
-
+	function &_getUnfilteredSectionEditorSubmissions($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $additionalWhereSql = '', $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$params = array(
-			ASSOC_TYPE_ARTICLE,
-			'SIGNOFF_COPYEDITING_FINAL',
-			ASSOC_TYPE_ARTICLE,
-			'SIGNOFF_PROOFREADING_PROOFREADER',
-			ASSOC_TYPE_ARTICLE,
-			'SIGNOFF_LAYOUT',
-			'title', // Section title
-			$primaryLocale,
-			'title',
-			$locale,
-			'abbrev', // Section abbrev
-			$primaryLocale,
-			'abbrev',
-			$locale,
-			$locale,
-			'proposalCountry',
-			'proposalCountry',
-			$locale,
 			$journalId,
 			$sectionId
 		);
@@ -268,14 +218,15 @@ class SectionEditorSubmissionDAO extends DAO {
 
 		if (!empty($search)) switch ($searchField) {
 			case SUBMISSION_FIELD_TITLE:
+
 				if ($searchMatch === 'is') {
-					$searchSql = ' AND LOWER(abl.setting_value) = LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) = LOWER(?)';
 				} elseif ($searchMatch === 'contains') {
-					$searchSql = ' AND LOWER(abl.setting_value) LIKE LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
 					$search = '%' . $search . '%';
-				} else { // $searchMatch === 'startsWith'
-					$searchSql = ' AND LOWER(abl.setting_value) LIKE LOWER(?)';
-					$search = '%' . $search . '%';
+				} else {
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
+					$search = $search . '%';
 				}
 				$params[] = $search;
 				break;
@@ -297,101 +248,35 @@ class SectionEditorSubmissionDAO extends DAO {
 				$params[] = $params[] = $params[] = $params[] = $params[] = $search;
 				break;
 				
-			/*case SUBMISSION_FIELD_EDITOR:
-				$first_last = $this->_dataSource->Concat('ed.first_name', '\' \'', 'ed.last_name');
-				$first_middle_last = $this->_dataSource->Concat('ed.first_name', '\' \'', 'ed.middle_name', '\' \'', 'ed.last_name');
-				$last_comma_first = $this->_dataSource->Concat('ed.last_name', '\', \'', 'ed.first_name');
-				$last_comma_first_middle = $this->_dataSource->Concat('ed.last_name', '\', \'', 'ed.first_name', '\' \'', 'ed.middle_name');
-				if ($searchMatch === 'is') {
-					$searchSql = " AND (LOWER(ed.last_name) = LOWER(?) OR LOWER($first_last) = LOWER(?) OR LOWER($first_middle_last) = LOWER(?) OR LOWER($last_comma_first) = LOWER(?) OR LOWER($last_comma_first_middle) = LOWER(?))";
-				} elseif ($searchMatch === 'contains') {
-					$searchSql = " AND (LOWER(ed.last_name) LIKE LOWER(?) OR LOWER($first_last) LIKE LOWER(?) OR LOWER($first_middle_last) LIKE LOWER(?) OR LOWER($last_comma_first) LIKE LOWER(?) OR LOWER($last_comma_first_middle) LIKE LOWER(?))";
-					$search = '%' . $search . '%';
-				} else { // $searchMatch === 'startsWith'
-					$searchSql = " AND (LOWER(ed.last_name) LIKE LOWER(?) OR LOWER($first_last) LIKE LOWER(?) OR LOWER($first_middle_last) LIKE LOWER(?) OR LOWER($last_comma_first) LIKE LOWER(?) OR LOWER($last_comma_first_middle) LIKE LOWER(?))";
-					$search = $search . '%';
-				}
-				$params[] = $params[] = $params[] = $params[] = $params[] = $search;
-				break;
-				*/
 		}
 
-		if (!empty($dateFrom) || !empty($dateTo)) switch($dateField) {
-			case SUBMISSION_FIELD_DATE_SUBMITTED:
+		if (!empty($dateFrom) || !empty($dateTo)){
 				if (!empty($dateFrom)) {
 					$searchSql .= ' AND a.date_submitted >= ' . $this->datetimeToDB($dateFrom);
 				}
 				if (!empty($dateTo)) {
 					$searchSql .= ' AND a.date_submitted <= ' . $this->datetimeToDB($dateTo);
 				}
-				break;
-			case SUBMISSION_FIELD_DATE_COPYEDIT_COMPLETE:
-				if (!empty($dateFrom)) {
-					$searchSql .= ' AND c.date_final_completed >= ' . $this->datetimeToDB($dateFrom);
-				}
-				if (!empty($dateTo)) {
-					$searchSql .= ' AND c.date_final_completed <= ' . $this->datetimeToDB($dateTo);
-				}
-				break;
-			case SUBMISSION_FIELD_DATE_LAYOUT_COMPLETE:
-				if (!empty($dateFrom)) {
-					$searchSql .= ' AND l.date_completed >= ' . $this->datetimeToDB($dateFrom);
-				}
-				if (!empty($dateTo)) {
-					$searchSql .= ' AND l.date_completed <= ' . $this->datetimeToDB($dateTo);
-				}
-				break;
-			case SUBMISSION_FIELD_DATE_PROOFREADING_COMPLETE:
-				if (!empty($dateFrom)) {
-					$searchSql .= ' AND p.date_proofreader_completed >= ' . $this->datetimeToDB($dateFrom);
-				}
-				if (!empty($dateTo)) {
-					$searchSql .= ' AND p.date_proofreader_completed <= ' . $this->datetimeToDB($dateTo);
-				}
-				break;
 		}
-											  	
-		if (!empty($countryField)) {
-			$countrySql = " AND LOWER(COALESCE(apc.setting_value, appc.setting_value)) = '" . $countryField . "'";
-		}
-
+											  	                 
 		$sql = 'SELECT DISTINCT
 				a.*,
-				scf.date_completed as copyedit_completed,
-				spr.date_completed as proofread_completed,
-				sle.date_completed as layout_completed,
-				COALESCE(abl.clean_scientific_title, abpl.clean_scientific_title) AS submission_title,
-				aap.last_name AS author_name,
-				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
-				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
+				ab.clean_scientific_title AS submission_title,
+				aap.last_name AS author_name
 			FROM	articles a
 				LEFT JOIN authors aa ON (aa.submission_id = a.article_id)
 				LEFT JOIN authors aap ON (aap.submission_id = a.article_id AND aap.primary_contact = 1)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN signoffs scf ON (a.article_id = scf.assoc_id AND scf.assoc_type = ? AND scf.symbolic = ?)
-				LEFT JOIN users ce ON (scf.user_id = ce.user_id)
-				LEFT JOIN signoffs spr ON (a.article_id = spr.assoc_id AND spr.assoc_type = ? AND spr.symbolic = ?)
-				LEFT JOIN users pe ON (pe.user_id = spr.user_id)
-				LEFT JOIN signoffs sle ON (a.article_id = sle.assoc_id AND sle.assoc_type = ? AND sle.symbolic = ?) LEFT JOIN users le ON (le.user_id = sle.user_id)
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-				LEFT JOIN article_abstract abpl ON (abpl.article_id = a.article_id AND abpl.locale = a.locale)
-				LEFT JOIN article_abstract abl ON (a.article_id = abl.article_id AND abl.locale = ?)
-				LEFT JOIN article_settings appc ON (a.article_id = appc.article_id AND appc.setting_name = ? AND appc.locale = a.locale)
-				LEFT JOIN article_settings apc ON (a.article_id = apc.article_id AND apc.setting_name = ? AND apc.locale = ?)
-				
 				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
-				LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
+				
 			WHERE	a.journal_id = ?
-				AND a.section_id = ?
+				AND sdec.section_id = ?
 				AND a.submission_progress = 0 '.
 				(!empty($additionalWhereSql)?" AND ($additionalWhereSql)":'') . '
 				AND sdec2.section_decision_id IS NULL';
 
-
-		$result =& $this->retrieveRange($sql . ' ' . $searchSql . $countrySql . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
+		$result =& $this->retrieveRange($sql . ' ' . $searchSql . $countrySql. ' GROUP BY a.article_id' . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
 			$params,
 			$rangeInfo
 		);
@@ -418,15 +303,11 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
-			'a.status <> ' . STATUS_ARCHIVED . '
-			AND a.status <> ' . STATUS_REVIEWED . ' 
-			AND a.status <> ' . STATUS_WITHDRAWN . ' 
-			AND a.status <> ' . STATUS_COMPLETED . ' 
+			$dateField, $dateFrom, $dateTo,
+			'a.status = ' . STATUS_QUEUED . '
 			AND (
-				sdec.decision IS NULL 
+				sdec.decision = ' . SUBMISSION_SECTION_NO_DECISION . ' 
 				OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_COMPLETE . '
-				OR sdec.date_decided < a.date_submitted
 			) AND a.date_submitted IS NOT NULL',
 			$rangeInfo, $sortBy, $sortDirection
 		);
@@ -434,7 +315,6 @@ class SectionEditorSubmissionDAO extends DAO {
 		$returner = new DAOResultFactory($result, $this, '_returnSectionEditorSubmissionFromRow');
 		return $returner;
 	}
-
         
         /**
 	 * Get all submissions waiting for resubmissions.
@@ -455,13 +335,10 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
-			'(a.status = ' . STATUS_REVIEWED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_RESUBMIT . '
-			) OR ((a.status <> ' . STATUS_REVIEWED . '
-                                OR a.status <> ' . STATUS_WITHDRAWN . '
-				OR a.status <> ' . STATUS_ARCHIVED . '
-				OR a.status <> ' . STATUS_COMPLETED . '
-			) AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . ')',
+			$dateField, $dateFrom, $dateTo,
+			'(a.status = ' . STATUS_REVIEWED . ' 
+                            AND (sdec.decision = ' . SUBMISSION_SECTION_DECISION_RESUBMIT . '
+                            OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . '))',
 			$rangeInfo, $sortBy, $sortDirection
 		);
 		
@@ -469,7 +346,7 @@ class SectionEditorSubmissionDAO extends DAO {
 		return $returner;
 	}
 
-	/**
+        /**
 	 * Get all submissions in review for a journal and a specific section.
 	 * @param $journalId int
 	 * @param $sectionId int
@@ -488,14 +365,11 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
-			'a.status <> ' . STATUS_ARCHIVED . '
-			AND a.status <> ' . STATUS_REVIEWED . ' 
-			AND a.status <> ' . STATUS_WITHDRAWN . ' 
-			AND a.status <> ' . STATUS_COMPLETED . ' 
-			AND (
-				sdec.decision = ' . SUBMISSION_SECTION_DECISION_FULL_REVIEW . '
+			$dateField, $dateFrom, $dateTo,
+			'a.status = ' . STATUS_QUEUED . '
+                            AND (sdec.decision = ' . SUBMISSION_SECTION_DECISION_FULL_REVIEW . '
 				OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXPEDITED . '
+                                OR (sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXEMPTED . ' AND sdec.comments IS NULL)
 			) AND a.date_submitted IS NOT NULL',
 			$rangeInfo, $sortBy, $sortDirection
 		);
@@ -523,11 +397,11 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
+			$dateField, $dateFrom, $dateTo,
 			'a.status = ' . STATUS_REVIEWED . ' 
 			AND (
 				sdec.decision = ' . SUBMISSION_SECTION_DECISION_APPROVED . '
-				OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXEMPTED . '
+				OR (sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXEMPTED . ' AND sdec.comments IS NOT NULL)
 			) AND a.date_submitted IS NOT NULL',
 			$rangeInfo, $sortBy, $sortDirection
 		);
@@ -555,7 +429,7 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
+			$dateField, $dateFrom, $dateTo,
 			'a.status = ' . STATUS_COMPLETED,
 			$rangeInfo, $sortBy, $sortDirection
 		);
@@ -583,7 +457,7 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
+			$dateField, $dateFrom, $dateTo,
 			'a.status = ' . STATUS_QUEUED . ' AND (sdec.decision = ' . SUBMISSION_SECTION_DECISION_DECLINED . ' OR ((sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . ' OR sdec.decision = '. SUBMISSION_SECTION_DECISION_RESUBMIT .') AND a.date_submitted <= sdec.date_decided))',
 			$rangeInfo, $sortBy, $sortDirection
 		);
@@ -611,7 +485,7 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
+			$dateField, $dateFrom, $dateTo,
 			'a.status = ' . STATUS_QUEUED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_APPROVED,
 			$rangeInfo, $sortBy, $sortDirection
 		);
@@ -638,7 +512,7 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
+			$dateField, $dateFrom, $dateTo,
 			'a.status = ' . STATUS_ARCHIVED . ' 
 			OR a.status = ' . STATUS_WITHDRAWN . '
 			OR (a.status = ' . STATUS_REVIEWED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_DECLINED . ')',
@@ -649,7 +523,7 @@ class SectionEditorSubmissionDAO extends DAO {
 		return $returner;
 	}
 
-	/**
+        /**
 	 * Function used for counting purposes for right nav bar
 	 * Edited: removed AND a.submission_progress = 0
 	 * Edited by aglet
@@ -668,45 +542,36 @@ class SectionEditorSubmissionDAO extends DAO {
 		$sql = 'SELECT COUNT(*) as review_count
 				FROM	articles a			
 					LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
-					LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
-				WHERE	a.journal_id = ?
-					AND a.section_id = ?
+                                        LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+                                WHERE	a.journal_id = ?
+					AND sdec.section_id = ?
 					AND a.submission_progress = 0
-					AND sdec2.section_decision_id IS NULL';
+                                        AND sdec2.section_decision_id IS NULL';
 					
-		$sql0 = ' AND (a.status <> ' . STATUS_ARCHIVED . '
-			AND a.status <> ' . STATUS_REVIEWED . ' 
-			AND a.status <> ' . STATUS_WITHDRAWN . ' 
-			AND a.status <> ' . STATUS_COMPLETED . ' 
+		$sql0 = ' AND (a.status = ' . STATUS_QUEUED . '
 			AND (
-				sdec.decision IS NULL 
+				sdec.decision = ' . SUBMISSION_SECTION_NO_DECISION . '  
 				OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_COMPLETE . '
-				OR sdec.date_decided < a.date_submitted
 			) AND a.date_submitted IS NOT NULL)';
 				
-		$sql1 = ' AND (a.status <> ' . STATUS_ARCHIVED . '
-			AND a.status <> ' . STATUS_REVIEWED . ' 
-			AND a.status <> ' . STATUS_WITHDRAWN . ' 
-			AND a.status <> ' . STATUS_COMPLETED . ' 
+		$sql1 = ' AND (a.status = ' . STATUS_QUEUED . '
 			AND (
 				sdec.decision = ' . SUBMISSION_SECTION_DECISION_FULL_REVIEW . '
 				OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXPEDITED . '
+                                OR (sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXEMPTED . ' AND sdec.comments IS NULL)
 			) AND a.date_submitted IS NOT NULL)';
 				
 		$sql2 = ' AND (a.status = ' . STATUS_REVIEWED . ' 
 			AND (
 				sdec.decision = ' . SUBMISSION_SECTION_DECISION_APPROVED . '
-				OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXEMPTED . '
+				OR (sdec.decision = ' . SUBMISSION_SECTION_DECISION_EXEMPTED . ' AND sdec.comments IS NOT NULL)
 			) AND a.date_submitted IS NOT NULL)';
 				
 		$sql3 = ' AND (a.status = ' . STATUS_COMPLETED .')';
                 
-		$sql4 = ' AND (a.status = ' . STATUS_REVIEWED . ' AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_RESUBMIT . '
-			) OR ((a.status <> ' . STATUS_REVIEWED . '
-                                OR a.status <> ' . STATUS_WITHDRAWN . '
-				OR a.status <> ' . STATUS_ARCHIVED . '
-				OR a.status <> ' . STATUS_COMPLETED . '
-			) AND sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . ')';
+		$sql4 = ' AND (a.status = ' . STATUS_REVIEWED . ' 
+                            AND (sdec.decision = ' . SUBMISSION_SECTION_DECISION_RESUBMIT . '
+                            OR sdec.decision = ' . SUBMISSION_SECTION_DECISION_INCOMPLETE . '))';
         
 		$sql5 = ' AND a.status = ' . STATUS_ARCHIVED . ' 
 			OR a.status = ' . STATUS_WITHDRAWN . '
@@ -1113,24 +978,13 @@ class SectionEditorSubmissionDAO extends DAO {
 	 */
 	function getSortMapping($heading) {
 		switch ($heading) {
-			case 'id': return 'a.article_id';
-			case 'status': return 'a.status';
-			case 'submitDate': return 'a.date_submitted';
-			case 'section': return 'section_abbrev';
 			case 'authors': return 'author_name';
+			case 'status': return 'a.status, sdec.decision';
+			case 'round': return 'sdec.review_type, sdec.round';
+			case 'submitDate': return 'a.date_submitted';
 			case 'title': return 'submission_title';
-			case 'active': return 'incomplete';
-			case 'subCopyedit': return 'copyedit_completed';
-			case 'subLayout': return 'layout_completed';
-			case 'subProof': return 'proofread_completed';
-			case 'reviewerName': return 'u.last_name';
-			case 'quality': return 'average_quality';
-			case 'done': return 'completed';
-			case 'latest': return 'latest';
-			case 'active': return 'active';
-			case 'average': return 'average';
-			case 'name': return 'u.last_name';
-			default: return null;
+			case 'dateApproved': return 'sdec.date_decided';
+			default: return 'submission_title';
 		}
 	}
 	

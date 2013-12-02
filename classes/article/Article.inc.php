@@ -20,23 +20,10 @@
 
 // Submission status constants
 define('STATUS_ARCHIVED', 0);
-define('STATUS_QUEUED', 1); 	// Initial Review
-define('STATUS_QUEUED_CR', 2);	// Continuing Review
-define('STATUS_QUEUED_PA', 3);	// Protocol Amendment
-define('STATUS_QUEUED_SAE', 4);	// Serious Adverse Event(s)
-define('STATUS_QUEUED_EOS', 5);	// End of study
-define('STATUS_REVIEWED', 6);	// The proposal is not anymore under review
-define('STATUS_WITHDRAWN', 7);	// Withdrawn proposal
-define('STATUS_COMPLETED', 8);	// Completed proposal
-
-
-// AuthorSubmission::getSubmissionStatus will return one of these in place of QUEUED:
-//define('STATUS_PUBLISHED', 3);
-// define ('STATUS_QUEUED_UNASSIGNED', 5);
-// define ('STATUS_QUEUED_REVIEW', 6);
-// define ('STATUS_QUEUED_EDITING', 7);
-// define ('STATUS_INCOMPLETE', 8);
-// define('STATUS_SCHEDULED', 2); // #2187: Scheduling queue removed.
+define('STATUS_QUEUED', 1); 	// In Review
+define('STATUS_REVIEWED', 2);	// The proposal is not anymore under review
+define('STATUS_WITHDRAWN', 3);	// Withdrawn proposal
+define('STATUS_COMPLETED', 4);	// Completed proposal
 
 
 // Author display in ToC
@@ -48,17 +35,6 @@ define ('AUTHOR_TOC_SHOW', 2);
 define ('COMMENTS_SECTION_DEFAULT', 0);
 define ('COMMENTS_DISABLE', 1);
 define ('COMMENTS_ENABLE', 2);
-
-/**
- * Reasons for exemption constants
- * Added by aglet 6/22/2011
- */
-define ('EXEMPTION_NO_HUMAN_PARTICIPANTS', 1);
-define ('EXEMPTION_ALREADY_EXISTS', 2);
-define ('EXEMPTION_PUBLIC_OFFICIALS', 4);
-define ('EXEMPTION_LIMITED_OBSERVATION', 8);
-define ('EXEMPTION_LIMITED_SURVEILLANCE', 16);
-define ('EXEMPTION_REGISTERED', 32);
 
 import('lib.pkp.classes.submission.Submission');
 
@@ -111,6 +87,16 @@ class Article extends Submission {
 		return $this->setId($articleId);
 	}
 
+        /**
+	 * Get ID of the last section decision.
+	 * @return int
+	 */
+	function getSectionId() {
+                $sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
+                $lastSectionDecision =& $sectionDecisionDao->getLastSectionDecision($this->getArticleId());
+		return $lastSectionDecision->getSectionId();
+	}
+
 	/**
 	 * Get ID of journal.
 	 * @return int
@@ -125,22 +111,6 @@ class Article extends Submission {
 	 */
 	function setJournalId($journalId) {
 		return $this->setData('journalId', $journalId);
-	}
-
-	/**
-	 * Get ID of article's section.
-	 * @return int
-	 */
-	function getSectionId() {
-		return $this->getData('sectionId');
-	}
-
-	/**
-	 * Set ID of article's section.
-	 * @param $sectionId int
-	 */
-	function setSectionId($sectionId) {
-		return $this->setData('sectionId', $sectionId);
 	}
 
 	/**
@@ -433,7 +403,8 @@ class Article extends Submission {
 				}
 		}
 	}
-
+        
+        
 	/**
 	 * Get an associative array matching RT comments status codes with locale strings.
 	 * @return array comments status => localeString
@@ -504,7 +475,8 @@ class Article extends Submission {
 
 		return $userIds;
 	}
-
+        
+        
 	/**
 	 * Get the signoff for this article
 	 * @param $signoffType string
@@ -578,7 +550,7 @@ class Article extends Submission {
 	 * @return int 
 	 * Transferred from AuthorSubmission.inc.php
 	 */
-	function getMostRecentDecision() {
+	function getMostRecentDecisionValue() {
 	    $articleId = $this->getArticleId();
 	
 	    $sectionDecisionDao = DAORegistry::getDAO('SectionDecisionDAO');
@@ -632,44 +604,6 @@ class Article extends Submission {
 		return $editorDecisionMap[$this->getMostRecentDecision()];
 	}
 	
-	/**
-	 * Get array mapping of selected reasons for exemption
-	 * @return array
-	 */
-	function getProposalReasonsForExemption() {
-		$reasonsLocale = $this->getLocalizedReasonsForExemption();
-		$reasons = array();
-		for($i=5; $i>=0; $i--) {
-			$num = pow(2, $i);
-			if($num <= $reasonsLocale) {
-				$reasons[$num] = 1;
-				$reasonsLocale = $reasonsLocale - $num;
-			}
-			else
-				$reasons[$num] = 0;			
-		}
-		return $reasons;
-	}
-	
-	/*
-	 * Get a map for exemption reasons to locale key
-	 * @return array
-	 * Added by aglet 6/20/2011
-	 */	 
-	function &getReasonsForExemptionMap() {
-		static $reasonsForExemptionMap;
-		if (!isset($reasonsForExemptionMap)) {
-			$reasonsForExemptionMap = array(
-				EXEMPTION_NO_HUMAN_PARTICIPANTS => 'editor.article.exemption.noHumanParticipants',
-				EXEMPTION_ALREADY_EXISTS => 'editor.article.exemption.alreadyExists',
-				EXEMPTION_PUBLIC_OFFICIALS => 'editor.article.exemption.publicOfficials',
-				EXEMPTION_LIMITED_OBSERVATION => 'editor.article.exemption.limitedObservation',
-				EXEMPTION_LIMITED_SURVEILLANCE => 'editor.article.exemption.limitedPublicHealthSurveillance',
-				EXEMPTION_REGISTERED => 'editor.article.exemption.registered'			
-			);
-		}
-		return $reasonsForExemptionMap;
-	}  
 
 	/**
 	 * Get the last section decision id for this article.
@@ -690,5 +624,6 @@ class Article extends Submission {
 		$sDecision =& $sectionDecisionDao->getLastSectionDecision($this->getId());
 		return $sDecision->getDateDecided();
 	}
+
 }
 ?>

@@ -368,7 +368,7 @@ class PeopleHandler extends ManagerHandler {
 				//Here, the number of secretaries per committee is limited to 5
 				if ((count($secretaries) + count($users)) < 6) {
 					for ($i=0; $i<count($users); $i++) {
-						if (!$roleDao->roleExists($journal->getId(), $users[$i], $roleId) && !$sectionEditorsDAO->ercSecretaryExists($journal->getId(), $ethicsCommitteeId, $users[$i])) {
+						if (!$roleDao->roleExists($journal->getId(), $users[$i], $roleId) && !$sectionEditorsDAO->ercSecretaryExists($ethicsCommitteeId, $users[$i])) {
 							
 							// Create the role and insert it
 							$role = new Role();

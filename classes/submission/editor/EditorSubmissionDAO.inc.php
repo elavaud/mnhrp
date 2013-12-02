@@ -54,12 +54,13 @@ class EditorSubmissionDAO extends DAO {
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
 				COALESCE(sal.setting_value, sapl.setting_value) AS section_abbrev
 			FROM	articles a
-				LEFT JOIN sections s ON s.section_id = a.section_id
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
-			WHERE	a.article_id = ?',
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+			WHERE	a.article_id = ? AND sdec2.section_decision_id IS NULL',
 			array(
 				'title',
 				$primaryLocale,
@@ -131,7 +132,6 @@ class EditorSubmissionDAO extends DAO {
 			$primaryLocale,
 			'abbrev',
 			$locale,
-			$locale,
 			'researchField',
 			'researchField',
 			$locale,
@@ -180,12 +180,12 @@ class EditorSubmissionDAO extends DAO {
 		if (!empty($search)) switch ($searchField) {
 			case SUBMISSION_FIELD_TITLE:
 				if ($searchMatch === 'is') {
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) = LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) = LOWER(?)';
 				} elseif ($searchMatch === 'contains') {
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) LIKE LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
 					$search = '%' . $search . '%';
 				} else { // $searchMatch === 'startsWith'
-					$searchSql = ' AND LOWER(COALESCE(abl.scientific_title, abpl.scientific_title)) LIKE LOWER(?)';
+					$searchSql = ' AND LOWER(ab.scientific_title) LIKE LOWER(?)';
 					$search = $search . '%';
 				}
 				$params[] = $search;
@@ -239,7 +239,7 @@ class EditorSubmissionDAO extends DAO {
 
 		$sql = 'SELECT DISTINCT
 				a.*,
-				COALESCE(abl.clean_scientific_title, abpl.clean_scientific_title) AS submission_title,
+				ab.clean_scientific_title AS submission_title,
 				aap.first_name AS afname, aap.last_name AS alname, 
 				aap.affiliation as investigatoraffiliation, aap.email as email,
 				COALESCE(stl.setting_value, stpl.setting_value) AS section_title,
@@ -247,17 +247,17 @@ class EditorSubmissionDAO extends DAO {
 			FROM	articles a
 				LEFT JOIN authors aa ON (aa.submission_id = a.article_id)
 				LEFT JOIN authors aap ON (aap.submission_id = a.article_id AND aap.primary_contact = 1)
-				LEFT JOIN sections s ON (s.section_id = a.section_id)
-				LEFT JOIN section_editors se ON (se.section_id = a.section_id)
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_editors se ON (se.section_id = sdec.section_id)
 				
-				LEFT JOIN section_settings stpl ON (s.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
-				LEFT JOIN section_settings stl ON (s.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
+				LEFT JOIN section_settings stpl ON (sdec.section_id = stpl.section_id AND stpl.setting_name = ? AND stpl.locale = ?)
+				LEFT JOIN section_settings stl ON (sdec.section_id = stl.section_id AND stl.setting_name = ? AND stl.locale = ?)
 				
-				LEFT JOIN section_settings sapl ON (s.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
-				LEFT JOIN section_settings sal ON (s.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
+				LEFT JOIN section_settings sapl ON (sdec.section_id = sapl.section_id AND sapl.setting_name = ? AND sapl.locale = ?)
+				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
 				
-				LEFT JOIN article_abstract abpl ON (a.article_id = abpl.article_id AND abpl.locale = a.locale)
-				LEFT JOIN article_abstract abl ON (a.article_id = abl.article_id AND abl.locale = ?)
+				LEFT JOIN article_abstract ab ON (a.article_id = ab.article_id)
 				
 				LEFT JOIN article_settings atpu ON (a.article_id = atpu.article_id AND atpu.setting_name = ? AND atpu.locale = a.locale)
 				LEFT JOIN article_settings atu ON (a.article_id = atu.article_id AND atu.setting_name = ? AND atu.locale = ?)
@@ -296,15 +296,13 @@ class EditorSubmissionDAO extends DAO {
 				LEFT JOIN article_settings sd ON (a.article_id = sd.article_id AND sd.setting_name = ? AND sd.locale = ?)
 
 				LEFT JOIN article_settings ed ON (a.article_id = ed.article_id AND ed.setting_name = ? AND ed.locale = ?)
-				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
-				LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
 			WHERE	sdec2.section_decision_id IS NULL
 				AND a.journal_id = ?
 				AND a.submission_progress = 0' .
 				(!empty($additionalWhereSql)?" $additionalWhereSql":'');
 				
 		if ($sectionId) {
-			$searchSql .= ' AND a.section_id = ?';
+			$searchSql .= ' AND sdec.section_id = ?';
 			$params[] = $sectionId;
 		}
 
@@ -314,7 +312,7 @@ class EditorSubmissionDAO extends DAO {
 		}
 
 		$result =& $this->retrieveRange(
-			$sql . ' ' . $searchSql . $researchFieldSql . $countrySql . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
+			$sql . ' ' . $searchSql . $researchFieldSql . $countrySql. ' GROUP BY a.article_id' . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
 			count($params)===1?array_shift($params):$params,
 			$rangeInfo
 		);
@@ -495,10 +493,11 @@ class EditorSubmissionDAO extends DAO {
 		$result =& $this->retrieve(
 			"SELECT	COUNT(*) AS unassigned_count
 			FROM	articles a
-				LEFT JOIN section_editors se ON (a.section_id = se.section_id)
 				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
-			WHERE	a.journal_id = ? ".
-				"AND (a.submission_progress = 0 AND a.status = " . STATUS_QUEUED . "
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_editors se ON (sdec.section_id = se.section_id)
+			WHERE	a.journal_id = ? AND sdec2.section_decision_id IS NULL".
+				" AND (a.submission_progress = 0 AND a.status = " . STATUS_QUEUED . "
 				) OR (sdec.decision = 5 AND a.submission_progress = 0)",
 			array((int) $journalId)
 		);
@@ -509,9 +508,9 @@ class EditorSubmissionDAO extends DAO {
 		$result =& $this->retrieve(
 			'SELECT	COUNT(*) AS review_count
 			FROM	articles a
-				LEFT JOIN section_editors se ON (a.section_id = se.section_id)
 				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
 				LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_editors se ON (sdec.section_id = se.section_id)
 			WHERE	a.journal_id = ?
 				AND a.status = ' . STATUS_QUEUED . '
 				AND sdec2.section_decision_id IS NULL ',
@@ -524,9 +523,9 @@ class EditorSubmissionDAO extends DAO {
 		$result =& $this->retrieve(
 			'SELECT	COUNT(*) AS editing_count
 			FROM	articles a
-				LEFT JOIN section_editors se ON (a.section_id = se.section_id)
 				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
 				LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
+				LEFT JOIN section_editors se ON (sdec.section_id = se.section_id)
 			WHERE	a.journal_id = ?
 				AND a.status = ' . STATUS_QUEUED . '
 				AND sdec2.section_decision_id IS NULL

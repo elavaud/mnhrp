@@ -28,7 +28,6 @@ class AuthorSubmission extends Article {
 	 */
 	function AuthorSubmission() {
 		parent::Article();
-		$this->reviewAssignments = array();
 	}
 
 
@@ -48,11 +47,48 @@ class AuthorSubmission extends Article {
 	 * Get editor decisions.
 	 * @param $sectionDecisions array
 	 */
+	private function usortDecisions($a, $b){
+    	return $a->getDateDecided() == $b->getDateDecided() ? 0 : ( $a->getDateDecided() > $b->getDateDecided() ) ? 1 : -1;
+   	}
+        
 	function getDecisions() {
-		return $this->sectionDecisions;
+		$sectionDecisions =& $this->sectionDecisions;
+		usort($sectionDecisions, array($this, "usortDecisions"));
+		
+		if ($sectionDecisions) return $sectionDecisions;
+		else return null;
 	}
 
+        /**
+	 * Add a section decision for this article.
+	 * @param $sectionDecision array
+	 */
+	function addDecision($newSectionDecision) {
+		if (isset($this->sectionDecisions) && is_array($this->sectionDecisions)) {
+			$replaced = false;
+			foreach ($this->sectionDecisions as $key => $sectionDecision) {
+				if ($sectionDecision->getId() == $newSectionDecision->getId()) {
+					$this->sectionDecisions[$key] = $newSectionDecision;
+					$replaced = true;
+				}
+			}
+			if (!$replaced) array_push($this->sectionDecisions, $newSectionDecision);
+		}
+		else $this->sectionDecisions = Array($newSectionDecision);
+	}
+
+
 	/**
+	 * Get the last section decision id for this article.
+	 * @return Section Decision object
+	 */
+	function getLastSectionDecision() {
+		$sectionDecisions =& $this->getDecisions();
+		return $sDecision =& $sectionDecisions[(count($sectionDecisions)-1)];
+	}	
+        
+        
+        /**
 	 * Get the last section decision id for this article.
 	 * @return Section Decision object
 	 */
@@ -96,7 +132,7 @@ class AuthorSubmission extends Article {
 	    }
 	
 	    if ($status==PROPOSAL_STATUS_REVIEWED) {
-	        $decision = $this->getMostRecentDecision();
+	        $decision = $this->getMostRecentDecisionValue();
 	        if ($decision==SUBMISSION_SECTION_DECISION_RESUBMIT || $decision==SUBMISSION_SECTION_DECISION_APPROVED) {
 	
 	            $articleDao = DAORegistry::getDAO('ArticleDAO');

@@ -139,7 +139,7 @@ class User extends PKPUser {
 		
 		$erc =& $sectionDao->getSection($sectionId);
 		$reviewerStatus = $ercReviewersDao->getReviewerStatus($this->getId(), $sectionId);
-		$isSecretary = $sectionEditorsDao->ercSecretaryExists($journal->getId(), $sectionId, $this->getId());
+		$isSecretary = $sectionEditorsDao->ercSecretaryExists($sectionId, $this->getId());
 		
 		$ercAbbrev = $erc->getLocalizedAbbrev();
 		$function = (string)'';

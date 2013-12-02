@@ -193,7 +193,7 @@ class PKPPageRouter extends PKPRouter {
 		$page = $this->getRequestedPage($request);
 		$op = $this->getRequestedOp($request);
 
-		// If the application has not yet been installed we only
+                // If the application has not yet been installed we only
 		// allow installer pages to be displayed.
 		if (!Config::getVar('general', 'installed')) {
 			define('SESSION_DISABLE_INIT', 1);
@@ -244,7 +244,8 @@ class PKPPageRouter extends PKPRouter {
 		// for the handler.
 		$methods = array();
 		if (defined('HANDLER_CLASS')) $methods = array_map('strtolower', get_class_methods(HANDLER_CLASS));
-		if (!in_array(strtolower($op), $methods)) {
+
+                if (!in_array(strtolower($op), $methods)) {
 			$dispatcher =& $this->getDispatcher();
 			$dispatcher->handle404();
 		}
@@ -253,7 +254,7 @@ class PKPPageRouter extends PKPRouter {
 		$HandlerClass = HANDLER_CLASS;
 		$handler = new $HandlerClass($request);
 
-		// Authorize and initialize the request but don't call the
+                // Authorize and initialize the request but don't call the
 		// validate() method on page handlers.
 		// FIXME: We should call the validate() method for page
 		// requests also (last param = true in the below method
@@ -273,7 +274,7 @@ class PKPPageRouter extends PKPRouter {
 				$params = null, $anchor = null, $escape = false) {
 		$pathInfoEnabled = $request->isPathInfoEnabled();
 
-		//
+                //
 		// Base URL and Context
 		//
 		$newContext = $this->_urlCanonicalizeNewContext($newContext);

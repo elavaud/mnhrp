@@ -54,7 +54,6 @@ class DataObject {
 			$firstLocale = array_shift($locales);
 			return $data[$firstLocale];
 		}
-
 		// No data available; return null.
 		unset($data);
 		$data = null;

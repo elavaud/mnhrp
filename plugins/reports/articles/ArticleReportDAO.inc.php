@@ -36,13 +36,15 @@ class ArticleReportDAO extends DAO {
 				a.status AS status,
 				a.language AS language
 			FROM	articles a
+				LEFT JOIN section_decisions sdec ON (a.article_id = sdec.article_id)
+                                LEFT JOIN section_decisions sdec2 ON (a.article_id = sdec2.article_id AND sdec.section_decision_id < sdec2.section_decision_id)
 				LEFT JOIN article_settings aspl1 ON (aspl1.article_id=a.article_id AND aspl1.setting_name = ? AND aspl1.locale = a.locale)
 				LEFT JOIN article_settings asl1 ON (asl1.article_id=a.article_id AND asl1.setting_name = ? AND asl1.locale = ?)
 				LEFT JOIN article_settings aspl2 ON (aspl2.article_id=a.article_id AND aspl2.setting_name = ? AND aspl2.locale = a.locale)
 				LEFT JOIN article_settings asl2 ON (asl2.article_id=a.article_id AND asl2.setting_name = ? AND asl2.locale = ?)
-				LEFT JOIN section_settings spl ON (spl.section_id=a.section_id AND spl.setting_name = ? AND spl.locale = ?)
-				LEFT JOIN section_settings sl ON (sl.section_id=a.section_id AND sl.setting_name = ? AND sl.locale = ?)
-			WHERE	a.journal_id = ?
+				LEFT JOIN section_settings spl ON (spl.section_id=sdec.section_id AND spl.setting_name = ? AND spl.locale = ?)
+				LEFT JOIN section_settings sl ON (sl.section_id=sdec.section_id AND sl.setting_name = ? AND sl.locale = ?)
+			WHERE	a.journal_id = ? AND sdec2.section_decision_id IS NULL
 			ORDER BY a.article_id',
 			array(
 				'title', // Article title

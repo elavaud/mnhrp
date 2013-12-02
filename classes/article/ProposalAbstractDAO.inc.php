@@ -15,16 +15,15 @@ import('classes.article.ProposalAbstract');
 
 class ProposalAbstractDAO extends DAO {
 
-	/**
+
+    	/**
 	 * Get the abstract object of a submission.
-	 * @param $submissionId int
-	 * @param $locale string optional
+	 * @param $abstractId int
 	 * @return abstract object
 	 */
-	function &getAbstractByArticleId($submissionId, $locale = null) {
+	function &getAbstractById($abstractId) {
 
-		if ($locale == null) $result =& $this->retrieve('SELECT article_id, locale, scientific_title, public_title, background, objectives, study_methods, expected_outcomes, keywords FROM article_abstract WHERE article_id = ?', (int) $submissionId);		
-		else $result =& $this->retrieve('SELECT * FROM article_abstract WHERE article_id = ? AND locale = ? LIMIT 1', array((int) $submissionId, $locale));
+		$result =& $this->retrieve('SELECT * FROM article_abstract WHERE abstract_id = ?', (int) $abstractId);		
 
 		$abstract =& $this->_returnAbstractFromRow($result->GetRowAssoc(false));
 
@@ -33,6 +32,28 @@ class ProposalAbstractDAO extends DAO {
 
 		return $abstract;
 	}
+
+        /**
+	 * Get all abstracts object of a submission.
+	 * @param $abstractId int
+	 * @return array Abstracts
+	 */
+	function &getAbstractsByArticle($abstractId) {
+                $abstracts = array();
+                
+		$result =& $this->retrieve('SELECT * FROM article_abstract WHERE article_id = ?', (int) $abstractId);		
+
+		while (!$result->EOF) {
+                    	$row =& $result->getRowAssoc(false);
+			$abstracts[$row['locale']] =& $this->_returnAbstractFromRow($row);
+			$result->moveNext();
+		}
+		$result->Close();
+		unset($result);
+
+		return $abstracts;
+	}
+
 
 	/**
 	 * Insert a new abstract object.
@@ -80,7 +101,7 @@ class ProposalAbstractDAO extends DAO {
 				study_methods = ?,
 				expected_outcomes = ?,
 				keywords = ?
-			WHERE	article_id = ? AND locale = ?',
+			WHERE	abstract_id = ?',
 			array(
 				(int) $abstract->getArticleId(),
 				$abstract->getLocale(),
@@ -93,26 +114,47 @@ class ProposalAbstractDAO extends DAO {
 				$abstract->getStudyMethods(),
 				$abstract->getExpectedOutcomes(),
 				$abstract->getKeywords(),
-				(int) $abstract->getArticleId(),
-				$abstract->getLocale()
+                                $abstract->getAbstractId()
 			)
 		);
 		return true;
 	}
 
 	/**
-	 * Delete a specific abstract by article ID
-	 * @param $submissionId int
-	 * @param $locale string optional
+	 * Delete a specific abstract by ID
+	 * @param $abstractId int
 	 */
-	function deleteAbstract($submissionId, $locale = null) {
+	function deleteAbstract($abstractId) {
 		
-		if ($locale == null) $returner = $this->update('DELETE FROM article_abstract WHERE article_id = ?',(int) $submissionId);
-		else $returner = $this->update('DELETE FROM article_abstract WHERE article_id = ? AND locale = ?', array((int) $submissionId, $locale));
+		$returner = $this->update('DELETE FROM article_abstract WHERE abstract_id = ?',(int) $abstractId);
 		
 		return $returner;
 	}
 
+        /**
+	 * Delete abstracts by article ID
+	 * @param $articleId int
+	 */
+	function deleteAbstractsByArticleId($articleId) {
+		
+		$returner = $this->update('DELETE FROM article_abstract WHERE article_id = ?',(int) $articleId);
+		
+		return $returner;
+	}
+        
+        
+        /**
+	 * Delete a specific abstract by article ID and locale
+	 * @param $articleId int
+	 */
+	function deleteAbstractsByLocaleAndArticleId($locale, $articleId) {
+		
+		$returner = $this->update('DELETE FROM article_abstract WHERE locale = ' . $locale . ' AND article_id = ' . $articleId);
+		
+		return $returner;
+	}
+        
+        
 	/**
 	 * Check if an abstract exists
 	 * @param $submissionId int
@@ -137,6 +179,7 @@ class ProposalAbstractDAO extends DAO {
 	 */
 	function &_returnAbstractFromRow(&$row) {
 		$abstract = new ProposalAbstract();
+		$abstract->setAbstractId($row['abstract_id']);
 		$abstract->setArticleId($row['article_id']);
 		$abstract->setLocale($row['locale']);
 		$abstract->setScientificTitle($row['scientific_title']);

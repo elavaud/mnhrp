@@ -32,7 +32,7 @@
                         {elseif $status==PROPOSAL_STATUS_WITHDRAWN}{translate key="submission.status.withdrawn"}
                         {elseif $status==PROPOSAL_STATUS_COMPLETED}{translate key="submission.status.completed"}
                         {elseif $status==PROPOSAL_STATUS_ARCHIVED}
-                            {assign var="decision" value=$submission->getMostRecentDecision()}
+                            {assign var="decision" value=$submission->getMostRecentDecisionValue()}
                             {if $decision==SUBMISSION_SECTION_DECISION_DECLINED}
                                 Archived({translate key="submission.status.declined"})
                             {elseif $decision==SUBMISSION_SECTION_DECISION_EXEMPTED}
@@ -46,7 +46,7 @@
                         <br/><a href="{url op="resubmit" path=$submission->getId()}" class="action">Resubmit</a>
                         {elseif $status==PROPOSAL_STATUS_EXEMPTED}{translate key="submission.status.exempted"}
                         {elseif $status==PROPOSAL_STATUS_REVIEWED}
-                            {assign var="decision" value=$submission->getMostRecentDecision()}
+                            {assign var="decision" value=$submission->getMostRecentDecisionValue()}
                             {if $decision==SUBMISSION_SECTION_DECISION_RESUBMIT}{translate key="submission.status.reviseAndResubmit"}
                        		<br/><a href="{url op="resubmit" path=$submission->getId()}" class="action">Resubmit</a>
                             {elseif $decision==SUBMISSION_SECTION_DECISION_APPROVED}{translate key="submission.status.approved"}

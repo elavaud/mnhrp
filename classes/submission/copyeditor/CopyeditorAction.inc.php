@@ -46,7 +46,7 @@ class CopyeditorAction extends Action {
 
 		$user =& Request::getUser();
 		import('classes.mail.ArticleMailTemplate');
-		$email = new ArticleMailTemplate($copyeditorSubmission, 'COPYEDIT_COMPLETE');
+		$email = new ArticleMailTemplate($copyeditorSubmission, null, 'COPYEDIT_COMPLETE');
 
 		$author = $copyeditorSubmission->getUser();
 
@@ -110,7 +110,7 @@ class CopyeditorAction extends Action {
 
 		$user =& Request::getUser();
 		import('classes.mail.ArticleMailTemplate');
-		$email = new ArticleMailTemplate($copyeditorSubmission, 'COPYEDIT_FINAL_COMPLETE');
+		$email = new ArticleMailTemplate($copyeditorSubmission, null, 'COPYEDIT_FINAL_COMPLETE');
 
 		if (!$email->isEnabled() || ($send && !$email->hasErrors())) {
 			HookRegistry::call('CopyeditorAction::completeFinalCopyedit', array(&$copyeditorSubmission, &$email));

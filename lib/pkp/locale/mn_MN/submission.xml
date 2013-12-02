@@ -350,7 +350,7 @@
     <message key="submission.previousProposalFile">Previous proposal file(s)</message>
     <message key="submission.previousProposalFileInstruct">In case of a re-submission, here are the main proposal files previously submitted. Plese click on their title to download them.</message>
     <message key="submission.proposalDetails">Proposal Details</message>
-	<message key="submission.protocolAmendment">Protocol Amendment</message>
+	<message key="submission.protocolAmendment">Post-Approval Amendment</message>
 	<message key="submission.recommendation">Recommendation</message>
 	<message key="submission.rejected">Rejected</message>
 	<message key="submission.request">Request</message>

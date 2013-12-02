@@ -12,8 +12,8 @@
 {include file="common/header.tpl"}
 {/strip}
 
-<script type="text/javascript" src="{$baseUrl|cat:"/lib/pkp/js/lib/jquery/jquery-ui-timepicker-addon.js"}"></script>
-<style type="text/css" src="{$baseUrl|cat:"/lib/pkp/styles/jquery-ui-timepicker-addon.css"}"></style>
+<script type="text/javascript" src="{$baseUrl}/lib/pkp/js/lib/jquery/jquery-ui-timepicker-addon.js"></script>
+<style type="text/css" src="{$baseUrl}/lib/pkp/styles/jquery-ui-timepicker-addon.css"></style>
 
 {literal}
 <script type="text/javascript">
@@ -54,7 +54,7 @@ $(document).ready(function() {
 	<p></p>
 {iterate from=submissions item=submission}
 {assign var="status" value=$submission->getSubmissionStatus()}
-{assign var="decision" value=$submission->getMostRecentDecision() }
+{assign var="decision" value=$submission->getMostRecentDecisionValue() }
 {assign var="abstract" value=$submission->getLocalizedAbstract()}
 							
 	{assign var="articleId" value=$submission->getArticleId()}

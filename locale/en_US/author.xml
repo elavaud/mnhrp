@@ -13,6 +13,7 @@
   -->
 
 <locale name="en_US" full_name ="U.S. English">
+	<message key="author.article.decision">Committee Decision</message>
 	<message key="author.submit">New Proposal</message>
 	<message key="author.track">Active Proposals</message>
 	<message key="author.competingInterests"><![CDATA[Competing&nbsp;interests <a target="_new" class="action" href="{$competingInterestGuidelinesUrl}">CI&nbsp;Policy</a>]]></message>
@@ -68,6 +69,8 @@
 	<message key="author.submit.comments">Enter text (optional)</message>
     <message key="author.submit.form.noFileSelected">No file selected.</message>
 	<message key="author.submit.form.sectionRequired">Please select an appropriate Ethics Committee for your proposal.</message>
+	<message key="author.submit.form.supervisorName">Please provide the name of the academic supervisor.</message>
+	<message key="author.submit.form.supervisorEmail">Please provide the email of the academic supervisor.</message>
     <message key="author.submit.form.otherInternationalGrantName">Please specify the agency</message>
     <message key="author.submit.form.authorPhoneNumber">Please enter investigator's phone number</message>
     <message key="author.submit.form.typeOfResearchRequired">Please select a type of research.</message>
@@ -95,18 +98,10 @@
 	<message key="author.submit.subjectClassInstructions">Use the hyperlinked classification system to select classification terms and, if appropriate, numbers.</message>
 	<message key="author.submit.languageInstructions"><![CDATA[English=en; French=fr; Spanish=es. <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php" target="_blank">Additional codes</a>.]]></message>
     
+    <message key="author.submit.form.abstractRequiredFields">The scientific title, public title, background, objectives, study methods, expected outcomes and keywords are required, if multiple languages in each language.</message>    
 	<message key="author.submit.form.authorRequired">At least one investigator is required.</message>
 	<message key="author.submit.form.authorRequiredFields">The first name, last name, affiliation, phone number, and email address of each investigator is required.</message>
     <message key="author.submit.uploadWithdrawReport">Upload withdraw report</message>
-	
-	<!-- Added Jan 19, 2011 -->	
-	<message key="author.article.decision">Committee Decision</message>
-	
-    <!-- ************************************************************************************************************************
-            Added by: AIM, Last Edited: 12.12.2011
-    -->
-        
-        
         <message key="author.submit.form.scientificTitleRequired">Please enter the scientific title of your research proposal.</message>
         <message key="author.submit.form.publicTitleRequired">Please enter the public title of your research proposal.</message>
         <message key="author.submit.form.studentInitiatedResearch">Please select Yes or No (Student Initiated Research).</message>
@@ -125,7 +120,7 @@
         <message key="author.submit.form.endDateRequired">Please enter the end date of your research proposal.</message>
         <message key="author.submit.form.fundsRequiredRequired">Please enter the funds required for your research.</message>
         <message key="author.submit.form.selectedCurrency">Please select the currency.</message>
-        <message key="author.submit.form.proposalCountryRequired">Please select at least one region for this proposal.</message>
+        <message key="author.submit.form.geoAreaRquired">Please select at least one geographical area for this proposal.</message>
         <message key="author.submit.form.withHumanSubjectsRequired">Please indicate if the research involves human subjects.</message>
         <message key="author.submit.form.proposalTypeRequired">Please enter the research proposal type.</message>
         <message key="author.submit.form.otherProposalTypeRequired">Please specify the other proposal type.</message>
