@@ -34,7 +34,7 @@ class SetMeetingForm extends Form {
 		$this->addCheck(new FormValidator($this,'meetingDate', 'required', 'editor.meeting.form.meetingDateRequired'));
 		$this->addCheck(new FormValidator($this,'meetingLength', 'required', 'editor.meeting.form.meetingLengthRequired'));
 		$this->addCheck(new FormValidator($this,'investigator', 'required', 'editor.meeting.form.meetingInvestigatorRequired'));
-		$this->addCheck(new FormValidator($this,'selectedProposals', 'required', 'editor.meeting.form.selectAtleastOneProposal'));
+		$this->addCheck(new FormValidator($this,'selectedSectionDecisions', 'required', 'editor.meeting.form.selectAtleastOneProposal'));
 	}
 	
 	/**
@@ -42,7 +42,7 @@ class SetMeetingForm extends Form {
 	 */
 	function readInputData() {
 		$this->readUserVars(array(
-			'selectedProposals',
+			'selectedSectionDecisions',
 			'meetingDate',
 			'meetingLength',
 			'location',
@@ -57,34 +57,29 @@ class SetMeetingForm extends Form {
 	 * Display the form.
 	 */
 	function display(&$args) {
-
 		$meetingId = isset($args[0]) ? $args[0]: 0;
 		$journal =& Request::getJournal();
 		$journalId = $journal->getId();
 		$user =& Request::getUser();
-
-		$site =& Request::getSite();
 		
-		$sectionEditorSubmissionDao =& DAORegistry::getDAO('SectionEditorSubmissionDAO');
-		
+		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 		$sort = Request::getUserVar('sort');
 		$sort = isset($sort) ? $sort : 'id';
 		$sortDirection = Request::getUserVar('sortDirection');
 				
-		$submissions =& $sectionEditorSubmissionDao->getSectionEditorSubmissionsForErcReview(
+		$availableSectionDecisions =& $sectionDecisionDao->getSectionDecisionsAvailableForMeeting(
 			$user->getSecretaryCommitteeId(),
 			$journalId,
 			$sort,
 			$sortDirection
 		);
-	
 		/*Get the selected submissions to be reviewed*/
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$meeting =& $meetingDao->getMeetingById($meetingId);
 
 		/*Get the selected submissions to be reviewed*/
-		$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');
-		$selectedSubmissions =$meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meetingId);
+		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
+		$sectionDecisionsId =$meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$templateMgr =& TemplateManager::getManager();
 
 		$templateMgr->assign('sort', $sort);
@@ -95,8 +90,8 @@ class SetMeetingForm extends Form {
 		$templateMgr->assign('meetingLength', $meeting->getLength());
 		$templateMgr->assign('location', $meeting->getLocation());
 		$templateMgr->assign('investigator', $meeting->getInvestigator());
-		$templateMgr->assign_by_ref('submissions', $submissions);
-		$templateMgr->assign_by_ref('selectedProposals', $selectedSubmissions);
+		$templateMgr->assign_by_ref('availableSectionDecisions', $availableSectionDecisions);
+		$templateMgr->assign_by_ref('sectionDecisionsId', $sectionDecisionsId);
 		$templateMgr->assign('baseUrl', Config::getVar('general', "base_url"));
 		parent::display();
 	}

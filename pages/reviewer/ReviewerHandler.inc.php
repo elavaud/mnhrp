@@ -148,8 +148,8 @@ class ReviewerHandler extends Handler {
 		$userId = $user->getId();
 		
 		$meetingDao = DAORegistry::getDAO('MeetingDAO');
-		$meetingSubmissionDao = DAORegistry::getDAO('MeetingSubmissionDAO');
-		$articleDao = DAORegistry::getDAO('ArticleDAO');
+		$meetingSectionDecisionDao = DAORegistry::getDAO('MeetingSectionDecisionDAO');
+		$sectionDecisionDao = DAORegistry::getDAO('SectionDecisionDAO');
 		$ercReviewersDao = DAORegistry::getDAO('ErcReviewersDAO');
 		
 		$sort = Request::getUserVar('sort');
@@ -169,19 +169,19 @@ class ReviewerHandler extends Handler {
 		$meetingsArray = $meetings->toArray();
 		
 		foreach($meetingsArray as $meeting) {
-			$submissionIds = $meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meeting->getId());
-			$submissions = array();
-			foreach($submissionIds as $submissionId) {
-				$submission = $articleDao->getArticle($submissionId, $journalId, false);
-				array_push($submissions, $submission);
+			$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
+			$sectionDecisions = array();
+			foreach($sectionDecisionsId as $sectionDecisionId) {
+				$sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+				array_push($sectionDecisions, $sectionDecision);
 			}
-			$map[$meeting->getId()] = $submissions;
+			$map[$meeting->getId()] = $sectionDecisions;
 		}
 		$meetings = $meetingDao->getMeetingsByReviewerId($userId, $sort, $rangeInfo, $sortDirection, $status, $replyStatus, $fromDate, $toDate);
 		
 		$templateMgr =& TemplateManager::getManager();
 		$templateMgr->assign_by_ref('meetings', $meetings); 
-		$templateMgr->assign_by_ref('submissions', $submissions); 
+		$templateMgr->assign_by_ref('submissions', $sectionDecisions); 
 		$templateMgr->assign_by_ref('map', $map); 
 		$templateMgr->assign('sort', $sort);
 		$templateMgr->assign('rangeInfo', count($meetings));
@@ -224,7 +224,7 @@ class ReviewerHandler extends Handler {
 		$sort = isset($sort) ? $sort : 'title';
 		$sortDirection = Request::getUserVar('sortDirection');
 		
-		$submissions =& $reviewerSubmissionDao->getReviewerMeetingSubmissionsByReviewerId($user->getId(), $journalId, $searchField, $searchMatch, $search, $rangeInfo, $sort, $sortDirection);	
+		$sectionDecisions =& $reviewerSubmissionDao->getReviewerMeetingSectionDecisionsByReviewerId($user->getId(), $journalId, $searchField, $searchMatch, $search, $rangeInfo, $sort, $sortDirection);	
 						
 		$templateMgr =& TemplateManager::getManager();
 		$templateMgr->assign('fieldOptions', Array(
@@ -232,10 +232,10 @@ class ReviewerHandler extends Handler {
 			SUBMISSION_FIELD_AUTHOR => 'user.role.author'
 		));	
 		$templateMgr->assign('sort', $sort);
-		$templateMgr->assign('rangeInfo', count($submissions));
+		$templateMgr->assign('rangeInfo', count($sectionDecisions));
 		$templateMgr->assign('sortDirection', $sortDirection);
 		$templateMgr->assign('rangeInfo', $rangeInfo);
-		$templateMgr->assign_by_ref('submissions', $submissions);
+		$templateMgr->assign_by_ref('sectionDecisions', $sectionDecisions);
 		
 		$templateMgr->assign('isReviewer', !$ercReviewersDao->isExternalReviewer($journalId, $user->getId()));
 		

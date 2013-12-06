@@ -43,7 +43,7 @@ class AuthorSubmitSuppFileForm extends Form {
 		parent::Form(
 			'author/submit/suppFile.tpl',
 			true,
-			$article->getLocale(),
+			$journal->getPrimaryLocale(),
 			array_flip(array_intersect(
 				array_flip(Locale::getAllLocales()),
 				$supportedSubmissionLocales

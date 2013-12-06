@@ -105,7 +105,7 @@ class Application extends PKPApplication {
 			'LayoutEditorSubmissionDAO' => 'classes.submission.layoutEditor.LayoutEditorSubmissionDAO',
 			'MeetingDAO' => 'classes.meeting.MeetingDAO',
 			'MeetingAttendanceDAO' => 'classes.meeting.MeetingAttendanceDAO',
-			'MeetingSubmissionDAO' => 'classes.meeting.MeetingSubmissionDAO',
+			'MeetingSectionDecisionDAO' => 'classes.meeting.MeetingSectionDecisionDAO',
 			'MetadataDescriptionDAO' => 'classes.metadata.MetadataDescriptionDAO',
 			'MinutesFileDAO' => 'classes.meeting.MinutesFileDAO',
 			'NoteDAO' => 'classes.note.NoteDAO',

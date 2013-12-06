@@ -59,10 +59,10 @@ class EditorHandler extends SectionEditorHandler {
 		$templateMgr->assign('fieldOptions', $this->getSearchFieldOptions());
 		$templateMgr->assign('dateFieldOptions', $this->getDateFieldOptions());
 
-        $countryDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-        $countries =& $countryDAO->getAreasOfTheCountry();
+                $countryDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+                $countries =& $countryDAO->getAreasOfTheCountry();
        
-        $templateMgr->assign_by_ref('countries', $countries);		
+                $templateMgr->assign_by_ref('countries', $countries);		
 		
 		// Bring in the print_issue_id function (FIXME?)
 		import('classes.issue.IssueAction');
@@ -306,14 +306,14 @@ class EditorHandler extends SectionEditorHandler {
 		/*********************************************************************
 		 * Get list of all research fields from the XML file and get all regions
          *********************************************************************/
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
-		$researchFields =& $articleDao->getResearchFields();
+		$proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
+		$researchFields =& $proposalDetailsDao->getResearchFields();
 		
-        $countryDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-        $countries =& $countryDAO->getAreasOfTheCountry();
+                $countryDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+                $countries =& $countryDAO->getAreasOfTheCountry();
        
 		$templateMgr->assign_by_ref('researchFields', $researchFields);
-        $templateMgr->assign_by_ref('countries', $countries);
+                $templateMgr->assign_by_ref('countries', $countries);
 
 		import('classes.issue.IssueAction');
 		$issueAction = new IssueAction();

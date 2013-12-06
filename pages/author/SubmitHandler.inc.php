@@ -237,19 +237,19 @@ class SubmitHandler extends AuthorHandler {
 					$templateMgr->assign('articleId', $articleId);
 					$templateMgr->assign('helpTopicId','submission.index');
 
-                    //Last updated, AIM, 1.20.2012
-                    $templateMgr->assign_by_ref('article', $this->article);
+                                        $templateMgr->assign_by_ref('article', $this->article);
 
-                    $articleFileDao =& DAORegistry::getDAO('ArticleFileDAO');
-                    $articleFiles =& $articleFileDao->getArticleFilesByArticle($articleId);
-                    $templateMgr->assign_by_ref('files', $articleFiles);
+                                        $articleFileDao =& DAORegistry::getDAO('ArticleFileDAO');
+                                        $articleFiles =& $articleFileDao->getArticleFilesByArticle($articleId);
+                                        $templateMgr->assign_by_ref('files', $articleFiles);
 
-                    // EL on March 11th 2013
-					$templateMgr->assign_by_ref('riskAssessment', $this->article->getRiskAssessment());
+                                        $templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
 
-					$templateMgr->assign_by_ref('abstract', $this->article->getLocalizedAbstract());
-                											
-					$templateMgr->display('author/submit/complete.tpl');
+                                        $sectionDao =& DAORegistry::getDAO('SectionDAO');
+                                        $section = $sectionDao->getSection($article->getSectionId());
+                                        $templateMgr->assign_by_ref('section', $section);
+
+                                        $templateMgr->display('author/submit/complete.tpl');
 					
 				} else {
 					$request->redirect(null, null, 'submit', $step+1, array('articleId' => $articleId));

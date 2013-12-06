@@ -53,43 +53,39 @@
 <div id="submissions">
 <h3>{translate key="editor.meeting.proposals"}</h3>
 <table width="100%" class="listing">
-	<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
+	<tr><td colspan="5" class="headseparator">&nbsp;</td></tr>
 	<tr class="heading" valign="bottom">
-		<td width="10%">{translate key="common.proposalId"}</td>
-		<td width="5%">{translate key="submissions.submit"}</td>
-		<td width="25%">{translate key="article.authors"}</td>
-		<td width="35%">{translate key="article.title"}</td>
-		<td width="25%" align="right">{translate key="common.status"}</td>
+		<td width="10%">{translate key="article.article"} {translate key="common.id"}</td>
+		<td width="20%">{translate key="article.authors"}</td>
+		<td width="40%">{translate key="article.title"}</td>
+		<td width="15%">{translate key="submissions.reviewRound"}</td>
+		<td width="15%">{translate key="common.status"}</td>
 	</tr>
-	<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
+	<tr><td colspan="5" class="headseparator">&nbsp;</td></tr>
 	
-	{foreach from=$submissions item=submission}
-	{assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
-	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-	<tr valign="top">
-		<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
-		<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>
-   		<td>{$submission->getFirstAuthor()|truncate:40:"..."|escape}</td> 
-   		<td><a href="{url op="submission" path=$submission->getId()}" class="action">{$abstract->getScientificTitle()|strip_unsafe_html}</a></td>
-		<td align="right">
-			{assign var="proposalStatusKey" value=$submission->getProposalStatusKey()}
-			{translate key=$proposalStatusKey}
-		</td>
-	</tr>
-	<tr><td colspan="6" class="separator"></td></tr>
+	{foreach from=$sectionDecisions item=decision}
+		<tr valign="top">
+			<td>{$decision->getProposalId()|escape}</td>
+   			<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>		
+   			<td><a href="{url op="submissionReview" path=$decision->getArticleId()}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+        	<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
+			<td>{translate key=$decision->getReviewStatusKey()}</td>
+		</tr>
+		<tr><td colspan="5" class="separator"></td></tr>
 	{/foreach}
 	
-	{if empty($submissions)}
+	{if empty($sectionDecisions)}
 	<tr>
 		<td colspan="6" class="nodata">{translate key="submissions.noSubmissions"}</td>
 	</tr>
-	{/if}
+	{else}
 	<tr>
 		<td colspan="6" class="endseparator">&nbsp;</td>
 	</tr>
 	<tr>
-		<td colspan="6" align="left">{$submissions|@count} {translate key="article.article.s"}</td>
+		<td colspan="6" align="left">{$sectionDecisions|@count} {translate key="article.article.s"}</td>
 	</tr>
+	{/if}
 </table>
 </div>
 <br>

@@ -594,6 +594,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 $proposalDetails->setStartDate($this->getData('startDate'));
                 
                 $proposalDetails->setEndDate($this->getData('endDate'));
+                
                 $primarySponsor = $this->getData('primarySponsor');
                 if($primarySponsor == "OTHER") {
                     $otherSponsor = $this->getData('otherPrimarySponsor');
@@ -616,17 +617,21 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 $proposalDetails->setSecondarySponsors($secondarySponsors);
                 
                 $proposalDetails->setMultiCountryResearch($this->getData('multiCountryResearch'));
-
-                $countriesArray = $this->getData('countries');
-                $countries = implode(",", $countriesArray);
-                $proposalDetails->setCountries($countries);
+                
+                if ($this->getData('multiCountryResearch') == PROPOSAL_DETAIL_YES) {
+                    $countriesArray = $this->getData('countries');
+                    $countries = implode(",", $countriesArray);
+                    $proposalDetails->setCountries($countries);                    
+                }
 		
                 $proposalDetails->setNationwide($this->getData('nationwide'));
-		
-                $geoAreasArray = $this->getData('geoAreas');
-                $geoAreas = implode(",", $geoAreasArray);
-                $proposalDetails->setGeoAreas($geoAreas);
-
+                
+                if ($this->getData('nationwide') != PROPOSAL_DETAIL_YES) {
+                    $geoAreasArray = $this->getData('geoAreas');
+                    $geoAreas = implode(",", $geoAreasArray);
+                    $proposalDetails->setGeoAreas($geoAreas);
+                }
+                
                 $researchFieldsArray = $this->getData('researchFields');
                 foreach($researchFieldsArray as $i => $field) {
                         if($field == "OTHER") {
@@ -641,18 +646,20 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 
                 $proposalDetails->setHumanSubjects($this->getData('withHumanSubjects'));    
 
-                $proposalTypesArray = $this->getData('proposalTypes');
-                foreach($proposalTypesArray as $i => $type) {
-                        if($type == "OTHER") {
-                                $otherType = $this->getData('otherProposalType');
-                                if($otherType != "") {
-                                        $proposalTypesArray[$i] = "Other (". $otherType .")";
-                                }
-                        }
+                if ($this->getData('withHumanSubjects') == PROPOSAL_DETAIL_YES) {
+                    $proposalTypesArray = $this->getData('proposalTypes');
+                    foreach($proposalTypesArray as $i => $type) {
+                            if($type == "OTHER") {
+                                    $otherType = $this->getData('otherProposalType');
+                                    if($otherType != "") {
+                                            $proposalTypesArray[$i] = "Other (". $otherType .")";
+                                    }
+                            }
+                    }
+                    $proposalTypes = implode("+", $proposalTypesArray);
+                    $proposalDetails->setProposalTypes($proposalTypes);
                 }
-                $proposalTypes = implode("+", $proposalTypesArray);
-                $proposalDetails->setProposalTypes($proposalTypes);
-
+                
                 $proposalDetails->setDataCollection($this->getData('dataCollection'));
                 
                 if ($this->getData('reviewedByOtherErc') == PROPOSAL_DETAIL_YES) {

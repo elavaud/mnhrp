@@ -360,6 +360,7 @@
 	<message key="search.operator.and">and</message>
 	<message key="search.operator.not">not</message>
 	<message key="search.operator.or">or</message>
+	<message key="search.researchDetails">Research Details</message>
 	<message key="search.reviseSearch">Revise Search</message>
 	<message key="search.searchAllCategories">Search all categories for</message>
 	<message key="search.searchCategories">Search categories</message>
@@ -368,6 +369,7 @@
 	<message key="search.subject">Keyword(s)</message>
 	<message key="search.titleIndex">Browse Title Index</message>
 	<message key="search.title">Title</message>
+	<message key="search.titlesAndAbstract">Title(s) and abstract</message>
 	<message key="search.typeMethodApproach">Type (method/approach)</message>
     <message key="search.investigator">Investigator</message>
     <message key="search.investigatorAffiliation">Investigator Affiliation</message>

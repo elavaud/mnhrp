@@ -175,8 +175,8 @@ class ProposalDetailsDAO extends DAO{
                 
 		$proposalDetails->setArticleId($row['article_id']);
 		$proposalDetails->setStudentResearch($row['student']);
-		$proposalDetails->setStartDate($this->dateFromDB($row['start_date']));
-		$proposalDetails->setEndDate($this->dateFromDB($row['end_date']));
+		if(isset($row['start_date']))$proposalDetails->setStartDate(date("d-M-Y", strtotime($this->dateFromDB($row['start_date']))));
+		if(isset($row['end_date']))$proposalDetails->setEndDate(date("d-M-Y", strtotime($this->dateFromDB($row['end_date']))));
                 $proposalDetails->setPrimarySponsor($row['primary_sponsor']);
 		$proposalDetails->setSecondarySponsors($row['secondary_sponsors']);
 		$proposalDetails->setMultiCountryResearch($row['multi_country']);

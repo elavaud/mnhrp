@@ -61,9 +61,7 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 		$templateMgr->assign_by_ref('submissionFile', $submission->getSubmissionFile());
 		$templateMgr->assign_by_ref('suppFiles', $submission->getSuppFiles());
 		$templateMgr->assign_by_ref('previousFiles', $articleFileDao->getPreviousFilesByArticleId($submission->getId()));
-		
-        $templateMgr->assign_by_ref('riskAssessment', $submission->getRiskAssessment());
-        $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
+		$templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
             
 		$templateMgr->assign('isReviewer', $ercReviewersDao->ercReviewerExists($journal->getId(), $submission->getSectionId(), $user->getId()));
 		
@@ -93,7 +91,8 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 	function validate($proposalId) {
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$ercReviewersDao =& DAORegistry::getDAO('ErcReviewersDAO');
-		$journal =& Request::getJournal();
+		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
+                $journal =& Request::getJournal();
 		$user =& Request::getUser();
 		$journalId = $journal->getId();
 		$isValid = false;
@@ -102,10 +101,13 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 		$meetings =& $meetings->toArray();
 		if (!$ercReviewersDao->isExternalReviewer($journalId, $user->getId())) {
 			if ($proposalId && $user && empty($newKey)) {
-				$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');
+				$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 				foreach ($meetings as $meeting) {
-					$submissionIds =& $meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meeting->getId());
-					foreach ($submissionIds as $submissionId) if ($submissionId == $proposalId) $isValid = true;
+					$sectionDecisionsId =& $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
+					foreach ($sectionDecisionsId as $decisionId) {
+                                            $sectionDecision = $sectionDecisionDao->getSectionDecision($decisionId);
+                                            if ($sectionDecision->getArticleId() == $proposalId) $isValid = true;
+                                        }
 				}
 			}
 		}

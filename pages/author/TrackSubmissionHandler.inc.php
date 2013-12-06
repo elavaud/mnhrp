@@ -171,9 +171,9 @@ class TrackSubmissionHandler extends AuthorHandler {
 		$templateMgr->assign('editorDecisionOptions', SectionEditorSubmission::getEditorDecisionOptions());
 		
 		$meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');
-		$meetingsAndAttendances =& $meetingAttendanceDao->getAttendancesByUserIdAndSubmissionId($user->getId(), $articleId);
-		$templateMgr->assign('countMeetings', count($meetingsAndAttendances));
-		$templateMgr->assign('meetingsAndAttendances', $meetingsAndAttendances);
+		//$meetingsAndAttendances =& $meetingAttendanceDao->getAttendancesByUserIdAndDecisionId($user->getId(), $articleId);
+		//$templateMgr->assign('countMeetings', count($meetingsAndAttendances));
+		//$templateMgr->assign('meetingsAndAttendances', $meetingsAndAttendances);
 		
 		$templateMgr->assign('helpTopicId', 'editorial.authorsRole.review');
 		$templateMgr->display('author/submissionReview.tpl');

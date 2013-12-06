@@ -37,8 +37,9 @@ class SubmissionReviewHandler extends ReviewerHandler {
 	function submission($args) {
 		$journal =& Request::getJournal();
 		$reviewId = $args[0];
+		$page = isset($args[1]) ? $args[1] : 'submissionReview';
 
-		$this->validate($reviewId);
+                $this->validate($reviewId);
 		$user =& $this->user;
 		$submission =& $this->submission;
 
@@ -67,15 +68,17 @@ class SubmissionReviewHandler extends ReviewerHandler {
 		$articleFileDao =& DAORegistry::getDao('ArticleFileDAO');
 		$templateMgr->assign_by_ref('previousFiles', $articleFileDao->getPreviousFilesByArticleId($submission->getId()));
 
-                $templateMgr->assign_by_ref('riskAssessment', $submission->getRiskAssessment());
                 $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
             			
 		$templateMgr->assign_by_ref('journal', $journal);
 		$templateMgr->assign_by_ref('reviewGuidelines', $journal->getLocalizedSetting('reviewGuidelines'));
 		import('classes.submission.reviewAssignment.ReviewAssignment');
 		$templateMgr->assign_by_ref('reviewerRecommendationOptions', ReviewAssignment::getReviewerRecommendationOptions());
-
+                $templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
 		$templateMgr->assign('helpTopicId', 'editorial.reviewersRole.review');
+		
+                $templateMgr->assign('pageToDisplay', $page);
+                
 		$templateMgr->display('reviewer/submission.tpl');
 	}
 

@@ -250,6 +250,29 @@ class ProposalDetails extends DataObject {
 	function getNationwide() {
 		return $this->getData('nationwide');
 	}
+        /**
+	 * Get a map for yes/no/not provided constant to locale key.
+	 * @return array
+	 */
+	function &getNationwideMap() {
+		static $nationwideMap;
+		if (!isset($nationwideMap)) {
+			$nationwideMap = array(
+                                PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS => 'proposal.randomlySelectedProvince',
+				PROPOSAL_DETAIL_NO => 'common.no',
+				PROPOSAL_DETAIL_YES => 'common.yes'
+			);
+		}
+		return $nationwideMap;
+	}	
+	/**
+	 * Get a locale key for yes/no/not provided
+	 * @param $value
+	 */
+	function getNationwideKey() {
+		$nationwideMap =& $this->getNationwideMap();
+		return $nationwideMap[$this->getNationwide()];
+	}        
         
         
 	/**
@@ -401,7 +424,7 @@ class ProposalDetails extends DataObject {
 	 * Get a locale key for the previous committee reviewed status
 	 */
 	function getDataCollectionKey() {
-                $dataCollection = $this->getDataColection();
+                $dataCollection = $this->getDataCollection();
 		$dataCollectionMap =& $this->getDataCollectionMap();
 		return $dataCollectionMap[$dataCollection];
 	}
@@ -470,6 +493,7 @@ class ProposalDetails extends DataObject {
 		$yesNoMap =& $this->getYesNoMap();
 		return $yesNoMap[$value];
 	}
-
+        
+    
 }
 ?>

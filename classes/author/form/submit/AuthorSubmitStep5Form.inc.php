@@ -64,8 +64,6 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 		$templateMgr->assign_by_ref('journal', Request::getJournal());
 
                 $templateMgr->assign_by_ref('article', $this->article);
-                $templateMgr->assign_by_ref('riskAssessment', $this->article->getRiskAssessment());
-                $templateMgr->assign_by_ref('abstract', $this->article->getLocalizedAbstract());
                                 
 		// Set up required Payment Related Information
 		import('classes.payment.ojs.OJSPaymentManager');
@@ -85,7 +83,9 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 				$templateMgr->assign_by_ref('fastTrackPayment', $completedPaymentDAO->getFastTrackCompletedPayment ( $journal->getId(), $articleId ));
 			}
 		}
-
+                
+                $templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
+                
 		parent::display();
 	}
 
@@ -169,34 +169,36 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 		// Update article
 		$article =& $this->article;
                 
-        if($article->getDateSubmitted() == null) {
-            $year = substr(Core::getCurrentDate(), 0, 4);
+                if($article->getDateSubmitted() == null) {
+                        $year = substr(Core::getCurrentDate(), 0, 4);
 
-            $countyear = $articleDao->getSubmissionsForYearCount($year) + 1;
-
-            $countryArray = explode(",", $article->getProposalCountry($this->getFormLocale()));
+                        $countyear = $articleDao->getSubmissionsForYearCount($year) + 1;
             
-            //$section = $sectionDao->getSection($article->getSectionId());
+                        $proposalDetails =& $article->getProposalDetails();
             
-            //$countyearsection = $articleDao->getSubmissionsForYearForSectionCount($year, $section->getId()) + 1;
+                        $countryArray = explode(",", $proposalDetails->getGeoAreas());
             
-            if ($article->getLocalizedMultiCountryResearch() == "Yes"){
-            	$country = 'MC';
-            }
-            elseif(count($countryArray) > 1) {
-                $country = 'MP';
-                $countyearcountry = $articleDao->getICPSubmissionsForYearCount($year) + 1;
-
-            } else {
-                $country = $countryArray[0];
-                $countyearcountry = $articleDao->getSubmissionsForYearForCountryCount($year, $country) + 1;
-            }
+                        //$section = $sectionDao->getSection($article->getSectionId());
             
-            $article->setProposalId($year. '.' . $countyear . '.' . $country , $this->getFormLocale());
-        }
-        if ($this->getData('commentsToEditor') != '') {
-			$article->setCommentsToEditor($this->getData('commentsToEditor'));
-		}
+                        //$countyearsection = $articleDao->getSubmissionsForYearForSectionCount($year, $section->getId()) + 1;
+            
+                        if ($proposalDetails->getMultiCountryResearch() == PROPOSAL_DETAIL_YES){
+                                $country = 'MC';
+                        } elseif ($proposalDetails->getNationwide() == PROPOSAL_DETAIL_YES) {
+                                $country = 'NW';
+                        } elseif(count($countryArray) > 1) {
+                                $country = 'MP';
+                                $countyearcountry = $articleDao->getICPSubmissionsForYearCount($year) + 1;
+                        } else {
+                                $country = $countryArray[0];
+                                $countyearcountry = $articleDao->getSubmissionsForYearForCountryCount($year, $country) + 1;
+                        }
+            
+                        $article->setProposalId($year. '.' . $countyear . '.' . $country , 'en_US');
+                }
+                if ($this->getData('commentsToEditor') != '') {
+                        $article->setCommentsToEditor($this->getData('commentsToEditor'));
+                }
 
 		$article->setDateSubmitted(Core::getCurrentDate());
 		$article->setSubmissionProgress(0);
@@ -280,15 +282,12 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 		import('lib.pkp.classes.notification.NotificationManager');
 		$notificationManager = new NotificationManager();
 		$url = Request::url($journal->getPath(), 'sectionEditor', 'submissionReview', array($article->getId()));
-        foreach ($sectionEditors as $sectionEditor) {
-        		// Not anymore: EL on February 17th 2013
-				// A section editor is directly assigned with the section id
-        		// $sectionEditor =& $sectionEditorEntry['user'];
-            $notificationManager->createNotification(
-            	$sectionEditor->getId(), $message,
-            	$article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_ARTICLE_SUBMITTED
-        	);
-        }
+                foreach ($sectionEditors as $sectionEditor) {
+                    $notificationManager->createNotification(
+                        $sectionEditor->getId(), $message,
+                        $article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_ARTICLE_SUBMITTED
+                    );
+                }
 
 		import('classes.article.log.ArticleLog');
 		import('classes.article.log.ArticleEventLogEntry');

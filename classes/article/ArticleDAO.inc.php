@@ -57,9 +57,40 @@ class ArticleDAO extends DAO {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-
-		return array('coverPageAltText', 'showCoverPage', 'hideCoverPageToc', 'hideCoverPageAbstract', 'originalFileName', 'fileName', 'width', 'height', 'discipline', 'subjectClass', 'subject', 'coverageGeo', 'coverageChron', 'coverageSample', 'type', 'sponsor', 'fundsRequired', 'selectedCurrency', 'proposalId', 'withdrawReason', 'withdrawComments', 'industryGrant', 'nameOfIndustry', 'internationalGrant', 'internationalGrantName', 'mohGrant', 'governmentGrant', 'governmentGrantName', 'universityGrant', 'selfFunding', 'otherGrant', 'specifyOtherGrant'
-                        );
+		return array(
+                    'coverPageAltText', 
+                    'showCoverPage', 
+                    'hideCoverPageToc', 
+                    'hideCoverPageAbstract', 
+                    'originalFileName', 
+                    'fileName', 
+                    'width', 
+                    'height', 
+                    'discipline', 
+                    'subjectClass', 
+                    'subject', 
+                    'coverageGeo', 
+                    'coverageChron', 
+                    'coverageSample', 
+                    'type', 
+                    'sponsor', 
+                    'fundsRequired', 
+                    'selectedCurrency', 
+                    'proposalId', 
+                    'withdrawReason', 
+                    'withdrawComments', 
+                    'industryGrant', 
+                    'nameOfIndustry', 
+                    'internationalGrant', 
+                    'internationalGrantName', 
+                    'mohGrant', 
+                    'governmentGrant', 
+                    'governmentGrantName', 
+                    'universityGrant', 
+                    'selfFunding', 
+                    'otherGrant', 
+                    'specifyOtherGrant'
+               );
 	}
 
 	/**
@@ -833,7 +864,7 @@ class ArticleDAO extends DAO {
 				ad.end_date AS end_date,
 				ad.primary_sponsor AS primarysponsor,
 				ad.multi_country AS multicountryresearch,
-				ad.research_field AS researchfield
+				ad.research_fields AS researchfield
 			FROM articles a
 				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
                                 LEFT JOIN article_details ad ON (ad.article_id = a.article_id)

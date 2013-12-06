@@ -23,9 +23,9 @@ import('pages.reviewer.ReviewerHandler');
 
 class MeetingReviewerHandler extends ReviewerHandler {
 	var $meeting;
-	var $submissions;
+	var $sectionDecisions;
 	var $user;
-	var $submissionReviewMap;
+	var $decisionReviewMap;
 	/**
 	 * Constructor
 	 **/
@@ -49,30 +49,25 @@ class MeetingReviewerHandler extends ReviewerHandler {
 		$ercReviewersDao = DAORegistry::getDAO('ErcReviewersDAO');
 		
 		$meeting =& $this->meeting;
-		$submissions =& $this->submissions;
+		$sectionDecisions =& $this->sectionDecisions;
 		
-		$submissionReviewMap =& $this->submissionReviewMap;
+		$decisionReviewMap =& $this->decisionReviewMap;
 		$this->setupTemplate(true, 1);
 		$templateMgr =& TemplateManager::getManager();
 		$templateMgr->assign_by_ref('meeting', $meeting);
-		$templateMgr->assign_by_ref('submissions', $submissions);
-		$templateMgr->assign_by_ref('map', $submissionReviewMap);
-		$templateMgr->assign('erc', $sectionDao->getSection($meeting->getUploader())); 
-			// EL on March 1st. 
-			// Unused + undefined variables
-			// $templateMgr->assign('sort', $sort);
-			// $templateMgr->assign('sortDirection', $sortDirection);
-			
+		$templateMgr->assign_by_ref('sectionDecisions', $sectionDecisions);
+		$templateMgr->assign_by_ref('map', $decisionReviewMap);
+		$templateMgr->assign('erc', $sectionDao->getSection($meeting->getUploader())); 			
 		$templateMgr->assign('isReviewer', $ercReviewersDao->ercReviewerExists($journal->getId(),$meeting->getUploader(), $user->getId()));
 		$templateMgr->assign('userId', $user->getId());
 
 		$templateMgr->display('reviewer/viewMeeting.tpl');
 	}
 	
+        
 	/**
 	 *  Response to Meeting Scheduler
 	 */
-	
 	function replyMeeting(){
 		$meetingId = Request::getUserVar('meetingId');
 		$this->validate($meetingId);
@@ -90,6 +85,7 @@ class MeetingReviewerHandler extends ReviewerHandler {
 		Request::redirect(null, 'reviewer', 'viewMeeting', $meetingId);
 	}
 	
+        
 	/** TODO:
 	 * (non-PHPdoc)
 	 * @see PKPHandler::validate()
@@ -122,23 +118,23 @@ class MeetingReviewerHandler extends ReviewerHandler {
 		if (!$isValid) {
 			Request::redirect(null, Request::getRequestedPage());
 		}
-		$submissionIds = array();
-		$submissions = array();
+		$sectionDecisionIds = array();
+		$sectionDecisions = array();
 		$reviewIds = array();
 		$map = array();
-		$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');
+		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 		$reviewerSubmissionDao =& DAORegistry::getDAO('ReviewerSubmissionDAO');
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
-		$submissionIds = $meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meeting->getId());
+		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
+		$sectionDecisionIds = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
 		
-		foreach($submissionIds as $submissionId) {
-			$submission = $articleDao->getArticle($submissionId, $journalId, false);
-			$review = $reviewerSubmissionDao->getReviewerSubmissionByReviewerAndSubmissionId($user->getId(), $submissionId, $journal->getId());
-			$map[$submissionId] = $review->getReviewId();
-			array_push($submissions, $submission);
+		foreach($sectionDecisionIds as $decisionId) {
+			$sectionDecision = $sectionDecisionDao->getSectionDecision($decisionId);
+			$review = $reviewerSubmissionDao->getReviewerSubmissionByReviewerAndDecisionId($user->getId(), $decisionId, $journal->getId());
+			$map[$decisionId] = $review->getReviewId();
+			array_push($sectionDecisions, $sectionDecision);
 		}
-		$this->submissionReviewMap =& $map;
-		$this->submissions =& $submissions;
+		$this->decisionReviewMap =& $map;
+		$this->sectionDecisions =& $sectionDecisions;
 		$this->meeting =& $meeting;
 		$this->user =& $user;
 		

@@ -146,7 +146,6 @@ class SectionEditorHandler extends Handler {
 		$templateMgr->register_function('print_issue_id', array($issueAction, 'smartyPrintIssueId'));
 		$templateMgr->assign('sort', $sort);
 		$templateMgr->assign('sortDirection', $sortDirection);
-		$templateMgr->assign('countryField', $countryField);
 		
 		$templateMgr->assign('ercId', $user->getSecretaryCommitteeId());
 		

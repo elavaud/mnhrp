@@ -146,7 +146,7 @@ $(document).ready(
 </form>
 
 <br/>
-<h4>{if $statusFilter == 1}Complete Research:<br/>{/if}{if $statusFilter == 2}Ongoing Research:<br/>{/if}Search {if $query}for '{$query}' {/if}{if $formattedDateFrom != ''} from {$formattedDateFrom|date_format:$dateFormatLong}{/if} {if $formattedDateFrom != '' && $formattedDateTo != ''} and {/if}{if $formattedDateTo != ''} until {$formattedDateTo|date_format:$dateFormatLong}{/if}{if $country} in {$country} {/if} returned {$count} result(s). </h4>
+<h4>{if $statusFilter == 1}{translate key="common.queue.long.completedResearches"}:<br/>{/if}{if $statusFilter == 2}{translate key="common.queue.long.ongoingResearches"}:<br/>{/if}Search {if $query}for '{$query}' {/if}{if $formattedDateFrom != ''} from {$formattedDateFrom|date_format:$dateFormatLong}{/if} {if $formattedDateFrom != '' && $formattedDateTo != ''} and {/if}{if $formattedDateTo != ''} until {$formattedDateTo|date_format:$dateFormatLong}{/if}{if $country} in {$country} {/if} returned {$count} result(s). </h4>
 <div id="results">
 <table width="100%" class="listing">
 <tr class="heading" valign="bottom">
@@ -164,26 +164,21 @@ $(document).ready(
 {iterate from=results item=result}
 <tr valign="bottom">
 	{assign var="abstract" value=$result->getLocalizedAbstract()}
+	{assign var="proposalDetails" value=$result->getProposalDetails()}
 	<td><a href="{url op="viewProposal" path=$result->getId()}" class="action">{$abstract->getScientificTitle()|escape}</a></td>
+	<td>{$proposalDetails->getLocalizedPrimarySponsorText()}</td>
 	<td>
-	{if $result->getLocalizedPrimarySponsor() == "Other"}
-		{$result->getLocalizedOtherPrimarySponsor()}
-	{else}
-		{$result->getLocalizedPrimarySponsor()}
-	{/if}
+		{if $proposalDetails->getMultiCountryResearch() == PROPOSAL_DETAIL_YES}
+			{$proposalDetails->getLocalizedMultiCountryText()}
+		{elseif $proposalDetails->getNationwide() == PROPOSAL_DETAIL_YES}
+			{translate key="proposal.nationwide"}
+		{else}
+			{$proposalDetails->getLocalizedGeoAreasText()}
+		{/if}
 	</td>
-	<td>
-	{if $result->getLocalizedMultiCountryResearch() == "Yes"}
-		Multi-country research
-	{elseif $result->getLocalizedProposalCountry() == "NW"}
-		Nationwide
-	{else}
-		{$result->getLocalizedProposalCountryText()}
-	{/if}
-	</td>
-	<td>{$result->getLocalizedResearchFieldText()}</td>
-	<td>{$result->getLocalizedStartDate()} to {$result->getLocalizedEndDate()}</td>
-	<td>{if $result->getStatus() == 11}Complete{else}Ongoing{/if}</td>
+	<td>{$proposalDetails->getLocalizedResearchFieldText()}</td>
+	<td>{$proposalDetails->getStartDate()} {translate key="search.dateTo"} {$proposalDetails->getEndDate()}</td>
+	<td>{if $result->getStatus() == PROPOSAL_STATUS_COMPLETED}{translate key="common.queue.short.completedResearches"}{else}{translate key="common.queue.short.ongoingResearches"}{/if}</td>
 </tr>
 <tr>
 	<td colspan="6" class="{if $results->eof()}end{/if}separator">&nbsp;</td>

@@ -45,36 +45,27 @@ $(document).ready(function() {
 	<tr class="heading" valign="bottom">
 		<td width="5%" align="center">{translate key="common.select"}</input></td>
 		<td width="15%">{translate key="article.article"} {translate key="common.id"}</td>
-		<td width="5%">{sort_heading key="submissions.submit" sort="submitDate"}</td>
-		<td width="20%">{sort_heading key="article.authors" sort="authors"}</td>
-		<td width="25%">{sort_heading key="article.title" sort="title"}</td>
-		<td width="25%" align="right">{sort_heading key="common.status" sort="status"}</td>
+		<td width="20%">{translate key="article.authors"}</td>
+		<td width="40%">{translate key="article.title"}</td>
+		<td width="10%">{sort_heading key="submissions.reviewRound" sort="round"}</td>
+		<td width="10%">{sort_heading key="common.status" sort="status"}</td>
 	</tr>
 	<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
 	<p></p>
-{iterate from=submissions item=submission}
-{assign var="status" value=$submission->getSubmissionStatus()}
-{assign var="decision" value=$submission->getMostRecentDecisionValue() }
-{assign var="abstract" value=$submission->getLocalizedAbstract()}
-							
-	{assign var="articleId" value=$submission->getArticleId()}
-	{assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+{iterate from=availableSectionDecisions item=decision}
 	<tr valign="top">
-			<td>{html_checkboxes id="selectedProposals" name='selectedProposals' values=$submission->getId() checked=$selectedProposals'} </td>
-			<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
-			<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>
-   			<td>{$submission->getFirstAuthor()|truncate:40:"..."|escape}</td> <!-- Get first author. Added by MSB, Sept 25, 2011 -->		
-   			<td><a href="{url op="submissionReview" path=$submission->getId()}" class="action">{$abstract->getScientificTitle()|strip_unsafe_html|truncate:40:"..."}</a></td>
-			<td align="right">
-				{assign var="proposalStatusKey" value=$submission->getProposalStatusKey()}
-				{translate key=$proposalStatusKey}
-			</td>
+			<td>{html_checkboxes id="selectedSectionDecisions" name='selectedSectionDecisions' values=$decision->getId() checked=$sectionDecisionsId'} </td>
+			<td>{$decision->getProposalId()|escape}</td>
+   			<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>		
+   			<td><a href="{url op="submissionReview" path=$decision->getArticleId()}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+        	<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
+			<td>{translate key=$decision->getReviewStatusKey()}</td>
 	</tr>
 <tr>
-<td colspan="6" class="{if $submissions->eof()}end{/if}separator">&nbsp;</td>
+<td colspan="6" class="{if $availableSectionDecisions->eof()}end{/if}separator">&nbsp;</td>
 </tr>
 {/iterate}
-{if $submissions->wasEmpty()}
+{if $availableSectionDecisions->wasEmpty()}
 	<tr>
 		<td colspan="6" class="nodata">{translate key="submissions.noSubmissions"}</td>
 	</tr>
@@ -83,7 +74,7 @@ $(document).ready(function() {
 	</tr>
 {else}
 	<tr>
-		<td colspan="6" align="left">{$submissions->getCount()|escape} {translate key="article.article.s"}</td>
+		<td colspan="6" align="left">{$availableSectionDecisions->getCount()|escape} {translate key="article.article.s"}</td>
 	</tr>
 {/if}
 </table>

@@ -414,5 +414,26 @@ class SectionDecision extends DataObject {
             return $reviewAssignmentsDone;
 	}  
 
-        }
+        /*
+         * Get localized proposal title
+	 */	 
+	function &getLocalizedProposalTitle() {
+            $articleDao =& DAORegistry::getDAO('ArticleDAO');
+            $article =& $articleDao->getArticle($this->getArticleId());
+            $abstract = $article->getLocalizedAbstract();
+            $scientificTitle = $abstract->getScientificTitle();
+            return $scientificTitle;
+	}
+        
+        /*
+         * Get localized proposal title
+	 */	 
+	function &getAuthorString() {
+            $articleDao =& DAORegistry::getDAO('ArticleDAO');
+            $article =& $articleDao->getArticle($this->getArticleId());
+            $authorString = $article->getAuthorString();
+            return $authorString;
+	}
+
+}
 ?>

@@ -14,7 +14,7 @@
 import('classes.article.SectionDecision');
 
 class SectionDecisionDAO extends DAO{
-
+        
 	var $reviewAssignmentDao;
 
 	/**
@@ -22,7 +22,7 @@ class SectionDecisionDAO extends DAO{
 	 */	
 	function SectionDecisionDAO() {
 		parent::DAO();
-		$this->reviewAssignmentDao =& DAORegistry::getDAO('ReviewAssignmentDAO');		
+		$this->reviewAssignmentDao =& DAORegistry::getDAO('ReviewAssignmentDAO');
 	}
 
 
@@ -283,6 +283,22 @@ class SectionDecisionDAO extends DAO{
 		unset($result);
 		
 		return $returner + 1;
+	}
+
+        /*
+	 * Get section decisions available for a committee meeting
+	 * @param $sectionId int
+	 */
+	function getSectionDecisionsAvailableForMeeting($sectionId) {
+            
+            	$result =& $this->retrieve(
+			sprintf('SELECT * FROM section_decisions WHERE section_id = ? AND (decision = ? OR decision = ?)'),
+			array($sectionId, SUBMISSION_SECTION_DECISION_FULL_REVIEW, SUBMISSION_SECTION_DECISION_EXPEDITED)
+		);
+                
+		$returner = new DAOResultFactory($result, $this, '_returnSectionDecisionFromRow');
+
+                return $returner;
 	}
 }
 

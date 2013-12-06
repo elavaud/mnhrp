@@ -60,8 +60,6 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * @return EditorSubmission
 	 */
 	function &getSectionEditorSubmission($articleId) {
-		$primaryLocale = Locale::getPrimaryLocale();
-		$locale = Locale::getLocale();
 		$result =& $this->retrieve(
 			'SELECT	a.*
 			FROM	articles a
@@ -173,9 +171,6 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * last modified by EL on February 17th 2013
 	 */
 	function &getSectionEditorSubmissions($sectionId, $journalId, $status = true) {
-		$primaryLocale = Locale::getPrimaryLocale();
-		$locale = Locale::getLocale();
-
 		$sectionEditorSubmissions = array();
 
 		$result =& $this->retrieve(
@@ -276,9 +271,10 @@ class SectionEditorSubmissionDAO extends DAO {
 				(!empty($additionalWhereSql)?" AND ($additionalWhereSql)":'') . '
 				AND sdec2.section_decision_id IS NULL';
 
-		$result =& $this->retrieveRange($sql . ' ' . $searchSql . $countrySql. ' GROUP BY a.article_id' . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
-			$params,
-			$rangeInfo
+		$result =& $this->retrieveRange(
+                            $sql . ' ' . $searchSql . $countrySql. ' GROUP BY a.article_id' . ($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
+                            $params,
+                            $rangeInfo
 		);
 
 		return $result;
@@ -299,7 +295,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorSubmissionsSubmittedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorSubmissionsSubmittedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -331,7 +327,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorWaitingForSubmissionsIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorWaitingForSubmissionsIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -361,7 +357,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorSubmissionsInReviewIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorSubmissionsInReviewIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -393,7 +389,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorSubmissionsApprovedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorSubmissionsApprovedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -425,7 +421,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorSubmissionsCompletedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorSubmissionsCompletedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -453,7 +449,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorSubmissionsNotApprovedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorSubmissionsNotApprovedIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -481,7 +477,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorSubmissionsInEditingIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorSubmissionsInEditingIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -508,7 +504,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last modified by EL on February 17th 2013
 	 * Removed edit assignments
 	 */
-	function &getSectionEditorSubmissionsArchivesIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getSectionEditorSubmissionsArchivesIterator($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$result =& $this->_getUnfilteredSectionEditorSubmissions(
 			$sectionId, $journalId,
 			$searchField, $searchMatch, $search,
@@ -604,7 +600,7 @@ class SectionEditorSubmissionDAO extends DAO {
 		$result5->Close();
 		unset($result3);
 
-		return $submissionsCount;
+                return $submissionsCount;
 	}
 
 	//
@@ -987,99 +983,9 @@ class SectionEditorSubmissionDAO extends DAO {
 			default: return 'submission_title';
 		}
 	}
-	
-	/*
-	 * Edited by EL
-	 * Last Update: February 25th 2013
-	 */	
-	function &getSectionEditorSubmissionsForErcReview($sectionId, $journalId, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
-		$result =& $this->_getUnfilteredSectionEditorSubmissions(
-			$sectionId, $journalId,
-			null, null, null,
-			null, null, null, null,
-			'a.status = ' . STATUS_QUEUED . ' AND (sdec.decision = ' . SUBMISSION_SECTION_DECISION_FULL_REVIEW . ' OR sdec.decision = '. SUBMISSION_SECTION_DECISION_RESUBMIT .' OR sdec.decision = '. SUBMISSION_SECTION_DECISION_EXPEDITED .')',
-			null, $sortBy, $sortDirection
-		);
-		
-		$returner = new DAOResultFactory($result, $this, '_returnSectionEditorSubmissionFromRow');
 
-		return $returner;
-	}
 
-	/*
-	 * Edited by EL
-	 * Last Update: February 17th 2013
-	 */		
-	function &getSectionEditorSubmissionsInReview($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
-		$sectionEditorSubmissions = array();
-		$result =& $this->_getUnfilteredSectionEditorSubmissions(
-			$sectionId, $journalId,
-			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
-			'a.status = ' . STATUS_QUEUED . ' AND (sdec.decision IS NULL OR sdec.decision <> ' . SUBMISSION_SECTION_DECISION_APPROVED . ')',
-			$rangeInfo, $sortBy, $sortDirection
-		);
 
-		while (!$result->EOF) {
-			$sectionEditorSubmissions[] =& $this->_returnSectionEditorSubmissionFromRow($result->GetRowAssoc(false));
-			$result->MoveNext();
-		}
-
-		$result->Close();
-		unset($result);
-
-		return $sectionEditorSubmissions;
-	}
-	
-	/*
-	 * Edited by EL
-	 * Last Update: February 17th 2013
-	 */	
-	function &getSectionEditorSubmissionsArchives($sectionId, $journalId, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $countryField = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
-		$sectionEditorSubmissions = array();
-		$result = $this->_getUnfilteredSectionEditorSubmissions(
-			$sectionId, $journalId,
-			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
-			'(a.status <> ' . STATUS_QUEUED . ')',
-			$rangeInfo, $sortBy, $sortDirection
-		);
-		while (!$result->EOF) {
-			$sectionEditorSubmissions[] =& $this->_returnSectionEditorSubmissionFromRow($result->GetRowAssoc(false));
-			$result->MoveNext();
-		}
-
-		$result->Close();
-		unset($result);
-
-		return $sectionEditorSubmissions;
-		
-	}
-
-	/*
-	 * Edited by EL
-	 * Last Update: February 17th 2013
-	 */		
-	function &getSectionEditorSubmissionsApproved($sectionId, $journalId) {
-		$sectionEditorSubmissions = array();
-		$result =& $this->_getUnfilteredSectionEditorSubmissions(
-			$sectionId, $journalId,
-			$searchField, $searchMatch, $search,
-			$dateField, $dateFrom, $dateTo, $countryField,
-			'a.status = ' . STATUS_QUEUED . ' AND (sdec.decision = ' . SUBMISSION_SECTION_DECISION_APPROVED . ')',
-			$rangeInfo, $sortBy, $sortDirection
-		);
-
-		while (!$result->EOF) {
-			$sectionEditorSubmissions[] =& $this->_returnSectionEditorSubmissionFromRow($result->GetRowAssoc(false));
-			$result->MoveNext();
-		}
-
-		$result->Close();
-		unset($result);
-
-		return $sectionEditorSubmissions;
-	}
 	
 	/**
 	 * Retrieve a list of all reviewers along with information about their current status with respect to an article's current decision.
@@ -1172,56 +1078,61 @@ class SectionEditorSubmissionDAO extends DAO {
 		return $returner;				
 	}
 
-	function getRemainingSubmissionsForInitialReview($meetingId) {
-		$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');
-		$submissionIds = $meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meetingId);
-		$submissions = array();
+	function getRemainingSectionDecisionsForInitialReview($meetingId) {
+		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
+		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
+                $sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$sectionDecisions = array();
 		
-		foreach($submissionIds as $submissionId) {
-			$submission = $this->getSectionEditorSubmission($submissionId);
-			if(!$submission->isSubmissionDue() && ($submission->getSubmissionStatus() == PROPOSAL_STATUS_FULL_REVIEW || $submission->getSubmissionStatus() == PROPOSAL_STATUS_EXPEDITED))
-				array_push($submissions, $submission);
+		foreach($sectionDecisionsId as $sectionDecisionId) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+                        $decisionValue = $sectionDecision->getDecision();
+			if($sectionDecision->getReviewType() == REVIEW_TYPE_INITIAL && ($decisionValue == SUBMISSION_SECTION_DECISION_FULL_REVIEW || $decisionValue == SUBMISSION_SECTION_DECISION_EXPEDITED))
+				array_push($sectionDecisions, $sectionDecision);
 		}
-		return $submissions;
+		return $sectionDecisions;
 	}
 	
-	function getMeetingSubmissionsAssignedForInitialReview($meetingId) {
-		$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');
-		$submissionIds = $meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meetingId);
-		$submissions = array();
+	function getMeetingSectionDecisionsAssignedForInitialReview($meetingId) {
+		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
+		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
+		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$sectionDecisions = array();
 		
-		foreach($submissionIds as $submissionId) {
-			$submission = $this->getSectionEditorSubmission($submissionId);
-			if(!$submission->isSubmissionDue())
-				array_push($submissions, $submission);
+		foreach($sectionDecisionsId as $sectionDecisionId) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+                        if ($sectionDecision->getReviewType() == REVIEW_TYPE_INITIAL) array_push($sectionDecisions, $sectionDecision);
 		}
-		return $submissions;
+		return $sectionDecisions;
 	}
 	
-	function getRemainingSubmissionsForContinuingReview($meetingId) {
-		$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');		
-		$submissionIds = $meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meetingId);
-		$submissions = array();
+	function getRemainingSectionDecisionsForContinuingReview($meetingId) {
+		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
+		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
+		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$sectionDecisions = array();
 		
-		foreach($submissionIds as $submissionId) {
-			$submission = $this->getSectionEditorSubmission($submissionId);			
-			if($submission->isSubmissionDue() && $submission->getSubmissionStatus() == PROPOSAL_STATUS_FULL_REVIEW)
-				array_push($submissions, $submission);
+		foreach($sectionDecisionsId as $sectionDecisionId) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+                        $decisionValue = $sectionDecision->getDecision();
+			if($sectionDecision->getReviewType() == REVIEW_TYPE_CONTINUING && ($decisionValue == SUBMISSION_SECTION_DECISION_FULL_REVIEW || $decisionValue == SUBMISSION_SECTION_DECISION_EXPEDITED))
+				array_push($sectionDecisions, $sectionDecision);
 		}
-		return $submissions;
+		return $sectionDecisions;
 	}
 	
-	function getMeetingSubmissionsAssignedForContinuingReview($meetingId) {
-		$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');		
-		$submissionIds = $meetingSubmissionDao->getMeetingSubmissionsByMeetingId($meetingId);
-		$submissions = array();
+	function getMeetingSectionDecisionsAssignedForContinuingReview($meetingId) {
+		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
+		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
+		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$sectionDecisions = array();
 		
-		foreach($submissionIds as $submissionId) {
-			$submission = $this->getSectionEditorSubmission($submissionId);			
-			if($submission->isSubmissionDue())
-				array_push($submissions, $submission);
+		foreach($sectionDecisionsId as $sectionDecisionId) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+			if($sectionDecision->getReviewType() == REVIEW_TYPE_CONTINUING)
+				array_push($sectionDecisions, $sectionDecision);
 		}
-		return $submissions;
+		return $sectionDecisions;
 	}
 
 	function getReviewAssignmentIdByDecisionAndReviewer($decisionId, $reviewerId) {

@@ -73,11 +73,12 @@ $(document).ready(function() {
 </tr>
 {foreach from=$suppFiles item=file}
 <tr valign="top">
-	<td>{$file->getSuppFileTitle()|escape}</td>
+	<td>{$file->getTitle()|escape}</td>
 	<td>{$file->getOriginalFileName()|escape}</td>
 	<td>{$file->getDateSubmitted()|date_format:$dateFormatTrunc}</td>
 	<td align="right">
-            <a href="{url op="deleteSubmitSuppFile" path=$file->getSuppFileId() articleId=$articleId}" onclick="return confirm('{translate|escape:"jsparam" key="author.submit.confirmDeleteSuppFile"}')" class="action">{translate key="common.delete"}</a></td>
+            <a href="{url op="deleteSubmitSuppFile" path=$file->getSuppFileId() articleId=$articleId}" onclick="return confirm('{translate|escape:"jsparam" key="author.submit.confirmDeleteSuppFile"}')" class="action">{translate key="common.delete"}</a>
+    </td>
 </tr>
 {foreachelse}
 <tr valign="top">

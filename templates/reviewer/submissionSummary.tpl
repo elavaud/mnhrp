@@ -1,133 +1,37 @@
 {**
- * submissionForFullReview.tpl
+ * submission.tpl
+ *
+ * Copyright (c) 2003-2011 John Willinsky
+ * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ *
+ * Show the reviewer administration page.
+ *
+ * FIXME: At "Notify The Editor", fix the date.
+ *
  * $Id$
  *}
-{strip}
-{assign var="articleId" value=$submission->getArticleId()}
-{assign var="proposalId" value=$submission->getLocalizedProposalId()}
-{translate|assign:"pageTitleTranslated" key="submission.page.proposalFromMeeting" id=$proposalId}
-{assign var="pageCrumbTitle" value="article.submission"}
-{include file="common/header.tpl"}
-{/strip}
 
-<ul class="menu">
-	<li><a href="{url op="meetings"}">{translate key="common.queue.short.meetingList"}</a></li>
-	{if $isReviewer}
-		<li><a href="{url op="proposalsFromMeetings"}">{translate key="common.queue.short.meetingProposals"}</a></li>
-	{/if}
-</ul>
-<div class="separator"></div>
-
-<script type="text/javascript">
-
-</script>
-
-<div id="submissionToBeReviewed">
-
-<h3>{translate key="reviewer.article.submissionToBeReviewed"}</h3>
-<table width="100%" class="data">
-<tr valign="top">
-	<td width="30%" class="label">{translate key="common.proposalId"}</td>
-	<td width="70%" class="value">{$submission->getLocalizedProposalId()|strip_unsafe_html}</td>
-</tr>
-<tr valign="top">
-	<td width="30%" class="label">{translate key="article.title"}</td>
-	<td width="70%" class="value">{$abstract->getScientificTitle()|strip_unsafe_html}</td>
-</tr>
-<tr valign="top">
-	<td class="label">{translate key="article.journalSection"}</td>
-	<td class="value">{$ercTitle}</td>
-</tr>
-<tr valign="top">
-	<td class="label">{translate key="common.status"}</td>
-	<td class="value">
-		{assign var="status" value=$submission->getSubmissionStatus()}
-    	{if $status==PROPOSAL_STATUS_WITHDRAWN}{translate key="submission.status.withdrawn"}
-    	{elseif $status==PROPOSAL_STATUS_COMPLETED}{translate key="submission.status.completed"}
-        {elseif $status==PROPOSAL_STATUS_ARCHIVED}
-        	{assign var="decision" value=$submission->getMostRecentDecisionValue()}
-            {if $decision==SUBMISSION_SECTION_DECISION_DECLINED}
-            	Archived({translate key="submission.status.declined"})
-            {elseif $decision==SUBMISSION_SECTION_DECISION_EXEMPTED}
-            	Archived({translate key="submission.status.exempted"})
-            {/if}
-        {elseif $status==PROPOSAL_STATUS_SUBMITTED}{translate key="submission.status.submitted"}
-        {elseif $status==PROPOSAL_STATUS_CHECKED}{translate key="submission.status.complete"}
-        {elseif $status==PROPOSAL_STATUS_EXPEDITED}{translate key="submission.status.expeditedReview"}
-        {elseif $status==PROPOSAL_STATUS_FULL_REVIEW}{translate key="submission.status.fullReview"}
-        {elseif $status==PROPOSAL_STATUS_RETURNED}{translate key="submission.status.incomplete"}
-        {elseif $status==PROPOSAL_STATUS_EXEMPTED}{translate key="submission.status.exempted"}
-        {elseif $status==PROPOSAL_STATUS_REVIEWED}
-        	{assign var="decision" value=$submission->getMostRecentDecisionValue()}
-            {if $decision==SUBMISSION_SECTION_DECISION_RESUBMIT}{translate key="submission.status.reviseAndResubmit"}
-            {elseif $decision==SUBMISSION_SECTION_DECISION_APPROVED}{translate key="submission.status.approved"}
-            {elseif $decision==SUBMISSION_SECTION_DECISION_DECLINED}{translate key="submission.status.declined"}                
-            {/if}
-        {/if}
-	</td>
-</tr>
-
-</table>
-</div>
-
-<div class="separator"></div>
-
-<div id="files">
-<h3>Files</h3>
-	<table width="100%" class="data">
-		<tr valign="top">
-			<td width="30%" class="label">
-				{translate key="submission.submissionManuscript"}
-			</td>
-			<td class="value" width="70%">
-				{if $submissionFile}
-					<a href="{url op="downloadProposalFromMeetingFile" path=$submission->getArticleId()|to_array:$submissionFile->getFileId()}" class="file">{$submissionFile->getFileName()|escape}</a>
-				&nbsp;&nbsp;{$submissionFile->getDateModified()|date_format:$dateFormatLong}
-				{else}
-					{translate key="common.none"}
-				{/if}
-			</td>
-		</tr>
-		{if count($previousFiles)>1}
-		{assign var="count" value=0}
-		<tr>
-			<td class="label">Previous proposal files</td>
-			<td width="80%" class="value">
-				{foreach name="previousFiles" from=$previousFiles item=previousFile}
-					{assign var="count" value=$count+1}
-					{if $count > 1}
-            			<a href="{url op="downloadProposalFromMeetingFile" path=$submission->getArticleId()|to_array:$previousFile->getFileId()}" class="file">{$previousFile->getFileName()|escape}</a><br />
-					{/if}
-				{/foreach}
-			</td>
-		</tr>
-		{/if}
-		<tr valign="top">
-			<td class="label">
-				{translate key="article.suppFiles"}
-			</td>
-			<td class="value">
-				{assign var=sawSuppFile value=0}
-				{foreach from=$suppFiles item=suppFile}
-					{if $suppFile->getShowReviewers() }
-						{assign var=sawSuppFile value=1}
-						<a href="{url op="downloadProposalFromMeetingFile" path=$submission->getArticleId()|to_array:$suppFile->getFileId()}" class="file">{$suppFile->getFileName()|escape}</a><cite>&nbsp;&nbsp;({$suppFile->getType()})</cite><br />
-					{/if}
-				{/foreach}
-				{if !$sawSuppFile}
-					{translate key="common.none"}
-				{/if}
-			</td>
-		</tr>
+<div id="Authors">
+	<h4>{translate key="article.authors"}</h4>
+	<table class="listing" width="100%">
+		{foreach name=authors from=$submission->getAuthors() item=author}
+			<tr valign="top">
+        		<td class="label" width="20%">{if $author->getPrimaryContact()}Investigator{else}Co-Investigator{/if}</td>
+        		<td class="value">
+					{$author->getFullName()|escape}<br />
+					{$author->getEmail()|escape}<br />
+					{if ($author->getAffiliation()) != ""}{$author->getAffiliation()|escape}<br/>{/if}
+					{if ($author->getPhoneNumber()) != ""}{$author->getPhoneNumber()|escape}<br/>{/if}
+        		</td>
+    		</tr>
+		{/foreach}
 	</table>
+	<div class="separator"></div>
 </div>
-
-<div class="separator"></div>
 
 <div id="titleAndAbstract">
 
 	<h4><br/>{translate key="submission.titleAndAbstract"}</h4>
-	<div class="separator"></div>
 	
 	{assign var="abstracts" value=$submission->getAbstracts()}
 	
@@ -170,11 +74,11 @@
     		</tr>
 		</table>
 	{/foreach}
+	<div class="separator"></div>
 </div>
 
 <div id="proposalDetails">
 	<h4><br/>{translate key="submission.proposalDetails"}</h4>
-	<div class="separator"></div>
 
 	{assign var="proposalDetails" value=$submission->getProposalDetails()}
 	
@@ -265,11 +169,11 @@
         	<td class="value">{translate key=$proposalDetails->getCommitteeReviewedKey()}</td>
     	</tr>
 	</table>
+	<div class="separator"></div>
 </div>
 
 <div id="sourceOfMonetary">
 	<h4><br/>{translate key="proposal.sourceOfMonetary"}</h4>
-	<div class="separator"></div>
 	<table class="listing" width="100%">
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.fundsRequired"}</td>
@@ -332,11 +236,11 @@
     		</tr>    
     	{/if}
 	</table>
+	<div class="separator"></div>
 </div>
 
 <div id=riskAssessments>
 	<h4><br/>{translate key="proposal.riskAssessment"}</h4>
-	<div class="separator"></div>
 
 	{assign var="riskAssessment" value=$submission->getRiskAssessment()}
 
@@ -489,6 +393,6 @@
     </table>
 </div>
 
-{include file="common/footer.tpl"}
+<div class="separator"></div>
 
 

@@ -46,7 +46,7 @@ class AuthorSubmitForm extends Form {
 		parent::Form(
 			sprintf('author/submit/step%d.tpl', $step),
 			true,
-			$article?$article->getLocale():Locale::getLocale(),
+			Locale::getLocale(),
 			array_flip(array_intersect(
 				array_flip(Locale::getAllLocales()),
 				$supportedSubmissionLocales
@@ -94,7 +94,7 @@ class AuthorSubmitForm extends Form {
 	 * @return string
 	 */
 	function getDefaultFormLocale() {
-		if ($this->article) return $this->article->getLocale();
+		if ($this->article) return Locale::getLocale();
 		return parent::getDefaultFormLocale();
 	}
 

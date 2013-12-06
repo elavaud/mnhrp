@@ -116,25 +116,24 @@ class MinutesHandler extends Handler {
 		$meeting =& $this->meeting;
 		
 		$meetingDao =& DAORegistry::getDAO("MeetingDAO");
-		$meetingSubmissionDao =& DAORegistry::getDAO("MeetingSubmissionDAO");
 		$sectionEditorSubmissionDao =& DAORegistry::getDAO('SectionEditorSubmissionDAO');
 		$minutesFileDao =& DAORegistry::getDAO('MinutesFileDAO');
 		$minutesStatusMap = $meeting->getStatusMap();
 		
-		$remainingSubmissionsForInitialReview = $sectionEditorSubmissionDao->getRemainingSubmissionsForInitialReview($meetingId);
-		$remainingSubmissionsForContinuingReview = $sectionEditorSubmissionDao->getRemainingSubmissionsForContinuingReview($meetingId);
-		$actualMeetingSubmissionsForInitialReview = $sectionEditorSubmissionDao->getMeetingSubmissionsAssignedForInitialReview($meetingId);
-		$actualMeetingSubmissionsForContinuingReview = $sectionEditorSubmissionDao->getMeetingSubmissionsAssignedForContinuingReview($meetingId);
+		$remainingSectionDecisionsForInitialReview = $sectionEditorSubmissionDao->getRemainingSectionDecisionsForInitialReview($meetingId);
+		$remainingSectionDecisionsForContinuingReview = $sectionEditorSubmissionDao->getRemainingSectionDecisionsForContinuingReview($meetingId);
+		$actualMeetingSectionDecisionsForInitialReview = $sectionEditorSubmissionDao->getMeetingSectionDecisionsAssignedForInitialReview($meetingId);
+		$actualMeetingSectionDecisionsForContinuingReview = $sectionEditorSubmissionDao->getMeetingSectionDecisionsAssignedForContinuingReview($meetingId);
 		
-		$hasProposalsForInitialReview = (count($actualMeetingSubmissionsForInitialReview)>0) ? true : false ;
-		$hasProposalsForContinuingReview = (count($actualMeetingSubmissionsForContinuingReview)>0) ? true : false ;
+		$hasProposalsForInitialReview = (count($actualMeetingSectionDecisionsForInitialReview)>0) ? true : false ;
+		$hasProposalsForContinuingReview = (count($actualMeetingSectionDecisionsForContinuingReview)>0) ? true : false ;
 		
-		if ($minutesStatusMap[MINUTES_STATUS_INITIAL_REVIEWS]!=1 && $hasProposalsForInitialReview && (count($remainingSubmissionsForInitialReview) == 0)) {
+		if ($minutesStatusMap[MINUTES_STATUS_INITIAL_REVIEWS]!=1 && $hasProposalsForInitialReview && (count($remainingSectionDecisionsForInitialReview) == 0)) {
 			$meeting->updateMinutesStatus(MINUTES_STATUS_INITIAL_REVIEWS);
 			$meetingDao->updateMinutesStatus($meeting);				
 		}
 				
-		if ($minutesStatusMap[MINUTES_STATUS_CONTINUING_REVIEWS]!=1 && $hasProposalsForContinuingReview && (count($remainingSubmissionsForContinuingReview) == 0)) {
+		if ($minutesStatusMap[MINUTES_STATUS_CONTINUING_REVIEWS]!=1 && $hasProposalsForContinuingReview && (count($remainingSectionDecisionsForContinuingReview) == 0)) {
 			$meeting->updateMinutesStatus(MINUTES_STATUS_CONTINUING_REVIEWS);
 			$meetingDao->updateMinutesStatus($meeting);				
 		}	

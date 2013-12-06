@@ -279,7 +279,7 @@ class MeetingDAO extends DAO {
 	function cancelMeeting($meetingId){
 		$this->update(
 			'DELETE a,b,c FROM meetings AS a
-			 LEFT JOIN meeting_submissions AS b ON (b.meeting_id = a.meeting_id)
+			 LEFT JOIN meeting_section_decisions AS b ON (b.meeting_id = a.meeting_id)
 			 LEFT JOIN meeting_attendance AS c ON (c.meeting_id = b.meeting_id)
 			 WHERE c.meeting_id = ?',
 			(int) $meetingId
@@ -287,21 +287,20 @@ class MeetingDAO extends DAO {
 	}
 
 	/**
-	 * Get meetings object by submission ID
-	 * @param $submissionId int
+	 * Get meetings object by decision ID
+	 * @param $sectionDecisionId int
 	 * @return Meeting
-	 * Added by EL on March 13th 2013
 	 */
-	function &getMeetingsBySubmissionId($submissionId) {
+	function &getMeetingsBySectionDecisionId($sectionDecisionId) {
 		
 		$meetings = array();
 		
 		$sql = 'SELECT m.* 
 				FROM meetings m
-					LEFT JOIN meeting_submissions ms ON (ms.meeting_id =  m.meeting_id)
-				WHERE ms.submission_id = ? ORDER BY m.meeting_date';
+					LEFT JOIN meeting_section_decisions msd ON (msd.meeting_id =  m.meeting_id)
+				WHERE msd.section_decision_id = ? ORDER BY m.meeting_date';
 		
-		$result =& $this->retrieveRange($sql, (int) $submissionId);
+		$result =& $this->retrieveRange($sql, (int) $sectionDecisionId);
 
 		while (!$result->EOF) {
 			$row = $result->GetRowAssoc(false);

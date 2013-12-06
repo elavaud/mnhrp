@@ -261,10 +261,10 @@ class SubmissionEditHandler extends SectionEditorHandler {
 			}
 		}
 		$templateMgr->assign_by_ref('userId', $user->getId());
-                $meetingDao =& DAORegistry::getDAO('MeetingDAO');
-		$meetings =& $meetingDao->getMeetingsBySubmissionId($articleId);
-		$templateMgr->assign('meetingsCount', count($meetings));
-		$templateMgr->assign_by_ref('meetings', $meetings);
+                //$meetingDao =& DAORegistry::getDAO('MeetingDAO');
+		//$meetings =& $meetingDao->getMeetingsBySectionDecisionId($submission);
+		//$templateMgr->assign('meetingsCount', count($meetings));
+		//$templateMgr->assign_by_ref('meetings', $meetings);
 		
 		$templateMgr->assign('helpTopicId', 'editorial.sectionEditorsRole.review');
 		$templateMgr->display('sectionEditor/submissionReview.tpl');

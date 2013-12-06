@@ -18,7 +18,7 @@ class MeetingAttendanceDAO extends DAO {
 		$this->userDao =& DAORegistry::getDAO('UserDAO');
 	}
 
-		/**
+	/**
 	 * Get a new data object
 	 * @return DataObject
 	 */
@@ -219,7 +219,7 @@ class MeetingAttendanceDAO extends DAO {
 	 * @param Submission ID $userId
 	 * Added by EL on March 12th 2013
 	 */
-	function getAttendancesByUserIdAndSubmissionId($userId, $submissionId) {
+	function getAttendancesByUserIdAndDecisionId($userId, $decisionId) {
 		
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		
@@ -229,11 +229,11 @@ class MeetingAttendanceDAO extends DAO {
 			'SELECT ma.*, u.first_name, u.last_name, u.salutation, m.*
 			 FROM meeting_attendance ma 
 			 	LEFT JOIN users u ON (ma.user_id = u.user_id )
-			 	LEFT JOIN meeting_submissions ms ON (ma.meeting_id = ms.meeting_id)
+			 	LEFT JOIN meeting_section_decisions msd ON (ma.meeting_id = msd.meeting_id)
 			 	LEFT JOIN meetings m ON (ma.meeting_id = m.meeting_id)
-			 WHERE ma.user_id = ? AND ms.submission_id = ? 
+			 WHERE ma.user_id = ? AND msd.section_decision_id = ? 
 			 ORDER BY m.meeting_date',
-			array((int) $userId, (int) $submissionId)
+			array((int) $userId, (int) $decisionId)
 		);
 		
 		while (!$result->EOF) {

@@ -227,7 +227,7 @@ class ReviewerSubmissionDAO extends DAO {
 		);
 	}
 
-	function &getReviewerSubmissionByReviewerAndSubmissionId($reviewerId, $decisionId, $journalId, $active = true) {
+	function &getReviewerSubmissionByReviewerAndDecisionId($reviewerId, $decisionId, $journalId, $active = true) {
 	$primaryLocale = Locale::getPrimaryLocale();
 		$locale = Locale::getLocale();
 		$sql = 'SELECT	a.*,
@@ -389,12 +389,10 @@ class ReviewerSubmissionDAO extends DAO {
 	 * @param $rangeInfo object
 	 * @return array ReviewerSubmissions
 	 */
-	function &getReviewerMeetingSubmissionsByReviewerId($reviewerId, $journalId, $searchField = null, $searchMatch = null, $search = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getReviewerMeetingSectionDecisionsByReviewerId($reviewerId, $journalId, $searchField = null, $searchMatch = null, $search = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 		$primaryLocale = Locale::getPrimaryLocale();
 		$locale = Locale::getLocale();
-		$params = array(
-				$journalId,
-				$reviewerId);
+		$params = array($reviewerId);
 		$searchSql = '';
 		
 		if (!empty($search)) switch ($searchField) {
@@ -415,15 +413,14 @@ class ReviewerSubmissionDAO extends DAO {
 				break;
 		}
 		
-		$sql = 'SELECT	DISTINCT a.*,
-				ab.clean_scientific_title AS submission_title
-			FROM	articles a
+		$sql = 'SELECT	DISTINCT sd.*
+			FROM	section_decisions sd
+                                LEFT JOIN articles a ON (sd.article_id = a.article_id)
 				LEFT JOIN authors aa ON (aa.submission_id = a.article_id AND aa.primary_contact = 1)
 				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
-				LEFT JOIN meeting_submissions ms ON (a.article_id = ms.submission_id)
-				LEFT JOIN meeting_attendance ma ON (ms.meeting_id = ma.meeting_id)
-			WHERE	a.journal_id = ? AND
-				ma.user_id = ?
+				LEFT JOIN meeting_section_decisions msd ON (a.article_id = msd.submission_id)
+				LEFT JOIN meeting_attendance ma ON (msd.meeting_id = ma.meeting_id)
+			WHERE	ma.user_id = ?
 				AND EXISTS (SELECT NULL FROM erc_reviewers er WHERE er.user_id = ma.user_id)';	
 		
 		$result =& $this->retrieveRange(
@@ -431,8 +428,10 @@ class ReviewerSubmissionDAO extends DAO {
 			count($params)===1?array_shift($params):$params,
 			$rangeInfo
 		);
+                
+		$sectionDecisionDao = DAORegistry::getDAO('SectionDecisionDAO');
 
-		$returner = new DAOResultFactory($result, $this, '_returnReviewerSubmissionFromRow');
+		$returner = new DAOResultFactory($result, $sectionDecisionDao, '_returnSectionDecisionFromRow');
 		return $returner;
 	}
 		

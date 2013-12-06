@@ -11,7 +11,7 @@ import('classes.submission.sectionEditor.SectionEditorAction');
 class ProposalsForContinuingReviewForm extends Form {
 	/** @var int The meeting this form is for */
 	var $meeting;
-	var $submissions;
+	var $sectionDecisions;
 	/**
 	 * Constructor.
 	 */
@@ -21,10 +21,9 @@ class ProposalsForContinuingReviewForm extends Form {
 
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$this->meeting =& $meetingDao->getMeetingById($meetingId);
-		$meetingSubmissionDao =& DAORegistry::getDAO('MeetingSubmissionDAO');
 		$sectionEditorSubmissionDao =& DAORegistry::getDAO('SectionEditorSubmissionDAO');
 		
-		$this->submissions = $sectionEditorSubmissionDao->getRemainingSubmissionsForContinuingReview($meetingId);
+		$this->sectionDecisions = $sectionEditorSubmissionDao->getRemainingSectionDecisionsForContinuingReview($meetingId);
 		$this->addCheck(new FormValidatorCustom($this, 'articleId', 'required', 'editor.minutes.selectProposalRequired',
 		create_function('$articleId', 'if($articleId == "none") return false; else return true;'), array('articleId')));		
 	}
@@ -34,11 +33,11 @@ class ProposalsForContinuingReviewForm extends Form {
 	 */
 	function display(&$args, &$request) {
 		$meeting = $this->meeting;
-		$submissions =& $this->submissions;
+		$sectionDecisions =& $this->sectionDecisions;
 
 		$templateMgr =& TemplateManager::getManager();		
 		$templateMgr->assign("meeting", $meeting);
-		$templateMgr->assign_by_ref('submissions', $submissions);
+		$templateMgr->assign_by_ref('sectionDecisions', $sectionDecisions);
 		parent::display();
 	}
 
