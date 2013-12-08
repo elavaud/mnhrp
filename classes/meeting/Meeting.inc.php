@@ -1,7 +1,5 @@
 <?php
 
-define ('MINUTES_STATUS_COMPLETE', 128);
-define ('MINUTES_STATUS_INCOMPLETE', 256);
 define ('MINUTES_STATUS_ATTENDANCE', 1);
 define ('MINUTES_STATUS_INITIAL_REVIEWS', 2);
 define ('MINUTES_STATUS_REREVIEWS', 4);
@@ -9,13 +7,18 @@ define ('MINUTES_STATUS_CONTINUING_REVIEWS', 8);
 define ('MINUTES_STATUS_AMENDMENTS', 16);
 define ('MINUTES_STATUS_ADVERSE_EVENTS', 32);
 define ('MINUTES_STATUS_INFORMATION_ITEMS', 64);
+define ('MINUTES_STATUS_COMPLETE', 128);
+define ('MINUTES_STATUS_INCOMPLETE', 256);
+
 define ('STATUS_NEW', 4);
 define ('STATUS_FINAL', 1);
 define ('STATUS_RESCHEDULED', 2);
 define ('STATUS_CANCELLED', 3);
 define ('STATUS_DONE', 5);
+
 define ('MEETING_REPLY_ATTENDING', 1);
 define ('MEETING_REPLY_NOT_ATTENDING', 2);
+
 define ('MINUTES_REVIEW_OTHER_DISCUSSIONS', 0);
 define ('MINUTES_REVIEW_SCIENTIFIC_DESIGN', 1);
 define ('MINUTES_REVIEW_RISKS', 2);
@@ -28,15 +31,26 @@ define ('MINUTES_REVIEW_CONSENT_DOCUMENT', 8);
 define ('MINUTES_REVIEW_OTHER_CONSIDERATIONS', 9);
 define ('MINUTES_REVIEW_LOCAL_IRB', 10);
 
-/**
- * Last update on February 2013
- * EL
-**/
+import('classes.meeting.MeetingAttendance');
+import('classes.meeting.MeetingSectionDecision');
+
 
 class Meeting extends DataObject {
 
+        var $meetingAttendances;
+
+        var $removedMeetingAttendances;
+        
+        var $meetingSectionDecisions;
+        
+        var $removedMeetingSectionDecisions;
+
 	function Meeting() {
 		parent::DataObject();
+		$this->meetingAttendances = array();
+		$this->removedMeetingAttendances = array();
+		$this->meetingSectionDecisions = array();
+                $this->removedMeetingSectionDecisions = array();
 	}
 
 	function setId($meetingId) {
@@ -55,33 +69,30 @@ class Meeting extends DataObject {
 		return $this->getData('meetingDate');
 	}
 
-		/*
-		 * New functions for the length, location and if the investigator(s) is(are) invited
-		 * EL on February 25th 2013
-		 */
-		function setLength($length) {
-			$this->setData('length', $length);
-		}
+        function setLength($length) {
+                $this->setData('length', $length);
+        }
 
-		function getLength() {
-			return $this->getData('length');
-		}
+        function getLength() {
+                return $this->getData('length');
+        }
 
-		function setLocation($location) {
-			$this->setData('location', $location);
-		}
+        function setLocation($location) {
+                $this->setData('location', $location);
+        }
 
-		function getLocation() {
-			return $this->getData('location');
-		}
+        function getLocation() {
+                return $this->getData('location');
+        }
 
-		function setInvestigator($investigator) {
-			return $this->setData('investigator', $investigator);
-		}
-
-		function getInvestigator() {
-			return $this->getData('investigator');
-		}
+        function setInvestigator($investigator) {
+                return $this->setData('investigator', $investigator);
+        }
+        
+        // Get if investigators are invited or not
+        function getInvestigator() {
+                return $this->getData('investigator');
+        }
 
 	function setUploader($sectionId) {
 		$this->setSection($sectionId);
@@ -103,35 +114,6 @@ class Meeting extends DataObject {
 		return $this->getData('minutesStatus');
 	}
 
-	/**********************************
-	 * Additional fields for meeting
-	 *  Added by ayveemallare 7/6/2011
-	 **********************************/
-
-	function setUserId($userId) {
-		$this->setData('userId', $userId);
-	}
-
-	function getUserId() {
-		return $this->getData('userId');
-	}
-
-	function setIsAttending($isAttending) {
-		$this->setData('isAttending', $isAttending);
-	}
-
-	function getIsAttending() {
-		return $this->getData('isAttending');
-	}
-
-	function setRemarks($remarks) {
-		$this->setData('remarks', $remarks);
-	}
-
-	function getRemarks() {
-		return $this->getData('remarks');
-	}
-
 	function setStatus($status) {
 		$this->setData('status', $status);
 	}
@@ -148,24 +130,6 @@ class Meeting extends DataObject {
 	function getMeetingStatus(){
 		return $this->getData('meetingStatus');
 	}
-
-
-	function setIsPresent($isPresent) {
-		$this->setData('isPresent', $isPresent);
-	}
-
-	function isPresent() {
-		return $this->getData('isPresent');
-	}
-
-	function getReasonForAbsence() {
-		return $this->getData('reasonForAbsence');
-	}
-
-	function setReasonForAbsence($reasonForAbsence) {
-		$this->setData('reasonForAbsence', $reasonForAbsence);
-	}
-
 
 	/**
 	 * Get array mapping of completed sections of the meeting minutes
@@ -204,17 +168,6 @@ class Meeting extends DataObject {
 		}
 		else {
 			return Locale::Translate('editor.minutes.incomplete');
-		}
-	}
-
-	function getReplyStatus() {
-		switch ($this->getIsAttending()) {
-			case MEETING_REPLY_ATTENDING:
-				return Locale::Translate('reviewer.meetings.replyStatus.attending');
-			case MEETING_REPLY_NOT_ATTENDING:
-				return Locale::Translate('reviewer.meetings.replyStatus.notAttending');
-			default:
-				return Locale::Translate('reviewer.meetings.replyStatus.awaitingReply');
 		}
 	}
 
@@ -293,6 +246,96 @@ class Meeting extends DataObject {
 		$erc =& $ercDao->getSection($this->getUploader());
 		return $erc->getLocalizedAbbrev().'.'.$meetingDao->countPreviousMeetingsOfERC($this->getUploader(), $this->getId());
 	}
+        
+        
+        
+        function setMeetingAttendances($meetingAttendances) {
+		return $this->meetingAttendances = $meetingAttendances;
+	}
+
+	function getMeetingAttendances() {
+		return $this->meetingAttendances;
+	}
+
+        function getMeetingAttendanceOfUser($userId) {
+                foreach ($this->meetingAttendances as $meetingAttendance)
+                      if ($meetingAttendance->getUserId() == $userId) return $meetingAttendance;
+		return null;
+	}
+
+	function addMeetingAttendance($meetingAttendance) {
+		if ($meetingAttendance->getMeetingId() == null) {
+			$meetingAttendance->setMeetingId($this->getId());
+		}
+
+		if (isset($this->meetingAttendances)) {
+			$meetingAttendances = $this->meetingAttendances;
+		} else {
+			$meetingAttendances = Array();
+		}
+		array_push($meetingAttendances, $meetingAttendance);
+
+		return $this->meetingAttendances = $meetingAttendances;
+	}
+	
+	function removeMeetingAttendance($userId) {
+		$userId = (int) $userId;
+
+		foreach ($this->meetingAttendances as $key => $meetingAttendance) {
+			if ($meetingAttendance->getUserId() == $userId) {
+				$this->removedMeetingAttendances[] = $userId;
+				unset($this->removedMeetingAttendances[$key]);
+				return true;
+			}
+		}
+		return false;
+	}
+
+        function &getRemovedMeetingAttendance() {
+		return $this->removedMeetingAttendances;
+	}
+
+
+        function setMeetingSectionDecisions($meetingSectionDecisions) {
+		return $this->meetingSectionDecisions = $meetingSectionDecisions;
+	}
+
+	function getMeetingSectionDecisions() {
+		return $this->meetingSectionDecisions;
+	}
+
+	function addMeetingSectionDecision($meetingSectionDecision) {
+		if ($meetingSectionDecision->getMeetingId() == null) {
+			$meetingSectionDecision->setMeetingId($this->getId());
+		}
+
+		if (isset($this->meetingSectionDecisions)) {
+			$meetingSectionDecisions = $this->meetingSectionDecisions;
+		} else {
+			$meetingSectionDecisions = Array();
+		}
+		array_push($meetingSectionDecisions, $meetingSectionDecision);
+
+		return $this->meetingSectionDecisions = $meetingSectionDecisions;
+	}
+	
+	function removeMeetingSectionDecision($decisionId) {
+		$decisionId = (int) $decisionId;
+
+		foreach ($this->meetingSectionDecisions as $key => $meetingSectionDecision) {
+			if ($meetingSectionDecision->getSectionDecisionId() == $decisionId) {
+				$this->removedMeetingSectionDecisions[] = $decisionId;
+				unset($this->meetingSectionDecisions[$key]);
+				return true;
+			}
+		}
+		return false;
+	}
+
+        function &getRemovedMeetingSectionFecisions() {
+		return $this->removedMeetingSectionDecisions;
+	}
+
 }
 
 ?>

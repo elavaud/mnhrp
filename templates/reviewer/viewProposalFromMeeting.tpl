@@ -24,56 +24,42 @@
 
 <div id="submissionToBeReviewed">
 
-<h3>{translate key="reviewer.article.submissionToBeReviewed"}</h3>
-<table width="100%" class="data">
-<tr valign="top">
-	<td width="30%" class="label">{translate key="common.proposalId"}</td>
-	<td width="70%" class="value">{$submission->getLocalizedProposalId()|strip_unsafe_html}</td>
-</tr>
-<tr valign="top">
-	<td width="30%" class="label">{translate key="article.title"}</td>
-	<td width="70%" class="value">{$abstract->getScientificTitle()|strip_unsafe_html}</td>
-</tr>
-<tr valign="top">
-	<td class="label">{translate key="article.journalSection"}</td>
-	<td class="value">{$ercTitle}</td>
-</tr>
-<tr valign="top">
-	<td class="label">{translate key="common.status"}</td>
-	<td class="value">
-		{assign var="status" value=$submission->getSubmissionStatus()}
-    	{if $status==PROPOSAL_STATUS_WITHDRAWN}{translate key="submission.status.withdrawn"}
-    	{elseif $status==PROPOSAL_STATUS_COMPLETED}{translate key="submission.status.completed"}
-        {elseif $status==PROPOSAL_STATUS_ARCHIVED}
-        	{assign var="decision" value=$submission->getMostRecentDecisionValue()}
-            {if $decision==SUBMISSION_SECTION_DECISION_DECLINED}
-            	Archived({translate key="submission.status.declined"})
-            {elseif $decision==SUBMISSION_SECTION_DECISION_EXEMPTED}
-            	Archived({translate key="submission.status.exempted"})
-            {/if}
-        {elseif $status==PROPOSAL_STATUS_SUBMITTED}{translate key="submission.status.submitted"}
-        {elseif $status==PROPOSAL_STATUS_CHECKED}{translate key="submission.status.complete"}
-        {elseif $status==PROPOSAL_STATUS_EXPEDITED}{translate key="submission.status.expeditedReview"}
-        {elseif $status==PROPOSAL_STATUS_FULL_REVIEW}{translate key="submission.status.fullReview"}
-        {elseif $status==PROPOSAL_STATUS_RETURNED}{translate key="submission.status.incomplete"}
-        {elseif $status==PROPOSAL_STATUS_EXEMPTED}{translate key="submission.status.exempted"}
-        {elseif $status==PROPOSAL_STATUS_REVIEWED}
-        	{assign var="decision" value=$submission->getMostRecentDecisionValue()}
-            {if $decision==SUBMISSION_SECTION_DECISION_RESUBMIT}{translate key="submission.status.reviseAndResubmit"}
-            {elseif $decision==SUBMISSION_SECTION_DECISION_APPROVED}{translate key="submission.status.approved"}
-            {elseif $decision==SUBMISSION_SECTION_DECISION_DECLINED}{translate key="submission.status.declined"}                
-            {/if}
-        {/if}
-	</td>
-</tr>
+	<h3>{translate key="reviewer.article.submissionToBeReviewed"}</h3>
+	
+	<table width="100%" class="data">
+		
+		<tr valign="top">
+			<td width="30%" class="label">{translate key="common.proposalId"}</td>
+			<td width="70%" class="value">{$sectionDecision->getProposalId()|strip_unsafe_html}</td>
+		</tr>
+		
+		<tr valign="top">
+			<td width="30%" class="label">{translate key="article.title"}</td>
+			<td width="70%" class="value">{$sectionDecision->getLocalizedProposalTitle()|strip_unsafe_html}</td>
+		</tr>
+		
+		<tr valign="top">
+			<td class="label">{translate key="article.journalSection"}</td>
+			<td class="value">{$ercTitle}</td>
+		</tr>
+		
+		<tr valign="top">
+			<td class="label">{translate key="submissions.reviewRound"}</td>
+			<td class="value">{translate key=$sectionDecision->getReviewTypeKey()} - {$sectionDecision->getRound()}</td>
+		</tr>
 
-</table>
+		<tr valign="top">
+			<td class="label">{translate key="common.status"}</td>
+			<td class="value">{translate key=$sectionDecision->getReviewStatusKey()}</td>
+		</tr>
+	</table>
+
 </div>
 
 <div class="separator"></div>
 
 <div id="files">
-<h3>Files</h3>
+<h3>{translate key="common.file.s"}</h3>
 	<table width="100%" class="data">
 		<tr valign="top">
 			<td width="30%" class="label">
@@ -91,8 +77,8 @@
 		{if count($previousFiles)>1}
 		{assign var="count" value=0}
 		<tr>
-			<td class="label">Previous proposal files</td>
-			<td width="80%" class="value">
+			<td class="label">{translate key="submission.previousProposalFile"}</td>
+			<td width="70%" class="value">
 				{foreach name="previousFiles" from=$previousFiles item=previousFile}
 					{assign var="count" value=$count+1}
 					{if $count > 1}
@@ -139,33 +125,33 @@
 
 		<table class="listing" width="100%">
     		<tr valign="top">
-        		<td class="label" width="20%">{translate key="proposal.scientificTitle"}</td>
+        		<td class="label" width="30%">{translate key="proposal.scientificTitle"}</td>
         		<td class="value">{$abstract->getScientificTitle()}</td>
     		</tr>
     		<tr valign="top">
-        		<td class="label" width="20%">{translate key="proposal.publicTitle"}</td>
+        		<td class="label" width="30%">{translate key="proposal.publicTitle"}</td>
         		<td class="value">{$abstract->getPublicTitle()}</td>
     		</tr>
     		<tr><td colspan="2">&nbsp;</td></tr>
     		<tr valign="top">
-        		<td class="label" width="20%">{translate key="proposal.background"}</td>
+        		<td class="label" width="30%">{translate key="proposal.background"}</td>
         		<td class="value">{$abstract->getBackground()}</td>
     		</tr>
     		<tr valign="top">
-        		<td class="label" width="20%">{translate key="proposal.objectives"}</td>
+        		<td class="label" width="30%">{translate key="proposal.objectives"}</td>
         		<td class="value">{$abstract->getObjectives()}</td>
     		</tr>
     		<tr valign="top">
-        		<td class="label" width="20%">{translate key="proposal.studyMethods"}</td>
+        		<td class="label" width="30%">{translate key="proposal.studyMethods"}</td>
         		<td class="value">{$abstract->getStudyMethods()}</td>
     		</tr>
     		<tr valign="top">
-        		<td class="label" width="20%">{translate key="proposal.expectedOutcomes"}</td>
+        		<td class="label" width="30%">{translate key="proposal.expectedOutcomes"}</td>
         		<td class="value">{$abstract->getExpectedOutcomes()}</td>
     		</tr>
     		<tr><td colspan="2">&nbsp;</td></tr>
     		<tr valign="top">
-        		<td class="label" width="20%">{translate key="proposal.keywords"}</td>
+        		<td class="label" width="30%">{translate key="proposal.keywords"}</td>
         		<td class="value">{$abstract->getKeywords()}</td>
     		</tr>
 		</table>
@@ -180,88 +166,88 @@
 	
 	<table class="listing" width="100%">
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.studentInitiatedResearch"}</td>
+        	<td class="label" width="30%">{translate key="proposal.studentInitiatedResearch"}</td>
         	<td class="value">{translate key=$proposalDetails->getYesNoKey($proposalDetails->getStudentResearch())}</td>
     	</tr>
     	{if ($proposalDetails->getStudentResearch()) == PROPOSAL_DETAIL_YES}
 			{assign var="studentResearch" value=$proposalDetails->getStudentResearchInfo()}
     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{translate key="proposal.studentInstitution"}: {$studentResearch->getInstitution()}</td>
     		</tr>
     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{translate key="proposal.academicDegree"}: {translate key=$studentResearch->getDegreeKey()}</td>
     		</tr>
-        	<tr valign="top" id="supervisor"><td class="label" width="20%">&nbsp;</td><td class="value"><b>{translate key="proposal.studentSupervisor"}</b></td></tr>
+        	<tr valign="top" id="supervisor"><td class="label" width="30%">&nbsp;</td><td class="value"><b>{translate key="proposal.studentSupervisor"}</b></td></tr>
     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{translate key="proposal.studentSupervisorName"}: {$studentResearch->getSupervisorName()}</td>
     		</tr>
     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{translate key="user.email"}: {$studentResearch->getSupervisorEmail()}</td>
     		</tr>
-        	<tr valign="top"><td class="label" width="20%">&nbsp;</td><td class="value">&nbsp;</td></tr>
+        	<tr valign="top"><td class="label" width="30%">&nbsp;</td><td class="value">&nbsp;</td></tr>
     	{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.startDate"}</td>
+        	<td class="label" width="30%">{translate key="proposal.startDate"}</td>
         	<td class="value">{$proposalDetails->getStartDate()}</td>
    	 	</tr>
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.endDate"}</td>
+        	<td class="label" width="30%">{translate key="proposal.endDate"}</td>
         	<td class="value">{$proposalDetails->getEndDate()}</td>
     	</tr>
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.primarySponsor"}</td>
+        	<td class="label" width="30%">{translate key="proposal.primarySponsor"}</td>
         	<td class="value">{$proposalDetails->getLocalizedPrimarySponsorText()}</td>
     	</tr>
     	{if $proposalDetails->getSecondarySponsors()}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.secondarySponsors"}</td>
+        	<td class="label" width="30%">{translate key="proposal.secondarySponsors"}</td>
         	<td class="value">{$proposalDetails->getLocalizedSecondarySponsorText()}</td>
     	</tr>
     	{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.multiCountryResearch"}</td>
+        	<td class="label" width="30%">{translate key="proposal.multiCountryResearch"}</td>
         	<td class="value">{translate key=$proposalDetails->getYesNoKey($proposalDetails->getMultiCountryResearch())}</td>
     	</tr>
 		{if ($proposalDetails->getMultiCountryResearch()) == PROPOSAL_DETAIL_YES}
 			<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{$proposalDetails->getLocalizedMultiCountryText()}</td>
     		</tr>
     	{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.nationwide"}</td>
+        	<td class="label" width="30%">{translate key="proposal.nationwide"}</td>
         	<td class="value">{translate key=$proposalDetails->getNationwideKey()}</td>
    	 	</tr>
     	{if $proposalDetails->getNationwide() == PROPOSAL_DETAIL_NO || $proposalDetails->getNationwide() == PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS}
     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{$proposalDetails->getLocalizedGeoAreasText()}</td>
     		</tr>
 		{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.researchField"}</td>
+        	<td class="label" width="30%">{translate key="proposal.researchField"}</td>
         	<td class="value">{$proposalDetails->getLocalizedResearchFieldText()}</td>
     	</tr>	
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.withHumanSubjects"}</td>
+        	<td class="label" width="30%">{translate key="proposal.withHumanSubjects"}</td>
         	<td class="value">{translate key=$proposalDetails->getYesNoKey($proposalDetails->getHumanSubjects())}</td>
     	</tr>
     	{if ($proposalDetails->getHumanSubjects()) == PROPOSAL_DETAIL_YES}
     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{$proposalDetails->getLocalizedProposalTypeText()}</td>
    			</tr>
     	{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.dataCollection"}</td>
+        	<td class="label" width="30%">{translate key="proposal.dataCollection"}</td>
         	<td class="value">{translate key=$proposalDetails->getDataCollectionKey()}</td>
     	</tr>   
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.reviewedByOtherErc"}</td>
+        	<td class="label" width="30%">{translate key="proposal.reviewedByOtherErc"}</td>
         	<td class="value">{translate key=$proposalDetails->getCommitteeReviewedKey()}</td>
     	</tr>
 	</table>
@@ -272,26 +258,26 @@
 	<div class="separator"></div>
 	<table class="listing" width="100%">
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.fundsRequired"}</td>
+        	<td class="label" width="30%">{translate key="proposal.fundsRequired"}</td>
         	<td class="value">{$submission->getLocalizedFundsRequired()} {$submission->getLocalizedSelectedCurrency()}</td>
     	</tr>
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.industryGrant"}</td>
+        	<td class="label" width="30%">{translate key="proposal.industryGrant"}</td>
         	<td class="value">{$submission->getLocalizedIndustryGrant()}</td>
     	</tr>
     	{if ($submission->getLocalizedIndustryGrant()) == "Yes"}
      		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{$submission->getLocalizedNameOfIndustry()}</td>
     		</tr>   
     	{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.internationalGrant"}</td>
+        	<td class="label" width="30%">{translate key="proposal.internationalGrant"}</td>
         	<td class="value">{$submission->getLocalizedInternationalGrant()}</td>
     	</tr>
     	{if ($submission->getLocalizedInternationalGrant()) == "Yes"}
      		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">
         			{if $submission->getLocalizedInternationalGrantName()}
         				{$submission->getLocalizedInternationalGrantNameText()} 
@@ -300,34 +286,34 @@
     		</tr>     
     	{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.mohGrant"}</td>
+        	<td class="label" width="30%">{translate key="proposal.mohGrant"}</td>
         	<td class="value">{$submission->getLocalizedMohGrant()}</td>
     	</tr>
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.governmentGrant"}</td>
+        	<td class="label" width="30%">{translate key="proposal.governmentGrant"}</td>
         	<td class="value">{$submission->getLocalizedGovernmentGrant()}</td>
     	</tr>
     	{if ($submission->getLocalizedGovernmentGrant()) == "Yes"}
      		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{$submission->getLocalizedGovernmentGrantName()}</td>
     		</tr>     
     	{/if}
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.universityGrant"}</td>
+        	<td class="label" width="30%">{translate key="proposal.universityGrant"}</td>
         	<td class="value">{$submission->getLocalizedUniversityGrant()}</td>
     	</tr>
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.selfFunding"}</td>
+        	<td class="label" width="30%">{translate key="proposal.selfFunding"}</td>
         	<td class="value">{$submission->getLocalizedSelfFunding()}</td>
     	</tr>
     	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.otherGrant"}</td>
+        	<td class="label" width="30%">{translate key="proposal.otherGrant"}</td>
         	<td class="value">{$submission->getLocalizedOtherGrant()}</td>
     	</tr>
     	{if ($submission->getLocalizedOtherGrant()) == "Yes"}
      		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
+        		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">{$submission->getLocalizedSpecifyOtherGrant()}</td>
     		</tr>    
     	{/if}
@@ -347,77 +333,77 @@
     	    <td class="value">{if $riskAssessment->getIdentityRevealed() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="unableToConsentField">
-        	<td class="label" width="20%">{translate key="proposal.unableToConsent"}</td>
+        	<td class="label" width="30%">{translate key="proposal.unableToConsent"}</td>
         	<td class="value">{if $riskAssessment->getUnableToConsent() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="under18Field">
-    	    <td class="label" width="20%">{translate key="proposal.under18"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.under18"}</td>
     	    <td class="value">{if $riskAssessment->getUnder18() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="dependentRelationshipField">
-    	    <td class="label" width="20%">{translate key="proposal.dependentRelationship"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.dependentRelationship"}</td>
     	    <td class="value">{if $riskAssessment->getDependentRelationship() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="ethnicMinorityField">
-    	    <td class="label" width="20%">{translate key="proposal.ethnicMinority"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.ethnicMinority"}</td>
     	    <td class="value">{if $riskAssessment->getEthnicMinority() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="impairmentField">
-    	    <td class="label" width="20%">{translate key="proposal.impairment"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.impairment"}</td>
     	    <td class="value">{if $riskAssessment->getImpairment() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="pregnantField">
-    	    <td class="label" width="20%">{translate key="proposal.pregnant"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.pregnant"}</td>
     	    <td class="value">{if $riskAssessment->getPregnant() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.researchIncludes"}</b></td></tr>
     	<tr valign="top" id="newTreatmentField">
-    	    <td class="label" width="20%">{translate key="proposal.newTreatment"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.newTreatment"}</td>
     	    <td class="value">{if $riskAssessment->getNewTreatment() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="bioSamplesField">
-    	    <td class="label" width="20%">{translate key="proposal.bioSamples"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.bioSamples"}</td>
     	    <td class="value">{if $riskAssessment->getBioSamples() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="radiationField">
-    	    <td class="label" width="20%">{translate key="proposal.radiation"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.radiation"}</td>
     	    <td class="value">{if $riskAssessment->getRadiation() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="distressField">
-    	    <td class="label" width="20%">{translate key="proposal.distress"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.distress"}</td>
     	    <td class="value">{if $riskAssessment->getDistress() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="inducementsField">
-    	    <td class="label" width="20%">{translate key="proposal.inducements"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.inducements"}</td>
     	    <td class="value">{if $riskAssessment->getInducements() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="sensitiveInfoField">
-    	    <td class="label" width="20%">{translate key="proposal.sensitiveInfo"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.sensitiveInfo"}</td>
     	    <td class="value">{if $riskAssessment->getSensitiveInfo() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="deceptionField">
-    	    <td class="label" width="20%">{translate key="proposal.deception"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.deception"}</td>
     	    <td class="value">{if $riskAssessment->getDeception() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="reproTechnologyField">
-    	    <td class="label" width="20%">{translate key="proposal.reproTechnology"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.reproTechnology"}</td>
     	    <td class="value">{if $riskAssessment->getReproTechnology() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="geneticsField">
-    	    <td class="label" width="20%">{translate key="proposal.genetic"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.genetic"}</td>
     	    <td class="value">{if $riskAssessment->getGenetic() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="stemCellField">
-    	    <td class="label" width="20%">{translate key="proposal.stemCell"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.stemCell"}</td>
     	    <td class="value">{if $riskAssessment->getStemCell() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="biosafetyField">
-    	    <td class="label" width="20%">{translate key="proposal.biosafety"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.biosafety"}</td>
     	    <td class="value">{if $riskAssessment->getBiosafety() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.researchIncludes"}</b></td></tr>
     	<tr valign="top" id="riskLevelField">
-    	    <td class="label" width="20%">{translate key="proposal.riskLevel"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.riskLevel"}</td>
     	    <td class="value">
     	    {if $riskAssessment->getRiskLevel() == "1"}{translate key="proposal.riskLevelNoMore"}
     	    {elseif $riskAssessment->getRiskLevel() == "2"}{translate key="proposal.riskLevelMinore"}
@@ -427,16 +413,16 @@
     	</tr>
     	{if $riskAssessment->getRiskLevel() != '1'}
     	<tr valign="top" id="listRisksField">
-    	    <td class="label" width="20%">{translate key="proposal.listRisks"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.listRisks"}</td>
     	    <td class="value">{$riskAssessment->getListRisks()}</td>
     	</tr>
     	<tr valign="top" id="howRisksMinimizedField">
-    	    <td class="label" width="20%">{translate key="proposal.howRisksMinimized"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.howRisksMinimized"}</td>
     	    <td class="value">{$riskAssessment->getHowRisksMinimized()}</td>
     	</tr>
     	{/if}
     	<tr valign="top" id="riskApplyToField">
-    	    <td class="label" width="20%">{translate key="proposal.riskApplyTo"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.riskApplyTo"}</td>
     	    <td class="value">
     	    {assign var="firstRisk" value="0"}
     	    {if $riskAssessment->getRisksToTeam() == '1'}
@@ -458,7 +444,7 @@
     	</tr>
     	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.potentialBenefits"}</b></td></tr>
     	<tr valign="top" id="benefitsFromTheProjectField">
-    	    <td class="label" width="20%">{translate key="proposal.benefitsFromTheProject"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.benefitsFromTheProject"}</td>
     	    <td class="value">
     	    {assign var="firstBenefits" value="0"}
     	    {if $riskAssessment->getBenefitsToParticipants() == '1'}
@@ -479,11 +465,11 @@
     	    </td>
     	</tr>
     	<tr valign="top" id="multiInstitutionsField">
-    	    <td class="label" width="20%">{translate key="proposal.multiInstitutions"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.multiInstitutions"}</td>
     	    <td class="value">{if $riskAssessment->getMultiInstitutions() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     	<tr valign="top" id="conflictOfInterestField">
-    	    <td class="label" width="20%">{translate key="proposal.conflictOfInterest"}</td>
+    	    <td class="label" width="30%">{translate key="proposal.conflictOfInterest"}</td>
     	    <td class="value">{if $riskAssessment->getConflictOfInterest() == "1"}{translate key="common.yes"}{elseif $riskAssessment->getConflictOfInterest() == "3"}{translate key="common.notSure"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
     </table>

@@ -63,18 +63,16 @@
 		<td width="20%">Investigator</td>
 	</tr>
 	<tr><td colspan="3" class="headseparator">&nbsp;</td></tr>
-{iterate from=submissions item=submission}
-	{assign var="articleId" value=$submission->getArticleId()}
-	{assign var="abstract" value=$submission->getLocalizedAbstract()}
+{iterate from=sectionDecisions item=sectionDecision}
 		<tr valign="top">
-			<td>{$submission->getLocalizedProposalId()|escape}</td>
-			<td><a href="{url op="viewProposalFromMeeting" path=$articleId}" class="action">{$abstract->getScientificTitle()|escape}</a></td>
-			<td>{$submission->getFirstAuthor()|escape}</td>
+			<td>{$sectionDecision->getProposalId()|escape}</td>
+			<td><a href="{url op="viewProposalFromMeeting" path=$sectionDecision->getId()}" class="action">{$sectionDecision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+   			<td>{$sectionDecision->getAuthorString()|truncate:40:"..."|escape}</td>		
 		</tr>
 				
 		<td colspan="3" class="separator">&nbsp;</td>
 {/iterate}
-{if $submissions->wasEmpty()}
+{if $sectionDecisions->wasEmpty()}
 	<tr>
 		<td colspan="3" class="nodata">{translate key="submissions.noSubmissions"}</td>
 	</tr>
@@ -83,8 +81,8 @@
 	</tr>
 {else}
 	<tr>
-		<td colspan="3" align="left">{page_info iterator=$submissions}</td>
-		<td colspan="3" align="right">{page_links anchor="submissions" name="submissions" iterator=$submissions sort=$sort sortDirection=$sortDirection}</td>
+		<td colspan="3" align="left">{page_info iterator=$sectionDecisions}</td>
+		<td colspan="3" align="right">{page_links anchor="sectionDecisions" name="sectionDecisions" iterator=$sectionDecisions sort=$sort sortDirection=$sortDirection}</td>
 	</tr>
 {/if}
 </table>

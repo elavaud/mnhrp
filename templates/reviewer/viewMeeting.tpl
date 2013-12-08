@@ -77,59 +77,51 @@
 <div class="separator"></div>
 <table width="100%" class="listing">
 	<tr class="heading" valign="bottom">
-		<td width="10%">{translate key="common.proposalId"}</td>
-		<td width="5%"><span class="disabled">{translate key="submission.date.mmdd"}</span><br />{translate key="submissions.submit"}</td>
-		<td width="25%">{translate key="article.authors"}</td>
-		<td width="35%">{translate key="article.title"}</td>
-		<td width="25%" align="right">{translate key="common.status"}</td>
+		<td width="10%">{translate key="article.article"} {translate key="common.id"}</td>
+		<td width="20%">{translate key="article.authors"}</td>
+		<td width="40%">{translate key="article.title"}</td>
+		<td width="15%">{translate key="submissions.reviewRound"}</td>
+		<td width="15%">{translate key="common.status"}</td>
 	</tr>
-	<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
+	<tr><td colspan="5" class="headseparator">&nbsp;</td></tr>
 	
-	{assign var="submissionCount" value=0}
-	{foreach from=$submissions item=submission}
-	{assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
-	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-	{assign var="key" value=$submission->getId()}
-	{if $isReviewer}
-	<tr valign="top">
-		<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
-		<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>
-   		<td>{$submission->getFirstAuthor()|escape}</td>	
-   		<td><a href="{url op="viewProposalFromMeeting" path=$submission->getArticleId()}" class="action">{$abstract->getScientificTitle()|strip_unsafe_html}</a></td>
-		<td align="right">
-			{assign var="proposalStatusKey" value=$submission->getProposalStatusKey()}
-			{translate key=$proposalStatusKey}
-		</td>
-	</tr>
-	<tr><td colspan="6" class="separator"></td></tr>
-	{assign var="submissionCount" value=$submissionCount+1}
-	{elseif $map.$key}
-   		<tr valign="top">
-			<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
-			<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>
-   			<td>{$submission->getFirstAuthor()|escape}</td>	
-   			<td><a href="{url op="submission" path=$map.$key}" class="action">{$abstract->getScientificTitle()|strip_unsafe_html}</a></td>
-			<td align="right">
-				{assign var="proposalStatusKey" value=$submission->getProposalStatusKey()}
-				{translate key=$proposalStatusKey}
-			</td>
-		</tr>
-		<tr><td colspan="6" class="separator"></td></tr>
-		{assign var="submissionCount" value=$submissionCount+1}
-	{/if}
+	{assign var="decisionCount" value=0}
+	{foreach from=$sectionDecisions item=decision}
+		{assign var="key" value=$decision->getId()}
+		{if $isReviewer}
+			<tr valign="top">
+				<td>{$decision->getProposalId()|escape}</td>
+   				<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>		
+   				<td><a href="{url op="viewProposalFromMeeting" path=$decision->getId()}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+	        	<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
+				<td>{translate key=$decision->getReviewStatusKey()}</td>
+			</tr>
+			<tr><td colspan="5" class="separator"></td></tr>
+			{assign var="decisionCount" value=$submissionCount+1}
+		{elseif $map.$key}
+   			<tr valign="top">
+				<td>{$decision->getProposalId()|escape}</td>
+   				<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>
+   				<td><a href="{url op="submission" path=$map.$key}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+	        	<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
+				<td>{translate key=$decision->getReviewStatusKey()}</td>
+			</tr>
+			<tr><td colspan="5" class="separator"></td></tr>
+			{assign var="decisionCount" value=$submissionCount+1}
+		{/if}
 	{/foreach}
 	
-	{if empty($submissions)}
+	{if empty($sectionDecisions)}
 	<tr>
-		<td colspan="6" class="nodata">{translate key="submissions.noSubmissions"}</td>
+		<td colspan="5" class="nodata">{translate key="submissions.noSubmissions"}</td>
 	</tr>
 	{/if}
 	<tr>
-		<td colspan="6" class="endseparator">&nbsp;</td>
+		<td colspan="5" class="endseparator">&nbsp;</td>
 	</tr>
-	{if !empty($submissions)}
+	{if !empty($sectionDecisions)}
 	<tr>
-		<td colspan="6" align="left">{$submissionCount} {translate key="submissions.proposal.s"}</td>
+		<td colspan="5" align="left">{$decisionCount} {translate key="submissions.proposal.s"}</td>
 	</tr>
 	{/if}
 </table>
@@ -137,52 +129,53 @@
 <br/>
 
 <div id="reply">
-<h2>{translate key="reviewer.meetings.reply"}</h2>
-<div class="separator"></div>
-<a name="reply"></a>
-<table width="100%" class="listing" {if $meeting->getIsAttending() == 3}style="display: none;"{/if}>
-	<tr valign="top">
-		<td class="label" width="30%">{translate key="reviewer.article.schedule.isAttending"}</td>
-		<td class="value" width="70%">{if  $meeting->getIsAttending() == 1 }{translate key="common.yes"}{elseif  $meeting->getIsAttending() == 2 }{translate key="common.no"}{else}{translate key="common.undecided"}{/if}</td>
-	</tr>
-	<tr valign="top">
-		<td class="label" width="30%">{translate key="reviewer.article.schedule.remarks"}</td>
-		<td class="value" width="70%">{if $meeting->getRemarks() != null}{$meeting->getRemarks()}{else}&mdash;{/if}</td>
-	</tr>
-	<tr valign="top" id="editAnswer">
-		<td class="label" width="30%">&nbsp;</td>
-		<td class="value" width="70%"><a href="#reply" onclick="editAnswer()" class="action"  id="editAnswer">{translate key="reviewer.article.schedule.editAnswer"}</a></td>
-	</tr>
-	<tr valign="top" id="editAnswerHide" style="display: none;">
-		<td class="label" width="30%">&nbsp;</td>
-		<td class="value" width="70%"><a href="#reply" onclick="editAnswerHide()" class="action" id="editAnswerHide">{translate key="reviewer.article.schedule.editAnswerHide"}</a></td>
-	</tr>
-</table>
-<form method="post" action="{url op="replyMeeting"}" >
-<table width="100%" class="data" id="replyMeetingForm" {if $meeting->getIsAttending() != 3}style="display: none;"{/if}>
-<tr><td colspan="2" class="headseparator">&nbsp;</td></tr>
-<tr valign="top">
-	<td class="label" width="30%">{translate key="reviewer.article.schedule.isAttending"} </td>
-	<td class="value" width="70%">	
-		<input type="radio" name="isAttending" id="acceptMeetingSchedule" value="1" {if  $meeting->getIsAttending() == 1 } checked="checked"{/if} > </input> {translate key="common.yes"}
-		<input type="radio" name="isAttending" id="regretMeetingSchedule" value="2" {if  $meeting->getIsAttending() == 2 } checked="checked"{/if} > </input> {translate key="common.no"}
-		<input type="radio" name="isAttending" id="undecidedMeetingSchedule" value="0" {if  $meeting->getIsAttending() == 0 } checked="checked"{/if} > </input> {translate key="common.undecided"}
-	</td>
-</tr> 
-<tr>
-	<td class="label" width="30%">{translate key="reviewer.article.schedule.remarks"} </td>
-	<td class="value" width="70%">
-		<textarea class="textArea" name="remarks" id="proposedDate" rows="5" cols="40" />{$meeting->getRemarks()|escape}</textarea>
-	</td>
-</tr>
-<tr>
-	<td class="label"></td>
-	<td class="value">
-		<input type="hidden" id="meetingId" name="meetingId" value={$meeting->getId()}> </input>
-		<input type="submit" value="{translate key="common.save"}" class="button defaultButton" /> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="document.location.href='{url op="meetings" escape=false}'" />
-	</td>
-</tr>
-</table>
-</form>
+	<h2>{translate key="reviewer.meetings.reply"}</h2>
+	<div class="separator"></div>
+	<a name="reply"></a>
+	{assign var="meetingAttendance" value=$meeting->getMeetingAttendanceOfUser($userId)}
+	<table width="100%" class="listing" {if $meetingAttendance->getIsAttending() == 3}style="display: none;"{/if}>
+		<tr valign="top">
+			<td class="label" width="30%">{translate key="reviewer.article.schedule.isAttending"}</td>
+			<td class="value" width="70%">{if  $meetingAttendance->getIsAttending() == 1 }{translate key="common.yes"}{elseif  $meetingAttendance->getIsAttending() == 2 }{translate key="common.no"}{else}{translate key="common.undecided"}{/if}</td>
+		</tr>
+		<tr valign="top">
+			<td class="label" width="30%">{translate key="reviewer.article.schedule.remarks"}</td>
+			<td class="value" width="70%">{if $meetingAttendance->getRemarks() != null}{$meetingAttendance->getRemarks()}{else}&mdash;{/if}</td>
+		</tr>
+		<tr valign="top" id="editAnswer">
+			<td class="label" width="30%">&nbsp;</td>
+			<td class="value" width="70%"><a href="#reply" onclick="editAnswer()" class="action"  id="editAnswer">{translate key="reviewer.article.schedule.editAnswer"}</a></td>
+		</tr>
+		<tr valign="top" id="editAnswerHide" style="display: none;">
+			<td class="label" width="30%">&nbsp;</td>
+			<td class="value" width="70%"><a href="#reply" onclick="editAnswerHide()" class="action" id="editAnswerHide">{translate key="reviewer.article.schedule.editAnswerHide"}</a></td>
+		</tr>
+	</table>
+	<form method="post" action="{url op="replyMeeting"}" >
+		<table width="100%" class="data" id="replyMeetingForm" {if $meetingAttendance->getIsAttending() != 3}style="display: none;"{/if}>
+			<tr><td colspan="2" class="headseparator">&nbsp;</td></tr>
+			<tr valign="top">
+				<td class="label" width="30%">{translate key="reviewer.article.schedule.isAttending"} </td>
+				<td class="value" width="70%">	
+					<input type="radio" name="isAttending" id="acceptMeetingSchedule" value="1" {if  $meetingAttendance->getIsAttending() == 1 } checked="checked"{/if} > </input> {translate key="common.yes"}
+					<input type="radio" name="isAttending" id="regretMeetingSchedule" value="2" {if  $meetingAttendance->getIsAttending() == 2 } checked="checked"{/if} > </input> {translate key="common.no"}
+					<input type="radio" name="isAttending" id="undecidedMeetingSchedule" value="0" {if  $meetingAttendance->getIsAttending() == 0 } checked="checked"{/if} > </input> {translate key="common.undecided"}
+				</td>
+			</tr> 
+			<tr>
+				<td class="label" width="30%">{translate key="reviewer.article.schedule.remarks"} </td>
+				<td class="value" width="70%">
+					<textarea class="textArea" name="remarks" id="proposedDate" rows="5" cols="40" />{$meetingAttendance->getRemarks()|escape}</textarea>
+				</td>
+			</tr>
+			<tr>
+				<td class="label"></td>
+				<td class="value">
+					<input type="hidden" id="meetingId" name="meetingId" value={$meeting->getId()}> </input>
+					<input type="submit" value="{translate key="common.save"}" class="button defaultButton" /> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="document.location.href='{url op="meetings" escape=false}'" />
+				</td>
+			</tr>
+		</table>
+	</form>
 </div>
 {include file="common/footer.tpl"}

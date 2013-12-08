@@ -49,7 +49,7 @@
 				<option value="5" {if $status==5}selected{/if}>{translate key="common.done"}</option>
 			</select>
 			</td>
-			<td>Reply</td>
+			<td>{translate key="reviewer.meetings.replyStatus"}</td>
 			<td>
 			<select name="replyStatus" size="1"  class="selectMenu" >
 				<option value="">{translate key="common.all"}</option>
@@ -89,15 +89,15 @@
 		<tr><td colspan="5" class="headseparator">&nbsp;</td></tr>
 	<p></p>
 	{iterate from=meetings item=meeting}
-	{assign var="key" value=$meeting->getId()}
+		{assign var="key" value=$meeting->getId()}
+		{assign var="meetingAttendance" value=$meeting->getMeetingAttendanceOfUser($userId)}	
 		<tr class="heading" valign="bottom">
 			<td width="5%">{$meeting->getPublicId()}</td>
 			<td width="40%">
 				<a href="{url op="viewMeeting" path=$meeting->getId()}" class="action">
-				{foreach from=$map.$key item=submission name=submissions}
-					{assign var="abstract" value=$submission->getLocalizedAbstract()}
-					&#9679;&nbsp;{$abstract->getScientificTitle()|strip_unsafe_html}
-					{if $smarty.foreach.submissions.last}{else}<br/>{/if}
+				{foreach from=$map.$key item=sectionDecision name=sectionDecisions}
+					&#9679;&nbsp;{$sectionDecision->getLocalizedProposalTitle()|strip_unsafe_html}
+					{if $smarty.foreach.sectionDecisions.last}{else}<br/>{/if}
 				{/foreach}
 				</a>
 				{if empty($map.$key)}
@@ -111,7 +111,7 @@
 			</td>
 			<td width="15%" align="right">
 				<a href="{url op="viewMeeting" path=$meeting->getId()}" class="action">
-					{$meeting->getReplyStatus()}
+					{$meetingAttendance->getReplyStatus()}
 				</a>
 			</td>
 		</tr>	

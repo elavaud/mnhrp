@@ -5,8 +5,8 @@ define ('STATUS_FINAL', 1);
 define ('STATUS_RESCHEDULED', 2);
 define ('STATUS_CANCELLED', 3);
 
-import('classes.meeting.MeetingAttendance');
-
+import('classes.meeting.Meeting');
+                                
 class MeetingAction extends Action {
 
 	/**
@@ -48,10 +48,8 @@ class MeetingAction extends Action {
 				
 		$journal =& Request::getJournal();
 		$journalId = $journal->getId();
-		//$selectedSubmissions =& $selectedSubmissions;
-		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
-		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
-		$meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');		
+
+                $meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		
 		/**
 		 * Parse date
@@ -72,120 +70,134 @@ class MeetingAction extends Action {
 			}
 			$meetingDate = mktime($hour, (int)$meetingTimeParts[1], 0, (int)$meetingDateParts[1], (int)$meetingDateParts[2], (int)$meetingDateParts[0]);
 		}
-		/**
-		 * Create new meeting
-		 */
-		$isNew = true;
-		if($meetingId == null) {
-			if($meetingId == 0) {
-				$meetingId = $meetingDao->createMeeting($user->getSecretaryCommitteeId(), $meetingDate, $meetingLength, $location, $investigator, 0);
-				
-				$ercReviewersDao =& DAORegistry::getDAO('ErcReviewersDAO');
-				
-				// Insert Attendance of the external reviewers & Investigators
-				$articleDao =& DAORegistry::getDAO('ArticleDAO');
-				$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
-				foreach ($sectionDecisionsId as $sectionDecisionId){
-					
-					// For external reviewers
-					$sectionDecision =& $sectionDecisionDao->getSectionDecision($sectionDecisionId);
-					$reviewAssignments =& $sectionDecision->getReviewAssignments();
-					foreach ($reviewAssignments as $reviewAssignment) {
-						$isReviewer = $ercReviewersDao->ercReviewerExists($journalId, $user->getSecretaryCommitteeId(), $reviewAssignment->getReviewerId());
-						$willAttend = $meetingAttendanceDao->attendanceExists($meetingId, $reviewAssignment->getReviewerId());
-						if (!$isReviewer && !$willAttend) {
-							$meetingAttendanceDao->insertMeetingAttendance($meetingId, $reviewAssignment->getReviewerId(), MEETING_EXTERNAL_REVIEWER);
-						}
-					}
-					
-					// For investigator
-					if ($investigator == 1)	{
-						$article =& $articleDao->getArticle($sectionDecision->getArticleId());
-						if (!$meetingAttendanceDao->attendanceExists($meetingId, $article->getUserId())) $meetingAttendanceDao->insertMeetingAttendance($meetingId, $article->getUserId(), MEETING_INVESTIGATOR);
-					}			
-				}
-				
-				// Insert Attendance of the reviewers
-				$reviewers =& $ercReviewersDao->getReviewersBySectionId($journalId, $user->getSecretaryCommitteeId());						
-				foreach($reviewers as $reviewer) if (!$meetingAttendanceDao->attendanceExists($meetingId, $reviewer->getId())) $meetingAttendanceDao->insertMeetingAttendance($meetingId, $reviewer->getId(), MEETING_ERC_MEMBER);
-				
-				
-				// Insert Attendance of the secretary(ies)
-				$sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
-				$secretaries =& $sectionEditorsDao->getEditorsBySectionId($journalId, $user->getSecretaryCommitteeId());
-				foreach($secretaries as $secretary) {
-					if (!$meetingAttendanceDao->attendanceExists($meetingId, $secretary->getId())) {
-						if ($secretary->getId() == $user->getId()) $meetingAttendanceDao->insertMeetingAttendance($meetingId,$secretary->getId(), MEETING_SECRETARY, MEETING_REPLY_ATTENDING);
-						else $meetingAttendanceDao->insertMeetingAttendance($meetingId,$secretary->getId(), MEETING_SECRETARY);
-					}
-				}
-			}
-		/**
-		 * Update an existing meeting
-		 */
-		}else{ 
-			 $isNew = false;
-			 $meetingSectionDecisionDao->deleteMeetingSectionDecisionsByMeetingId($meetingId);
-			 $meeting = $meetingDao->getMeetingById($meetingId);
-			 //check if new meeting date is equal to old meeting date
-			 $oldDate = 0;
-			 $diff = $meetingDate - strtotime($meeting->getDate());
-			 if($diff != 0) $oldDate = $meeting->getDate();
-			 
-			 $oldLength = 0;
-			 if (($meeting->getLength()) != $meetingLength) $oldLength = $meeting->getLength();
-			 
-			 $oldLocation = (string)'';
-			 if (($meeting->getLocation()) != $location) $oldLocation = $meeting->getLocation();
+                
+                $hasChanged = false;
+                
+		if($meetingId == null || $meetingId == 0) {
+                        $isNew = true;
+                        $meeting = new Meeting();
+                } else {
+			$isNew = false;
+			$meeting = $meetingDao->getMeetingById($meetingId);
+			 if($meetingDate - strtotime($meeting->getDate()) != 0) $hasChanged = true;
+                         elseif ($location != $meeting->getLocation()) $hasChanged = true;
+                } 
+                
+                         
+                $meeting->setUploader($user->getSecretaryCommitteeId());
+                $meeting->setDate($meetingDate);
+                $meeting->setLength($meetingLength);
+                $meeting->setLocation($location);
+                $meeting->setInvestigator($investigator);
+                $meeting->setMinutesStatus(MINUTES_STATUS_INCOMPLETE);
+                
+                if ($final) $meeting->setStatus(STATUS_FINAL);
+                elseif ($isNew) $meeting->setStatus(STATUS_NEW);
+                else $meeting->setStatus(STATUS_RESCHEDULED);
+                
+                if ($isNew) $meeting->setId($meetingDao->insertMeeting($meeting));
+                
+                // Set attendances
+                if ($isNew || $hasChanged) {
 
-			 $oldInvestigator = 2;
-			 if (($meeting->getInvestigator()) != $investigator) $oldInvestigator = $meeting->getInvestigator();
-			 			 			 
-			 $meetingSectionDecisionDao->deleteMeetingSectionDecisionsByMeetingId($meetingId);
-		}
+                        $ercReviewersDao =& DAORegistry::getDAO('ErcReviewersDAO');
+
+                        // Insert Attendance of the external reviewers & Investigators
+                        $articleDao =& DAORegistry::getDAO('ArticleDAO');
+                        $sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
+                        foreach ($sectionDecisionsId as $sectionDecisionId){
+
+                                // For external reviewers
+                                $sectionDecision =& $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+                                $reviewAssignments =& $sectionDecision->getReviewAssignments();
+                                foreach ($reviewAssignments as $reviewAssignment) {
+                                        $isReviewer = $ercReviewersDao->ercReviewerExists($journalId, $user->getSecretaryCommitteeId(), $reviewAssignment->getReviewerId());
+                                        if (!$isReviewer) {
+                                                $meetingAttendance = new MeetingAttendance();
+                                                $meetingAttendance->setMeetingId($meeting->getId());
+                                                $meetingAttendance->setUserId($reviewAssignment->getReviewerId());
+                                                $meetingAttendance->setTypeOfUser(MEETING_EXTERNAL_REVIEWER);
+                                                $meetingAttendance->setIsAttending(MEETING_NO_REPLY);
+                                                $meetingAttendance->setWasPresent(MEETING_NO_REPLY);
+                                                $meetingAttendance->setReasonForAbsence('');
+                                                $meeting->addMeetingAttendance($meetingAttendance);
+                                        }
+                                }
+
+                                // For investigator
+                                if ($investigator == 1)	{
+                                        $article =& $articleDao->getArticle($sectionDecision->getArticleId());
+                                        $meetingAttendance = new MeetingAttendance();
+                                        $meetingAttendance->setMeetingId($meeting->getId());
+                                        $meetingAttendance->setUserId($article->getUserId());
+                                        $meetingAttendance->setTypeOfUser(MEETING_INVESTIGATOR);
+                                        $meetingAttendance->setIsAttending(MEETING_NO_REPLY);
+                                        $meetingAttendance->setWasPresent(MEETING_NO_REPLY);
+                                        $meetingAttendance->setReasonForAbsence('');
+                                        $meeting->addMeetingAttendance($meetingAttendance);
+                                }			
+                        }
+
+                        // Insert Attendance of the reviewers
+                        $reviewers =& $ercReviewersDao->getReviewersBySectionId($journalId, $user->getSecretaryCommitteeId());						
+                        foreach($reviewers as $reviewer) {
+                                $meetingAttendance = new MeetingAttendance();
+                                $meetingAttendance->setMeetingId($meeting->getId());
+                                $meetingAttendance->setUserId($reviewer->getId());
+                                $meetingAttendance->setTypeOfUser(MEETING_ERC_MEMBER);
+                                $meetingAttendance->setIsAttending(MEETING_NO_REPLY);
+                                $meetingAttendance->setWasPresent(MEETING_NO_REPLY);
+                                $meetingAttendance->setReasonForAbsence('');
+                                $meeting->addMeetingAttendance($meetingAttendance);
+                        }
+
+                        // Insert Attendance of the secretary(ies)
+                        $sectionEditorsDao =& DAORegistry::getDAO('SectionEditorsDAO');
+                        $secretaries =& $sectionEditorsDao->getEditorsBySectionId($journalId, $user->getSecretaryCommitteeId());
+                        foreach($secretaries as $secretary) {
+                                $meetingAttendance = new MeetingAttendance();
+                                $meetingAttendance->setMeetingId($meeting->getId());
+                                $meetingAttendance->setUserId($reviewer->getId());
+                                if (!$secretary->getId() == $user->getId()) $meetingAttendance->setIsAttending(MEETING_REPLY_ATTENDING);
+                                else $meetingAttendance->setIsAttending(MEETING_NO_REPLY);
+                                $meetingAttendance->setWasPresent(MEETING_NO_REPLY);
+                                $meetingAttendance->setReasonForAbsence('');
+                                $meeting->addMeetingAttendance($meetingAttendance);                                        
+                        }
+			
+                }
+			 			 			 		
 
 		/**
 		 * Store submissions to be discussed
 		 */
 		if (count($sectionDecisionsId) > 0) {
+                        $oldSectionDecisions = $meeting->getMeetingSectionDecisions();
+                        foreach ($oldSectionDecisions as $oldSectionDecision) {
+                                $isHere = false;
+                                for ($i=0;$i<count($sectionDecisionsId);$i++) {
+                                        if ($oldSectionDecision->getSectionDecisionId() == $sectionDecisionsId[$i]) $isHere = true;
+                                }
+                                if (!$isHere) $meeting->removeMeetingSectionDecision($oldSectionDecision->getSectionDecisionId());
+                                
+                        }
+                        
 			for ($i=0;$i<count($sectionDecisionsId);$i++) {
-				$meetingSectionDecisionDao->insertMeetingSectionDecision($meetingId,$sectionDecisionsId[$i]);
+                                $meetingSectionDecision = new MeetingSectionDecision();
+                                $meetingSectionDecision->setMeetingId($meeting->getId());
+                                $meetingSectionDecision->setSectionDecisionId($sectionDecisionsId[$i]);
+                                $meeting->addMeetingSectionDecision($meetingSectionDecision);
 			}
 		}
 		
-		if ($isNew) {
-			if ($final) {
-				$meetingDao->updateStatus($meetingId, STATUS_FINAL);
-				Request::redirect(null, null, 'notifyUsersMeeting', array($meetingId, 'MEETING_FINAL'));
-			} else {
-				Request::redirect(null, null, 'notifyUsersMeeting', array($meetingId, 'MEETING_NEW'));
-			}
-		} elseif (($oldDate != 0) || ($oldLength != 0) || ($oldLocation != '')){
-			//reset reply of all reviewers
-			$meetingAttendanceDao->resetReplyOfUsers($meeting);
-			
-			// Set attending for this user
-			$meetingAttendance =& $meetingAttendanceDao->getMeetingAttendance($meeting->getId(), $user->getId());
-			$meetingAttendance->setIsAttending(1);
-			$meetingAttendanceDao->updateReplyOfAttendance($meetingAttendance);
-			
-			//update meeting date 
-			$meeting->setDate($meetingDate);
-			$meeting->setLength($meetingLength);
-			$meeting->setLocation($location);
-			$meeting->setInvestigator($investigator);
-			$meetingDao->updateMeeting($meeting);
-			
-			if ($final) {
-				$meetingDao->updateStatus($meetingId, STATUS_FINAL);
-				Request::redirect(null, null, 'notifyUsersMeeting', array($meetingId, 'MEETING_FINAL'));
-			} else {
-				$meetingDao->updateStatus($meetingId, STATUS_RESCHEDULED);
-				Request::redirect(null, null, 'notifyUsersMeeting', array($meetingId, 'MEETING_CHANGE'));			
-			}
-		}
-		
-		return $meetingId;
+                $meetingDao->updateMeeting($meeting);
+                
+                if ($final) Request::redirect(null, null, 'notifyUsersMeeting', array($meeting->getId(), 'MEETING_FINAL'));
+                elseif ($isNew) Request::redirect(null, null, 'notifyUsersMeeting', array($meeting->getId(), 'MEETING_NEW'));
+                elseif ($hasChanged) Request::redirect(null, null, 'notifyUsersMeeting', array($meeting->getId(), 'MEETING_CHANGE'));                
+                else Request::redirect(null, null, 'viewMeeting', array($meeting->getId()));
+                
+		return $meeting->getId();
 	}
 	
 	/**
@@ -195,7 +207,7 @@ class MeetingAction extends Action {
 	 * And moved from SectionEditorAction to here
 	 */
 
-	function notifyReviewersMeeting($meeting, $informationType, $reviewerAttendances, $sectionDecisionsId, $send = false) {
+	function notifyReviewersMeeting($meeting, $informationType, $reviewerAttendances, $mSectionDecisions, $send = false) {
 		$journal =& Request::getJournal();
 		$user =& Request::getUser();
 		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
@@ -205,9 +217,9 @@ class MeetingAction extends Action {
 		$submissions = (string)'';
 		$num=1;
 
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
-			$submissions .= $num.". '".$sectionDecision->getLocalizedProposalTitle()."' by ".$sectionDecision->getAuthorString()."\n";
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
+			$submissions .= $num.". '".$sectionDecision->getLocalizedProposalTitle()."' ".Locale::translate('common.bySomebody').' '.$sectionDecision->getAuthorString()."\n";
 			$num++;
 		}
 
@@ -264,13 +276,13 @@ class MeetingAction extends Action {
 			if(!Request::getUserVar('continued')) {
 				$dateLocation = (string)'';
 				if($meeting->getDate() != null) {
-					$dateLocation .= 'Date: '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
+					$dateLocation .= Locale::translate('editor.reports.meetingDate').': '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
 				}
 				if($meeting->getLength() != null) {
-					$dateLocation .= 'Length: '.$meeting->getLength()."mn\n";
+					$dateLocation .= Locale::translate('editor.meeting.length').': '.$meeting->getLength()."mn\n";
 				}
 				if($meeting->getLocation() != null) {
-					$dateLocation .= 'Location: '.$meeting->getLocation()."\n";
+					$dateLocation .= Locale::translate('editor.meeting.location').': '.$meeting->getLocation()."\n";
 				}
 				$replyUrl = Request::url(null, 'reviewer', 'viewMeeting', $meeting->getId()
 					, $reviewerAccessKeysEnabled?array('key' => 'ACCESS_KEY'):array()
@@ -296,23 +308,21 @@ class MeetingAction extends Action {
 
 	/**
 	 * Notify an investigator of a new meeting set by section editor
-	 * Added by EL on February 28th 2013
-	 * And moved from SectionEditorAction to here
 	 */
 
-	function notifyExternalReviewerMeeting($meeting, $informationType, $externalReviewerAttendance, $attendanceIncrementNumber, $sectionDecisionsId, $send = false) {
+	function notifyExternalReviewerMeeting($meeting, $informationType, $externalReviewerAttendance, $attendanceIncrementNumber, $mSectionDecisions, $send = false) {
 		$journal =& Request::getJournal();
 		$user =& Request::getUser();
 		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 		$num=1;
 		$submissions = (string)'';
 
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
 			$reviewAssignments =& $sectionDecision->getReviewAssignments();
 			foreach ($reviewAssignments as $reviewAssignment) {
 				if ($reviewAssignment->getReviewerId() == $externalReviewerAttendance->getUserId()){
-					$submissions .= $num.". '".$sectionDecision->getLocalizedProposalTitle()."' by ".$sectionDecision->getAuthorString()."\n";
+					$submissions .= $num.". '".$sectionDecision->getLocalizedProposalTitle()."' ".Locale::translate('common.bySomebody').' '.$sectionDecision->getAuthorString()."\n";
 					$num++;
 				}
 			}
@@ -363,15 +373,15 @@ class MeetingAction extends Action {
 			if(!Request::getUserVar('continued')) {
 				$dateLocation = (string)'';
 				if($meeting->getDate() != null) {
-					$dateLocation .= 'Date: '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
+					$dateLocation .= Locale::translate('editor.reports.meetingDate').': '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
 				}
 				if($meeting->getLength() != null) {
-					$dateLocation .= 'Length: '.$meeting->getLength()."mn\n";
+					$dateLocation .= Locale::translate('editor.meeting.length').': '.$meeting->getLength()."mn\n";
 				}
 				if($meeting->getLocation() != null) {
-					$dateLocation .= 'Location: '.$meeting->getLocation()."\n";
+					$dateLocation .= Locale::translate('editor.meeting.location').': '.$meeting->getLocation()."\n";
 				}
-				$dateLocation .= 'Number of proposal(s) to review: '.count($sectionDecisionsId)."\n";
+				$dateLocation .= Locale::translate('editor.meeting.numberOfProposalsToReview').': '.count($mSectionDecisions)."\n";
 				
 				$replyUrl = Request::url(null, 'reviewer', 'viewMeeting', $meeting->getId(), $reviewerAccessKeysEnabled?array('key' => 'ACCESS_KEY'):array());
 				
@@ -400,7 +410,7 @@ class MeetingAction extends Action {
 	 * And moved from SectionEditorAction to here
 	 */
 
-	function notifyInvestigatorMeeting($meeting, $informationType, $investigatorAttendance, $attendanceIncrementNumber, $sectionDecisionsId, $send = false) {
+	function notifyInvestigatorMeeting($meeting, $informationType, $investigatorAttendance, $attendanceIncrementNumber, $mSectionDecisions, $send = false) {
 		$journal =& Request::getJournal();
 		$user =& Request::getUser();
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
@@ -408,8 +418,8 @@ class MeetingAction extends Action {
 		$num=1;
 		$submissions = (string)'';
 
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
 			$submission = $articleDao->getArticle($sectionDecision->getArticleId(), $journal->getId(), false);
 			$abstract = $submission->getLocalizedAbstract();
 			if ($submission->getUserId() == $investigatorAttendance->getUserId()) {
@@ -434,8 +444,8 @@ class MeetingAction extends Action {
 				$email->addRecipient($investigator->getEmail(), $investigator->getFullName());
 
 				// Add emails of the investigator(s) if different from the submitter
-				foreach($sectionDecisionsId as $sectionDecisionId) {
-                                        $sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+				foreach($mSectionDecisions as $mSectionDecision) {
+                                        $sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
 					$submission = $articleDao->getArticle($sectionDecision->getArticleId(), $journal->getId(), false);
 					if ($submission->getUserId() == $investigatorAttendance->getUserId()) {
 						$authors = $submission->getAuthors();
@@ -455,26 +465,26 @@ class MeetingAction extends Action {
 			if(!Request::getUserVar('continued')) {
 				$dateLocation = (string)'';
 				if($meeting->getDate() != null) {
-					$dateLocation .= 'Date: '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
+					$dateLocation .= Locale::translate('editor.reports.meetingDate').': '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
 				}
 				if($meeting->getLength() != null) {
-					$dateLocation .= 'Length: '.$meeting->getLength()."mn\n";
+					$dateLocation .= Locale::translate('editor.meeting.length').': '.$meeting->getLength()."mn\n";
 				}
 				if($meeting->getLocation() != null) {
-					$dateLocation .= 'Location: '.$meeting->getLocation()."\n";
+					$dateLocation .= Locale::translate('editor.meeting.location').': '.$meeting->getLocation()."\n";
 				}
-				$dateLocation .= 'Number of proposal(s) to review: '.count($sectionDecisionsId)."\n";
+				$dateLocation .= Locale::translate('editor.meeting.numberOfProposalsToReview').': '.count($mSectionDecisions)."\n";
 				
 				$replyUrl = (string)'';
 				$investigatorFullName = (string)$investigator->getFullName();
 				$urlFirst = true;
-				foreach($sectionDecisionsId as $sectionDecisionId) {
-                                        $sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+				foreach($mSectionDecisions as $mSectionDecision) {
+                                        $sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
                                         $submission = $articleDao->getArticle($sectionDecision->getArticleId(), $journal->getId(), false);
                                         if ($urlFirst) { 
 						$replyUrl .= Request::url(null, 'author', 'submissionReview', $sectionDecision->getArticleId());
 						$urlFirst = false;
-					} else $replyUrl .= 'Or:\n'.Request::url(null, 'author', 'submissionReview', $sectionDecision->getArticleId());
+					} else $replyUrl .= '    '.Locale::translate("common.or").':    '.Request::url(null, 'author', 'submissionReview', $sectionDecision->getArticleId());
 					// Add name of the investigators if different from submitter
 					if ($submission->getUserId() == $investigatorAttendance->getUserId()) {
 						$authors = $submission->getAuthors();
@@ -493,15 +503,12 @@ class MeetingAction extends Action {
 					'investigatorFullName' => $investigatorFullName,
 					'submissions' => $submissions,
 					'dateLocation' => $dateLocation,
-					'replyUrl' => $replyUrl,
+					'replyUrl' => nl2br($replyUrl),
 					'secretaryName' => $user->getFullName(),
 					'secretaryFunctions' => $user->getErcFunction($meeting->getUploader())
 				);
 				$email->assignParams($paramArray);
 			}
-			// EL on February 26th 2013
-			// Replaced submissionsIds by submissionIds
-			// + moved the paramters as additional parameters
 			$email->displayEditForm(Request::url(null, null, 'notifyInvestigatorsMeeting', array($meeting->getId(), $attendanceIncrementNumber, $informationType)));
 			return false;
 		}
@@ -514,16 +521,16 @@ class MeetingAction extends Action {
 	 * Moved from sectionEditorAction by EL on March 5th
 	 */
 
-	function remindUserMeeting($meeting, $addresseeId, $sectionDecisionsId, $send = false) {
+	function remindUserMeeting($meeting, $addresseeId, $mSectionDecisions, $send = false) {
 		$journal =& Request::getJournal();
 		$user = & Request::getUser();
 		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 		
                 $submissions = (string)'';
 		$num=1;
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
-			$submissions .= $num.". '".$sectionDecision->getLocalizedProposalTitle()."' by ".$sectionDecision->getAuthorString(true)."\n";
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
+			$submissions .= $num.". '".$sectionDecision->getLocalizedProposalTitle()."' ".Locale::translate('common.bySomebody').' '.$sectionDecision->getAuthorString(true)."\n";
 			$num++;
 		}
 		$userDao =& DAORegistry::getDAO('UserDAO');
@@ -567,27 +574,27 @@ class MeetingAction extends Action {
 			if(!Request::getUserVar('continued')) {
 				$dateLocation = (string)'';
 				if($meeting->getDate() != null) {
-					$dateLocation .= 'Date: '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
+					$dateLocation .= Locale::translate('editor.reports.meetingDate').': '.strftime('%B %d, %Y %I:%M %p', strtotime($meeting->getDate()))."\n";
 				}
 				if($meeting->getLength() != null) {
-					$dateLocation .= 'Length: '.$meeting->getLength()."mn\n";
+					$dateLocation .= Locale::translate('editor.meeting.length').': '.$meeting->getLength()."mn\n";
 				}
 				if($meeting->getLocation() != null) {
-					$dateLocation .= 'Location: '.$meeting->getLocation()."\n";
+					$dateLocation .= Locale::translate('editor.meeting.location').': '.$meeting->getLocation()."\n";
 				}
-				$dateLocation .= 'Number of proposal(s) to review: '.count($sectionDecisionsId)."\n";
+				$dateLocation .= Locale::translate('editor.meeting.numberOfProposalsToReview').': '.count($mSectionDecisions)."\n";
 				
 				$type = $meetingAttendanceDao->getTypeOfUser($meeting->getId(), $addressee->getId());
 				
 				$replyUrl = (string)'';
 				if ($type == MEETING_INVESTIGATOR) {
 					$urlFirst = true;
-					foreach ($sectionDecisionsId as $sectionDecisionId){
-                                                $sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+					foreach ($mSectionDecisions as $mSectionDecision){
+                                                $sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
 						if ($urlFirst) {
 							$replyUrl .= Request::url(null, 'author', 'submissionReview', $sectionDecision->getArticleId());
 							$urlFirst = false;
-						} else $replyUrl .= 'Or:\n'.Request::url(null, 'author', 'submissionReview', $sectionDecision->getArticleId());					
+						} else $replyUrl .= '   '.Locale::translate("common.or").':   '.Request::url(null, 'author', 'submissionReview', $sectionDecision->getArticleId());					
 					}
 				} elseif ($type == MEETING_SECRETARY) {
 					$replyUrl = Request::url(null, 'sectionEditor', 'viewMeeting', $meeting->getId());
@@ -641,7 +648,6 @@ class MeetingAction extends Action {
 	}
 
 	/**
-	 * Added by EL on February 27th 2013
 	 * Reply the attendance of the user
 	 */
 	function replyAttendanceForUser($meetingId, $userId, $attendance){

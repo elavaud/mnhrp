@@ -58,6 +58,7 @@
 	<message key="common.assigned">Assigned</message>
 	<message key="common.back">Back</message>
 	<message key="common.between">between</message>
+	<message key="common.bySomebody">by</message>
 	<message key="common.cancel">Cancel</message>
 	<message key="common.cancelled">Cancelled</message>
 	<message key="common.captchaField.altText">Validation image</message>

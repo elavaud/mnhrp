@@ -9,13 +9,18 @@ import('classes.meeting.Meeting');
 import('lib.pkp.classes.db.DBRowIterator');
 
 class MeetingDAO extends DAO {
+
+	var $meetingAttendanceDao;
+        
+	var $meetingSectionDecisionDao;
+        
 	/**
 	 * Constructor
-	 */
-	var $userDao;
+	 */        
 	function MeetingDAO() {
 		parent::DAO();
-		$this->userDao =& DAORegistry::getDAO('UserDAO');
+		$this->meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');
+                $this->meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 	}
 
 	/**
@@ -60,11 +65,8 @@ class MeetingDAO extends DAO {
 	 */
 	function &getMeetingById($meetingId) {
 		$meeting = null;
-		
-		//Added field 'final'
-		//Edited by ayveemallare 7/6/2011
-		
-		$result =& $this->retrieve(
+
+                $result =& $this->retrieve(
 			'SELECT * FROM meetings WHERE meeting_id = ?',
 			(int) $meetingId
 		);
@@ -85,7 +87,7 @@ class MeetingDAO extends DAO {
 	 */
 	function &getMeetingsByReviewerId($reviewerId, $sortBy = null, $rangeInfo = null, $sortDirection = SORT_DIRECTION_ASC,
 		$status=null, $replyStatus=null, $dateFrom=null, $dateTo=null) {
-			
+		
 		$sql = 
 			'SELECT * 
 			FROM meetings a INNER JOIN meeting_attendance b
@@ -177,25 +179,22 @@ class MeetingDAO extends DAO {
 	 * not to include object settings.
 	 * @param $row array
 	 * @return Meeting
-	 * Last upadte: EL on February 25th 2013. 
 	 */
 	function &_returnMeetingFromRow(&$row) {
 		$meeting = new Meeting();
 		if (isset($row['meeting_id'])) $meeting->setId($row['meeting_id']);
 		if (isset($row['meeting_date'])) $meeting->setDate($row['meeting_date']);
-			if (isset($row['meeting_length'])) $meeting->setLength($row['meeting_length']);
-			if (isset($row['location'])) $meeting->setLocation($row['location']);
-			if (isset($row['investigator'])) $meeting->setInvestigator($row['investigator']);
+		if (isset($row['meeting_length'])) $meeting->setLength($row['meeting_length']);
+		if (isset($row['location'])) $meeting->setLocation($row['location']);
+		if (isset($row['investigator'])) $meeting->setInvestigator($row['investigator']);
 		if (isset($row['section_id'])) $meeting->setUploader($row['section_id']);
 		if (isset($row['minutes_status'])) $meeting->setMinutesStatus($row['minutes_status']);
-		//Added additional fields
-		//Edited by ayveemallare 7/6/2011
-		if (isset($row['user_id'])) $meeting->setUserId($row['user_id']);
-		if (isset($row['attending'])) $meeting->setIsAttending($row['attending']);
-		if (isset($row['remarks'])) $meeting->setRemarks($row['remarks']);
 		if (isset($row['status'])) $meeting->setStatus($row['status']);
-		if (isset($row['present'])) $meeting->setIsPresent($row['present']);
-		if (isset($row['reason_for_absence'])) $meeting->setReasonForAbsence($row['reason_for_absence']);
+                
+                $meeting->setMeetingAttendances($this->meetingAttendanceDao->getMeetingAttendancesByMeetingId($row['meeting_id']));
+
+                $meeting->setMeetingSectionDecisions($this->meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($row['meeting_id']));
+
 		HookRegistry::call('MeetingDAO::_returnMeetingFromRow', array(&$meeting, &$row));
 		return $meeting;
 	}
@@ -208,36 +207,77 @@ class MeetingDAO extends DAO {
 		assert(false); // Should be overridden by child classes
 	}
 
-	function insertMeeting($sectionId, $meetingDate = null, $meetingLength = null, $location = null, $investigator = 0, $status = 0) {
+	function insertMeeting($meeting) {
 		$this->update(
-			sprintf('INSERT INTO meetings (meeting_date, meeting_length, location, investigator, section_id, minutes_status) VALUES (%s, ?, ?, ?, ?, ?)',
-			$this->datetimeToDB($meetingDate)),
-			array($meetingLength, $location, $investigator, $sectionId, $status)
-		);		
+			sprintf('INSERT INTO meetings (
+                                        meeting_date, 
+                                        meeting_length, 
+                                        location, 
+                                        investigator, 
+                                        section_id, 
+                                        minutes_status
+                                 ) VALUES (%s, ?, ?, ?, ?, ?)',
+                                
+			$this->datetimeToDB($meeting->getDate())),
+			array($meeting->getLength(), 
+                                $meeting->getLocation(), 
+                                $meeting->getInvestigator(), 
+                                $meeting->getUploader(), 
+                                $meeting->getMinutesStatus()
+                        )
+		);
+                
+		$meeting->setId($this->getInsertMeetingId());
+                
+                foreach ($meeting->getMeetingAttendances() as $mAttendance){
+                    $this->meetingAttendanceDao->insertMeetingAttendance($mAttendance);
+                }
+                
+                foreach ($meeting->getMeetingSectionDecisions() as $mDecision){
+                    $this->meetingSectionDecisionDao->insertMeetingSectionDecision($mDecision);
+                }
+
+                return $meeting->getId();
+                
 	}
 	
-	function &createMeeting($sectionId, $meetingDate = null, $meetingLength = null, $location = null, $investigator = 0, $status = 0) {
-		$this->insertMeeting($sectionId, $meetingDate, $meetingLength, $location, $investigator, $status);
-				
-		$meetingId = 0;
-		$result =& $this->retrieve(
-			'SELECT max(meeting_id) as meeting_id, meeting_date, meeting_length, location, investigator, section_id, minutes_status FROM meetings WHERE section_id = ? GROUP BY meeting_id ORDER BY meeting_id DESC LIMIT 1;',
-			(int) $sectionId
-		);
-		$row = $result->GetRowAssoc(false);
-		$meetingId = $row['meeting_id'];
-						
-		$result->Close();
-		unset($result);
-
-		return $meetingId;
-	}
 	
 	function updateMeeting($meeting) {
 		$this->update(
 			sprintf('UPDATE meetings SET meeting_date = %s, meeting_length = ?, location = ?, investigator = ? where meeting_id = ?',$this->datetimeToDB($meeting->getDate())),
 			array($meeting->getLength(), $meeting->getLocation(), $meeting->getInvestigator(), $meeting->getId())
-		);				
+		);
+
+                // update meeting attendances for this meeting
+		$mAttendances =& $meeting->getMeetingAttendances();
+		for ($i=0, $count=count($mAttendances); $i < $count; $i++) {
+			if ($this->meetingAttendanceDao->attendanceExists($meeting->getId(), $mAttendances[$i]->getUserId())) {
+				$this->meetingAttendanceDao->updateAttendanceOfUser($mAttendances[$i]);
+			} else {
+				$this->meetingAttendanceDao->insertMeetingAttendance($mAttendances[$i]);
+			}
+		}
+
+		// Remove deleted meeting attendance
+		$removedMeetingAttendances = $meeting->getRemovedMeetingAttendance();
+		for ($i=0, $count=count($removedMeetingAttendances); $i < $count; $i++) {
+			$this->meetingAttendanceDao->deleteMeetingAttendance($meeting->getId(), $mAttendances[$i]->getUserId());
+		}
+
+                // update meeting section decisions for this meeting
+		$mSectionDecisions =& $meeting->getMeetingSectionDecisions();
+		for ($i=0, $count=count($mSectionDecisions); $i < $count; $i++) {
+			if (!$this->meetingSectionDecisionDao->meetingSectionDecisionsExists($meeting->getId(), $mSectionDecisions[$i]->getSectionDecisionId())) {
+				$this->meetingSectionDecisionDao->insertMeetingSectionDecision($mSectionDecisions[$i]);
+			}
+		}
+
+		// Remove deleted meeting section decisions
+		$removedMeetingSectionDecisions = $meeting->getRemovedMeetingSectionFecisions();
+		for ($i=0, $count=count($removedMeetingSectionDecisions); $i < $count; $i++) {
+			$this->meetingSectionDecisionDao->deleteMeetingSectionDecision($meeting->getId(), $mSectionDecisions[$i]->getSectionDecisionId());
+		}
+
 	}
 	
 	/**
@@ -264,9 +304,6 @@ class MeetingDAO extends DAO {
 	
 	/**
 	 * Update meeting/schedule status
-	 * Added by MSB July 7, 2011
-	 * Edited by ayveemallare 7/7/2011
-	 * Edited by EL on February 26th 2013
 	 */
 	
 	function updateStatus($meetingId, $status){
@@ -327,7 +364,17 @@ class MeetingDAO extends DAO {
 		$result->Close();
 		unset($result);
 		return $returner;
-	 }		
+	 }	
+         
+         
+         /**
+	 * Get the ID of the last inserted author.
+	 * @return int
+	 */
+	function getInsertMeetingId() {
+		return $this->getInsertId('meetings', 'meeting_id');
+	}
+
 }
 
 ?>

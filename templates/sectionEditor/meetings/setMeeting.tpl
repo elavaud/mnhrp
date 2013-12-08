@@ -52,6 +52,7 @@ $(document).ready(function() {
 	</tr>
 	<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
 	<p></p>
+	
 {iterate from=availableSectionDecisions item=decision}
 	<tr valign="top">
 			<td>{html_checkboxes id="selectedSectionDecisions" name='selectedSectionDecisions' values=$decision->getId() checked=$sectionDecisionsId'} </td>
@@ -61,10 +62,11 @@ $(document).ready(function() {
         	<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
 			<td>{translate key=$decision->getReviewStatusKey()}</td>
 	</tr>
-<tr>
-<td colspan="6" class="{if $availableSectionDecisions->eof()}end{/if}separator">&nbsp;</td>
-</tr>
+	<tr>
+		<td colspan="6" class="{if $availableSectionDecisions->eof()}end{/if}separator">&nbsp;</td>
+	</tr>
 {/iterate}
+
 {if $availableSectionDecisions->wasEmpty()}
 	<tr>
 		<td colspan="6" class="nodata">{translate key="submissions.noSubmissions"}</td>

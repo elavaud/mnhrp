@@ -87,7 +87,7 @@ $(document).ready(function() {
 		{if count($previousFiles)>1}
 		{assign var="count" value=0}
 		<tr>
-			<td class="label">Previous proposal files</td>
+			<td class="label">{translate key="submission.previousProposalFile"}</td>
 			<td width="80%" class="value">
 				{foreach name="previousFiles" from=$previousFiles item=previousFile}
 					{assign var="count" value=$count+1}

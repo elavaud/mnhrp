@@ -169,10 +169,10 @@ class ReviewerHandler extends Handler {
 		$meetingsArray = $meetings->toArray();
 		
 		foreach($meetingsArray as $meeting) {
-			$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
+			$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
 			$sectionDecisions = array();
-			foreach($sectionDecisionsId as $sectionDecisionId) {
-				$sectionDecision = $sectionDecisionDao->getSectionDecision($sectionDecisionId);
+			foreach($mSectionDecisions as $mSectionDecision) {
+				$sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
 				array_push($sectionDecisions, $sectionDecision);
 			}
 			$map[$meeting->getId()] = $sectionDecisions;
@@ -191,6 +191,7 @@ class ReviewerHandler extends Handler {
 		$templateMgr->assign('dateTo', $toDate);
 		$templateMgr->assign('status', $status);
 		$templateMgr->assign('replyStatus', $replyStatus);
+		$templateMgr->assign('userId', $userId);
 		$templateMgr->assign('isReviewer', !$ercReviewersDao->isExternalReviewer($journalId, $userId));
 		
 		// Set search parameters

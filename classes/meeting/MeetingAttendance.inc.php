@@ -1,17 +1,17 @@
 <?php
 
+define ('MEETING_NO_REPLY', 0);
 define ('MEETING_REPLY_ATTENDING', 1);
 define ('MEETING_REPLY_NOT_ATTENDING', 2);
+
+define ('MEETING_WAS_PRESENT', 1);
+define ('MEETING_WAS_ABSENT', 2);
 
 define ('MEETING_INVESTIGATOR', 1);
 define ('MEETING_EXTERNAL_REVIEWER', 2);
 define ('MEETING_SECRETARY', 3);
 define ('MEETING_ERC_MEMBER', 4);
 
-/**
- * Last update on February 2013
- * EL
-**/
 
 class MeetingAttendance extends DataObject {
 
@@ -106,14 +106,6 @@ class MeetingAttendance extends DataObject {
 		return $this->getData('typeOfUser');
 	}
 	
-	function setFunctions($functions){
-		return $this->setData('functions', $functions);
-	}	
-
-	function getFunctions() {
-		return $this->getData('functions');
-	}
-
 	function setReasonForAbsence($reasonForAbsence){
 		return $this->setData('reasonForAbsence', $reasonForAbsence);
 	}	
@@ -128,6 +120,14 @@ class MeetingAttendance extends DataObject {
 
 	function getWasPresent() {
 		return $this->getData('wasPresent');
+	}
+
+        function setUser($user) {
+		return $this->setData('user', $user);
+	}
+        
+        function getUser() {
+		return $this->getData('user');
 	}
 }
 

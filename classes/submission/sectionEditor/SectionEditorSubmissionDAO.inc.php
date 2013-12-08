@@ -980,6 +980,18 @@ class SectionEditorSubmissionDAO extends DAO {
 			case 'submitDate': return 'a.date_submitted';
 			case 'title': return 'submission_title';
 			case 'dateApproved': return 'sdec.date_decided';
+			case 'active': return 'incomplete';
+			case 'subCopyedit': return 'copyedit_completed';
+			case 'subLayout': return 'layout_completed';
+			case 'subProof': return 'proofread_completed';
+			case 'reviewerName': return 'u.last_name';
+			case 'quality': return 'average_quality';
+			case 'done': return 'completed';
+			case 'latest': return 'latest';
+			case 'active': return 'active';
+			case 'average': return 'average';
+			case 'name': return 'u.last_name';
+
 			default: return 'submission_title';
 		}
 	}
@@ -1000,7 +1012,7 @@ class SectionEditorSubmissionDAO extends DAO {
 	 * Last Modified: EL on Febraury 16th 2013
 	 * Separation of External Reviewers
 	 */
-	function &getReviewersForArticle($journalId, $decisionId, $sectionId, $extReviewer = false, $searchType = null, $search = null, $searchMatch = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getReviewersForArticle($journalId, $decisionId, $sectionId, $extReviewer = false, $searchType = null, $search = null, $searchMatch = null, $rangeInfo = null, $sortBy = 'reviewerName', $sortDirection = SORT_DIRECTION_ASC) {
 
 		$paramArray = array($decisionId, ASSOC_TYPE_USER, 'interest', $journalId, RoleDAO::getRoleIdFromPath('reviewer'));
 
@@ -1081,11 +1093,11 @@ class SectionEditorSubmissionDAO extends DAO {
 	function getRemainingSectionDecisionsForInitialReview($meetingId) {
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
-                $sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+                $mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$sectionDecisions = array();
 		
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
                         $decisionValue = $sectionDecision->getDecision();
 			if($sectionDecision->getReviewType() == REVIEW_TYPE_INITIAL && ($decisionValue == SUBMISSION_SECTION_DECISION_FULL_REVIEW || $decisionValue == SUBMISSION_SECTION_DECISION_EXPEDITED))
 				array_push($sectionDecisions, $sectionDecision);
@@ -1096,11 +1108,11 @@ class SectionEditorSubmissionDAO extends DAO {
 	function getMeetingSectionDecisionsAssignedForInitialReview($meetingId) {
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
-		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$sectionDecisions = array();
 		
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
                         if ($sectionDecision->getReviewType() == REVIEW_TYPE_INITIAL) array_push($sectionDecisions, $sectionDecision);
 		}
 		return $sectionDecisions;
@@ -1109,11 +1121,11 @@ class SectionEditorSubmissionDAO extends DAO {
 	function getRemainingSectionDecisionsForContinuingReview($meetingId) {
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
-		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$sectionDecisions = array();
 		
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
                         $decisionValue = $sectionDecision->getDecision();
 			if($sectionDecision->getReviewType() == REVIEW_TYPE_CONTINUING && ($decisionValue == SUBMISSION_SECTION_DECISION_FULL_REVIEW || $decisionValue == SUBMISSION_SECTION_DECISION_EXPEDITED))
 				array_push($sectionDecisions, $sectionDecision);
@@ -1124,11 +1136,11 @@ class SectionEditorSubmissionDAO extends DAO {
 	function getMeetingSectionDecisionsAssignedForContinuingReview($meetingId) {
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 		$sectionDecisionsDao =& DAORegistry::getDAO('SectionDecisionDAO');
-		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$sectionDecisions = array();
 		
-		foreach($sectionDecisionsId as $sectionDecisionId) {
-			$sectionDecision = $sectionDecisionsDao->getSectionDecision($sectionDecisionId);
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionsDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
 			if($sectionDecision->getReviewType() == REVIEW_TYPE_CONTINUING)
 				array_push($sectionDecisions, $sectionDecision);
 		}

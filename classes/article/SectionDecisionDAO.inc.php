@@ -175,6 +175,9 @@ class SectionDecisionDAO extends DAO{
 
 		$sectionDecision->setDecisionFiles($articleFileDao->getArticleFilesByAssocId($row['section_decision_id'], ARTICLE_FILE_EDITOR));
 		
+		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
+                $sectionDecision->setMeetings($meetingDao->getMeetingsBySectionDecisionId($row['section_decision_id']));
+                
 		HookRegistry::call('SectionDecisionDAO::_returnSectionDecisionFromRow', array(&$sectionDecision, &$row));
 
 		return $sectionDecision;

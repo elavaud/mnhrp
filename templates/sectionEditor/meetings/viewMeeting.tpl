@@ -101,42 +101,46 @@
 			<td width="15%" align="right"> {translate key="common.action"} </td>
 		</tr>
 		<tr><td colspan="5" class="headseparator" ></td></tr>
+		
 		{assign var=attendingGuests value=0}
 		{assign var=notAttendingGuests value=0}
 		{assign var=undecidedGuests value=0}
-		{foreach from=$users item=user}
-		<tr>
-			<td width="20%">
-				{$user->getSalutation()} &nbsp; {$user->getFirstName()} &nbsp; {$user->getLastName()}
-				<br/>
-				<a href="{url op="remindUserMeeting" meetingId=$meeting->getId() addresseeId=$user->getUserId()}" class="action">Send Reminder</a>
-				{$user->getDateReminded()|date_format:$dateFormatShort}
-			</td>
-			<td width="20%">{$user->getFunctions()}</td>
-			<td width="30%">{if $user->getRemarks() == null}&mdash;{else}{$user->getRemarks()}{/if}</td>
-			<td width="15%">{$user->getReplyStatus()}</td>
-			<td width="15%" align="right">
-				{if ($meeting->getStatus() == STATUS_CANCELLED) || ($meeting->getStatus() == STATUS_DONE)}
-					&mdash;
-				{else}
-					<a href="{url op="replyAttendanceForUser" path=$meeting->getId()|to_array:$user->getUserId():1}">{translate key="editor.meeting.guest.available"}</a>
-					<br/><a href="{url op="replyAttendanceForUser" path=$meeting->getId()|to_array:$user->getUserId():2}">{translate key="editor.meeting.guest.unavailable"}</a>
-				{/if}
-			</td>
+		{assign var=meetingAttendances value=$meeting->getMeetingAttendances()}
+		
+		{foreach from=$meetingAttendances item=meetingAttendance}
+			{assign var="user" value=$meetingAttendance->getUser()}
+			<tr>
+				<td width="20%">
+					{$user->getFullName()}
+					<br/>
+					<a href="{url op="remindUserMeeting" meetingId=$meeting->getId() addresseeId=$meetingAttendance->getUserId()}" class="action">Send Reminder</a>
+					{$meetingAttendance->getDateReminded()|date_format:$dateFormatShort}
+				</td>
+				<td width="20%">{$user->getFunctions()}</td>
+				<td width="30%">{if $meetingAttendance->getRemarks() == null}&mdash;{else}{$meetingAttendance->getRemarks()}{/if}</td>
+				<td width="15%">{$meetingAttendance->getReplyStatus()}</td>
+				<td width="15%" align="right">
+					{if ($meeting->getStatus() == STATUS_CANCELLED) || ($meeting->getStatus() == STATUS_DONE)}
+						&mdash;
+					{else}
+						<a href="{url op="replyAttendanceForUser" path=$meeting->getId()|to_array:$meetingAttendance->getUserId():1}">{translate key="editor.meeting.guest.available"}</a>
+						<br/><a href="{url op="replyAttendanceForUser" path=$meeting->getId()|to_array:$meetingAttendance->getUserId():2}">{translate key="editor.meeting.guest.unavailable"}</a>
+					{/if}
+				</td>
 
-			{if $user->getIsAttending() == 1 }
-				<span style="display:none">{$attendingGuests++}</span> 
-			{elseif $user->getIsAttending() == 2}
-				<span style="display:none">{$notAttendingGuests++}</span> 
-			{else}
-				<span style="display:none">{$undecidedGuests++}</span> 
-			{/if}
-		</tr>
-		<tr>
-		<td colspan="5" class="separator"></td>
-		</tr>
+				{if $meetingAttendance->getIsAttending() == 1 }
+					<span style="display:none">{$attendingGuests++}</span> 
+				{elseif $meetingAttendance->getIsAttending() == 2}
+					<span style="display:none">{$notAttendingGuests++}</span> 
+				{else}
+					<span style="display:none">{$undecidedGuests++}</span> 
+				{/if}
+			</tr>
+			<tr>
+				<td colspan="5" class="separator"></td>
+			</tr>
 		{/foreach}
-		{if empty($users)}
+		{if empty($meetingAttendances)}
 		<tr>
 			<td colspan="5" class="nodata">{translate key="editor.meeting.noGuests"}</td>
 		</tr>
@@ -144,9 +148,9 @@
 		<tr>
 			<td colspan="5" class="endseparator">&nbsp;</td>
 		</tr>
-		{if !empty($users)}
+		{if !empty($meetingAttendances)}
 		<tr>
-			<td colspan="5" align="left">{$users|@count} users(s)</td>
+			<td colspan="5" align="left">{$meetingAttendances|@count} users(s)</td>
 		</tr>
 		{/if}
 	</table>
@@ -170,15 +174,15 @@
 	</tr>
 </table>
 </div>
-<p> {if $meeting->getStatus() == 1}
+<p> {if $meeting->getStatus() == STATUS_FINAL}
     <input type="button" value="{translate key="editor.minutes.manage"}" class="button defaultButton" onclick="document.location.href='{url op="manageMinutes" path=$meeting->getId()}'"/> 
 	<input type="button" value="{translate key="editor.meeting.cancel"}" class="button" onclick="ans=confirm('This cannot be undone. Do you want to proceed?'); if(ans) document.location.href='{url op="cancelMeeting" path=$meeting->getId() }'" />
 	{else}
-		{if $meeting->getStatus() == 2 || $meeting->getStatus() == 4 }
+		{if $meeting->getStatus() == STATUS_RESCHEDULED || $meeting->getStatus() == STATUS_NEW }
 		<input type="button" value="{translate key="common.setFinal"}" class="button defaultButton" onclick="ans=confirm('This cannot be undone. Do you want to proceed?'); if(ans) document.location.href='{url op="setMeetingFinal" path=$meeting->getId() }'" />
 	    <input type="button" value="{translate key="common.edit"}" class="button defaultButton" onclick="document.location.href='{url op="setMeeting" path=$meeting->getId()}'" />
 	   	{/if}
-	   	{if $meeting->getStatus() == 5}
+	   	{if $meeting->getStatus() == STATUS_DONE}
 		<input type="button" value="{translate key="editor.minutes.downloadMinutes"}" class="button defaultButton" onclick="document.location.href='{url op="downloadMinutes" path=$meeting->getId()}'" />
 	   	{/if}
    	{/if}

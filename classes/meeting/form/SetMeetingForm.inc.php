@@ -79,8 +79,11 @@ class SetMeetingForm extends Form {
 
 		/*Get the selected submissions to be reviewed*/
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
-		$sectionDecisionsId =$meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
-		$templateMgr =& TemplateManager::getManager();
+		$mSectionDecisions =$meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+                $sectionDecisionsId = array();
+                foreach ($mSectionDecisions as $mSectionDecision) array_push($sectionDecisionsId, $mSectionDecision->getSectionDecisionId());
+		
+                $templateMgr =& TemplateManager::getManager();
 
 		$templateMgr->assign('sort', $sort);
 		$templateMgr->assign('sortDirection', $sortDirection);

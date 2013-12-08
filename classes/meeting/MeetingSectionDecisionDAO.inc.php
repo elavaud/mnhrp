@@ -22,7 +22,7 @@ class MeetingSectionDecisionDAO extends DAO {
 	function &getMeetingSectionDecisionsByMeetingId($meetingId) {
 		$meetingSectionDecisions = array();
 		$result =& $this->retrieve(
-			'SELECT meeting_id, section_decision_id FROM meeting_section_decisions WHERE meeting_id = ?',
+			'SELECT * FROM meeting_section_decisions WHERE meeting_id = ?',
 			(int) $meetingId
 		);
 		
@@ -57,7 +57,15 @@ class MeetingSectionDecisionDAO extends DAO {
 	 * @return section_decision_id
 	 */
 	function &_returnMeetingSectionDecisionFromRow(&$row) {
-		return $row['section_decision_id'];
+            
+            	$meetingSectionDecision = new MeetingSectionDecision();
+                
+                $meetingSectionDecision->setMeetingId($row['meeting_id']);
+                $meetingSectionDecision->setSectionDecisionId($row['section_decision_id']);
+                
+		HookRegistry::call('MeetingSectionDecsisionDAO::_returnMeetingSectionDecisionFromRow', array(&$meetingSectionDecision, &$row));
+
+                return $meetingSectionDecision;
 	}
 	
 	/**
@@ -74,12 +82,12 @@ class MeetingSectionDecisionDAO extends DAO {
 	 * @param int $meetingId
 	 * @param int $SubmissionId
 	 */
-	function insertMeetingSectionDecision($meetingId, $decisionId) {
+	function insertMeetingSectionDecision($meetingSectionDecision) {
 		$this->update (
 			'INSERT INTO meeting_section_decisions
 			(meeting_id, section_decision_id)
 			VALUES (?, ?)',
-			array($meetingId, $decisionId)
+			array($meetingSectionDecision->getMeetingId(), $meetingSectionDecision->getSectionDecisionId())
 		);
 	}
 	
@@ -97,5 +105,22 @@ class MeetingSectionDecisionDAO extends DAO {
 			$decisionId)
 		);
 	}
+
+        /**
+	 * check if an attendance already exist
+	 * @param Meeting $meetingId
+	 */
+	function meetingSectionDecisionsExists($meetingId, $decisionId) {
+		$result =& $this->retrieve(
+			'SELECT COUNT(*) FROM meeting_section_decisions WHERE meeting_id = ? AND section_decision_id = ?', array($meetingId, $decisionId)
+		);
+		$returner = isset($result->fields[0]) && $result->fields[0] == 1 ? true : false;
+
+		$result->Close();
+		unset($result);
+
+		return $returner;
+	}
+
 	
 }

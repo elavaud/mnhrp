@@ -9,10 +9,12 @@ import('classes.meeting.MeetingAttendance');
 import('classes.meeting.Meeting');
 
 class MeetingAttendanceDAO extends DAO {
-	/**
+    
+	var $userDao;
+
+        /**
 	 * Constructor
 	 */
-	var $userDao;
 	function MeetingAttendanceDAO() {
 		parent::DAO();
 		$this->userDao =& DAORegistry::getDAO('UserDAO');
@@ -34,13 +36,22 @@ class MeetingAttendanceDAO extends DAO {
 	 * @param int $userId
 	 * @param int $typeOfUser
 	 */
-	function insertMeetingAttendance($meetingId, $userId, $typeOfUser, $attendance = null) {
+	function insertMeetingAttendance($mAttendance) {
 		$this->update(
+			sprintf(
 			'INSERT INTO meeting_attendance
-			(meeting_id, user_id, type_of_user, attending)
-			VALUES (?, ?, ?, ?)',
-			array($meetingId, $userId, $typeOfUser, $attendance?$attendance:3)
-		); 
+			(meeting_id, user_id, attending, remarks, date_reminded, present, reason_for_absence, type_of_user)
+			VALUES (?, ?, ?, ?, %s, ?, ?, ?)',
+			$this->datetimeToDB($mAttendance->getDateReminded())),
+			array($mAttendance->getMeetingId(), 
+                            $mAttendance->getUserId(), 
+                            $mAttendance->getIsAttending(),
+                            $mAttendance->getRemarks(),
+                            $mAttendance->getWasPresent(),
+                            $mAttendance->getReasonForAbsence(),
+                            $mAttendance->getTypeOfUser() 
+                        )
+                ); 
 	}
 
 	/** 
@@ -51,9 +62,9 @@ class MeetingAttendanceDAO extends DAO {
 	 */
 	function getMeetingAttendance($meetingId, $userId) {
 		$result =& $this->retrieve(
-			'SELECT a.*, b.first_name, b.last_name, b.salutation
-			 FROM meeting_attendance a LEFT JOIN users b ON (a.user_id = b.user_id )
-			 WHERE a.meeting_id = ? AND a.user_id = ? ORDER BY a.type_of_user',
+			'SELECT *
+			 FROM meeting_attendance
+			 WHERE meeting_id = ? AND user_id = ? ORDER BY type_of_user',
 			array((int) $meetingId, (int) $userId)
 		);
 		return $this->_returnMeetingAttendanceFromRow($result->GetRowAssoc(false));	
@@ -63,9 +74,9 @@ class MeetingAttendanceDAO extends DAO {
 		
 		$meetingAttendances = array();
 		$result =& $this->retrieve(
-			'SELECT a.*, b.first_name, b.last_name, b.salutation
-			 FROM meeting_attendance a LEFT JOIN users b ON (a.user_id = b.user_id )
-			 WHERE meeting_id = ? ORDER BY a.type_of_user',
+			'SELECT *
+			 FROM meeting_attendance
+			 WHERE meeting_id = ? ORDER BY type_of_user',
 			(int) $meetingId
 		);
 		
@@ -84,9 +95,9 @@ class MeetingAttendanceDAO extends DAO {
 		
 		$meetingAttendances = array();
 		$result =& $this->retrieve(
-			'SELECT a.*, b.first_name, b.last_name, b.salutation
-			 FROM meeting_attendance a LEFT JOIN users b ON (a.user_id = b.user_id )
-			 WHERE a.meeting_id = ? and a.type_of_user = ?',
+			'SELECT *
+			 FROM meeting_attendance
+			 WHERE meeting_id = ? and type_of_user = ?',
 			array((int) $meetingId, (int) $typeOfUser)
 		);
 		
@@ -110,30 +121,49 @@ class MeetingAttendanceDAO extends DAO {
 	 */
 	function &_returnMeetingAttendanceFromRow(&$row) {
 
-		$user =& $this->userDao->getUser($row['user_id']);
-		
-		$meetingAttendance = new MeetingAttendance();
+                $meetingAttendance = new MeetingAttendance();
 		$meetingAttendance->setMeetingId($row['meeting_id']);
 		$meetingAttendance->setUserId($row['user_id']);
 		$meetingAttendance->setIsAttending($row['attending']);
 		$meetingAttendance->setRemarks($row['remarks']);
 		$meetingAttendance->setDateReminded($row['date_reminded']);
-		$meetingAttendance->setFirstName($row['first_name']);
-		$meetingAttendance->setLastName($row['last_name']);
-		$meetingAttendance->setSalutation($row['salutation']);
 		$meetingAttendance->setTypeOfUser($row['type_of_user']);
-		$meetingAttendance->setFunctions($user->getFunctions());
 		
-		if (isset($row['present'])) $meetingAttendance->setWasPresent($row['present']);
+                $user =& $this->userDao->getUser($meetingAttendance->getUserId());
+
+                $meetingAttendance->setUser($user);
+
+                if (isset($row['present'])) $meetingAttendance->setWasPresent($row['present']);
 		if (isset($row['reason_for_absence'])) $meetingAttendance->setReasonForAbsence($row['reason_for_absence']);
 		
 		HookRegistry::call('MeetingAttendanceDAO::_returnMeetingAttendanceFromRow', array(&$meetingAttendance, &$row));
 		return $meetingAttendance;
 	}
 	
-	/**
+
+        /**
+	 * Update a whole meeting attendance 
+	 * @param Meeting $meeting
+	 */
+	function updateMeetingAttendance($meetingAttendance) {
+		$this->update(sprintf(
+			'UPDATE meeting_attendance 
+                            SET attending = ?, remarks = ?, date_reminded = %s, present = ?, reason_for_absence = ?, type of user = ?
+			WHERE meeting_id = ? AND user_id = ?',
+			$this->datetimeToDB($mAttendance->getDateReminded())),
+			array($meetingAttendance->getIsAttending(),
+			$meetingAttendance->getRemarks(),
+			$meetingAttendance->getWasPresent(),                            
+			$meetingAttendance->getReasonForAbsence(),                            
+			$meetingAttendance->getTypeOfUser(),                            
+                        $meetingAttendance->getMeetingId(), 
+			$meetingAttendance->getUserId())
+		);
+	}
+
+        
+        /**
 	 * Update meeting_attendance table to save user response 
-	 * Added by ayveemallare 7/6/2011
 	 * @param Meeting $meeting
 	 */
 	function updateReplyOfAttendance($meetingAttendance) {
@@ -163,8 +193,6 @@ class MeetingAttendanceDAO extends DAO {
 	
 	/**
 	 * Update meeting_attendance table to save attendance in meeting 
-	 * Added by aglet 7/17/2011
-	 * Modified by EL in March 2013
 	 * @param Meeting $meeting
 	 */
 	function updateAttendanceOfUser($meetingAttendance) {
@@ -180,7 +208,6 @@ class MeetingAttendanceDAO extends DAO {
 
 	/**
 	 * check if an attendance already exist
-	 * Added by EL 2/28/2013
 	 * @param Meeting $meetingId
 	 */
 	function attendanceExists($meetingId, $userId) {
@@ -199,7 +226,6 @@ class MeetingAttendanceDAO extends DAO {
 	 * Get type of user
 	 * @param Meeting ID $meetingId
 	 * @param User ID $userId
-	 * Added by EL on March 7th 2013
 	 */
 	function getTypeOfUser($meetingId, $userId) {
 		$result =& $this->retrieve(
@@ -220,13 +246,13 @@ class MeetingAttendanceDAO extends DAO {
 	 * Added by EL on March 12th 2013
 	 */
 	function getAttendancesByUserIdAndDecisionId($userId, $decisionId) {
-		
-		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
+
+                $meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		
 		$meetingsAndAttendances = array();
 		
 		$result =& $this->retrieve(
-			'SELECT ma.*, u.first_name, u.last_name, u.salutation, m.*
+			'SELECT ma.*,
 			 FROM meeting_attendance ma 
 			 	LEFT JOIN users u ON (ma.user_id = u.user_id )
 			 	LEFT JOIN meeting_section_decisions msd ON (ma.meeting_id = msd.meeting_id)
@@ -248,6 +274,15 @@ class MeetingAttendanceDAO extends DAO {
 
 		return $meetingsAndAttendances;
 	}
+        
+        
+        function deleteMeetingAttendance($meetingId, $userId){
+		$this->update(
+			'DELETE * FROM meeting_attendance WHERE meeting_id = ? and user_id = ?',
+			array($meetingId, $userId)
+		);
+	}	
+        
 }
 
 ?>

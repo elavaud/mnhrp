@@ -89,10 +89,9 @@
 			<td width="5%" valign="middle">{$meeting->getPublicId()}</td>
 			<td width="40%">
 				<a href="{url op="viewMeeting" path=$meeting->getId()}">
-				{foreach from=$map.$key item=submission name=submissions}
-					{assign var="abstract" value=$submission->getLocalizedAbstract()}
-					&#9679;&nbsp;{$abstract->getScientificTitle()|strip_unsafe_html}
-					{if $smarty.foreach.submissions.last}{else}<br/>{/if}
+				{foreach from=$map.$key item=sectionDecision name=sectionDecisions}
+					&#9679;&nbsp;{$sectionDecision->getLocalizedProposalTitle()|strip_unsafe_html}
+					{if $smarty.foreach.sectionDecisions.last}{else}<br/>{/if}
 				{/foreach}
 				{if empty($map.$key)}
 					<i>{translate key="reviewer.meetings.noSubmissions"}</i>

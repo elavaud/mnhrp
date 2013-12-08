@@ -23,7 +23,7 @@ import('pages.reviewer.ReviewerHandler');
 
 class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 
-	var $submission;
+	var $sectionDecision;
 	var $user;
 
 	/**
@@ -42,20 +42,25 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 	 */
 	function viewProposalFromMeeting($args) {
 		$journal =& Request::getJournal();
-		$proposalId = $args[0];
-		$this->validate($proposalId);
+		$decisionId = $args[0];
+		$this->validate($decisionId);
 		$user =& Request::getUser();
-		$sectionDao =& DAORegistry::getDao('SectionDAO');
+		$authorSubmissionDao =& DAORegistry::getDao('AuthorSubmissionDAO');
+                $sectionDao =& DAORegistry::getDao('SectionDAO');
 		$articleFileDao =& DAORegistry::getDao('ArticleFileDAO');
 		$ercReviewersDao = DAORegistry::getDAO('ErcReviewersDAO');
 
-		$submission =& $this->submission;
+		$sectionDecision =& $this->sectionDecision;
 		$this->setupTemplate(true, 2);
 		
-		$section =& $sectionDao->getSection($submission->getSectionId());
+		$section =& $sectionDao->getSection($sectionDecision->getSectionId());
 		
+                $submission =& $authorSubmissionDao->getAuthorSubmission($sectionDecision->getArticleId());
+                
 		$templateMgr =& TemplateManager::getManager();
 		$templateMgr->assign_by_ref('submission', $submission);
+                $templateMgr->assign_by_ref('sectionDecision', $sectionDecision);
+                
 		$templateMgr->assign('ercTitle', $section->getLocalizedTitle());
 		
 		$templateMgr->assign_by_ref('submissionFile', $submission->getSubmissionFile());
@@ -88,10 +93,9 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 	 * (non-PHPdoc)
 	 * @see PKPHandler::validate()
 	 */
-	function validate($proposalId) {
+	function validate($decisionId) {
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$ercReviewersDao =& DAORegistry::getDAO('ErcReviewersDAO');
-		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
                 $journal =& Request::getJournal();
 		$user =& Request::getUser();
 		$journalId = $journal->getId();
@@ -100,13 +104,12 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 		$meetings =& $meetingDao->getMeetingsByReviewerId($user->getId());
 		$meetings =& $meetings->toArray();
 		if (!$ercReviewersDao->isExternalReviewer($journalId, $user->getId())) {
-			if ($proposalId && $user && empty($newKey)) {
+			if ($decisionId && $user && empty($newKey)) {
 				$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 				foreach ($meetings as $meeting) {
-					$sectionDecisionsId =& $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
-					foreach ($sectionDecisionsId as $decisionId) {
-                                            $sectionDecision = $sectionDecisionDao->getSectionDecision($decisionId);
-                                            if ($sectionDecision->getArticleId() == $proposalId) $isValid = true;
+					$mSectionDecisions =& $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
+					foreach ($mSectionDecisions as $mSectionDecision) {
+                                            if ($decisionId == $mSectionDecision->getSectionDecisionId()) $isValid = true;
                                         }
 				}
 			}
@@ -114,10 +117,10 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 		if (!$isValid) {
 			Request::redirect(null, Request::getRequestedPage());
 		}
-		$reviewerSubmissionDao =& DAORegistry::getDAO('ReviewerSubmissionDAO');
+		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 		
-		$submission = $reviewerSubmissionDao->getReviewerSubmissionFromMeeting($proposalId);
-		$this->submission =& $submission;
+		$sectionDecision = $sectionDecisionDao->getSectionDecision($decisionId);
+		$this->sectionDecision =& $sectionDecision;
 		$this->user =& $user;
 		
 		return true;

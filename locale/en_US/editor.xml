@@ -285,6 +285,7 @@
     <message key="editor.meeting.length">Length of the meeting</message>
     <message key="editor.meeting.location">Location</message>
     <message key="editor.meeting.noGuests">No guests</message>
+    <message key="editor.meeting.numberOfProposalsToReview">Number of proposal(s) to review</message>
     <message key="editor.meeting.numberOfAttendingGuests">Total Number of Attending Guests</message>
     <message key="editor.meeting.numberOfNotAttendingGuests">Total Number of NOT Attending Guests</message>
     <message key="editor.meeting.numberOfUndecidedGuests">Total Number of Undecided Guests</message>

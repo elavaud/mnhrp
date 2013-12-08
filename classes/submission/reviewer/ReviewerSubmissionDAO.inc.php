@@ -390,8 +390,6 @@ class ReviewerSubmissionDAO extends DAO {
 	 * @return array ReviewerSubmissions
 	 */
 	function &getReviewerMeetingSectionDecisionsByReviewerId($reviewerId, $journalId, $searchField = null, $searchMatch = null, $search = null, $rangeInfo = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
-		$primaryLocale = Locale::getPrimaryLocale();
-		$locale = Locale::getLocale();
 		$params = array($reviewerId);
 		$searchSql = '';
 		
@@ -413,12 +411,13 @@ class ReviewerSubmissionDAO extends DAO {
 				break;
 		}
 		
-		$sql = 'SELECT	DISTINCT sd.*
+		$sql = 'SELECT	DISTINCT sd.*,
+                                ab.scientific_title AS submission_title
 			FROM	section_decisions sd
                                 LEFT JOIN articles a ON (sd.article_id = a.article_id)
 				LEFT JOIN authors aa ON (aa.submission_id = a.article_id AND aa.primary_contact = 1)
 				LEFT JOIN article_abstract ab ON (ab.article_id = a.article_id)
-				LEFT JOIN meeting_section_decisions msd ON (a.article_id = msd.submission_id)
+				LEFT JOIN meeting_section_decisions msd ON (a.article_id = msd.section_decision_id)
 				LEFT JOIN meeting_attendance ma ON (msd.meeting_id = ma.meeting_id)
 			WHERE	ma.user_id = ?
 				AND EXISTS (SELECT NULL FROM erc_reviewers er WHERE er.user_id = ma.user_id)';	

@@ -253,19 +253,6 @@ class SectionDecision extends DataObject {
 		return false;
 	}
 
-	function updateReviewAssignment($reviewAssignment) {
-		$reviewAssignments = array();
-		$oldReviewAssignments = $this->reviewAssignments;
-		for ($i=0, $count=count($oldReviewAssignments); $i < $count; $i++) {
-			if ($oldReviewAssignments[$i]->getReviewId() == $reviewAssignment->getId()) {
-				array_push($reviewAssignments, $reviewAssignment);
-			} else {
-				array_push($reviewAssignments, $oldReviewAssignments[$i]);
-			}
-		}
-		$this->reviewAssignments = $reviewAssignments;
-	}
-
 	/**
 	 * Get the number of resubmission
 	 * @return int
@@ -433,6 +420,23 @@ class SectionDecision extends DataObject {
             $article =& $articleDao->getArticle($this->getArticleId());
             $authorString = $article->getAuthorString();
             return $authorString;
+	}
+
+        
+	/**
+	 * Set all meetings related to this decision.
+	 * @param $dateDecided date
+	 */
+	function setMeetings($meetings) {
+		return $this->setData('meetings', $meetings);
+	}
+
+	/**
+	 * Get all meetings for this decision.
+	 * @return array ReviewAssignments
+	 */
+	function &getMeetings() {
+		return $this->getData('meetings');
 	}
 
 }

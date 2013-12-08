@@ -16,13 +16,6 @@
 		<td class="label" width="20%">{translate key="article.title"}</td>
 		<td class="value" width="80%">{$abstract->getScientificTitle()|strip_unsafe_html}</td>
 	</tr>
-	<tr>
-		<td class="label" width="20%">{translate key="section.section"}</td>
-		<td class="value" width="80%">
-			{url|assign:"url" page="user" op="email" redirectUrl=$currentUrl to=$submission->getAuthorEmails() subject=$abstract->getScientificTitle() articleId=$submission->getArticleId()}
-			{$submission->getSectionTitle()|escape}
-		</td>
-	</tr>
 </table>
 </div>
 

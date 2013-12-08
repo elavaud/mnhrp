@@ -9,7 +9,7 @@
  * $Id$
  *}
 {strip}
-{translate|assign:"pageTitleTranslated" key="submission.page.summary" id=$submission->getProposalId($submission->getLocale())} 
+{translate|assign:"pageTitleTranslated" key="submission.page.summary" id=$submission->getLocalizedProposalId()} 
 {assign var="pageCrumbTitle" value="submission.summary"}
 {include file="common/header.tpl"}
 {/strip}
@@ -27,14 +27,12 @@
 {include file="author/submission/management.tpl"}
 
 {if $authorFees}
+
 <div class="separator"></div>
 
 {include file="author/submission/authorFees.tpl"}
+
 {/if}
-
-<div class="separator"></div>
-
-{include file="author/submission/status.tpl"}
 
 <div class="separator"></div>
 

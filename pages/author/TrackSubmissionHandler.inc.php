@@ -143,7 +143,6 @@ class TrackSubmissionHandler extends AuthorHandler {
 	 * Display specific details of an author's submission.
 	 */
 	function submissionReview($args) {
-		$user =& Request::getUser();
 		$articleId = isset($args[0]) ? (int) $args[0] : 0;
 
 		$this->validate($articleId);
@@ -155,8 +154,6 @@ class TrackSubmissionHandler extends AuthorHandler {
 		$reviewFilesByDecision =& $reviewAssignmentDao->getReviewFilesByDecision($articleId);
 		$authorViewableFilesByDecision =& $reviewAssignmentDao->getAuthorViewableFilesByDecision($articleId);
 
-		$articleFileDao =& DAORegistry::getDAO('ArticleFileDAO');
-
 		$templateMgr =& TemplateManager::getManager();
 
 		$templateMgr->assign_by_ref('submission', $authorSubmission);
@@ -167,18 +164,16 @@ class TrackSubmissionHandler extends AuthorHandler {
 		$templateMgr->assign_by_ref('submissionFile', $authorSubmission->getSubmissionFile());
 		$templateMgr->assign_by_ref('revisedFile', $authorSubmission->getRevisedFile());
 		$templateMgr->assign_by_ref('suppFiles', $authorSubmission->getSuppFiles());
-		import('classes.submission.sectionEditor.SectionEditorSubmission');
-		$templateMgr->assign('editorDecisionOptions', SectionEditorSubmission::getEditorDecisionOptions());
-		
-		$meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');
+		$templateMgr->assign_by_ref('sectionDecisions', $authorSubmission->getDecisions());
+		$templateMgr->assign('helpTopicId', 'editorial.authorsRole.review');
+                $templateMgr->display('author/submissionReview.tpl');
+	}
+
 		//$meetingsAndAttendances =& $meetingAttendanceDao->getAttendancesByUserIdAndDecisionId($user->getId(), $articleId);
 		//$templateMgr->assign('countMeetings', count($meetingsAndAttendances));
 		//$templateMgr->assign('meetingsAndAttendances', $meetingsAndAttendances);
 		
-		$templateMgr->assign('helpTopicId', 'editorial.authorsRole.review');
-		$templateMgr->display('author/submissionReview.tpl');
-	}
-
+        
 	/**
 	 * Add a supplementary file.
 	 * @param $args array ($articleId)

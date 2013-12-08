@@ -94,10 +94,7 @@ class MeetingReviewerHandler extends ReviewerHandler {
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$journal =& Request::getJournal();
 		$user =& Request::getUser();
-			
-			// EL on March 1st 2013
-			$journalId = $journal->getId();
-		
+					
 		$isValid = true;
 		$newKey = Request::getUserVar('key');
 
@@ -106,7 +103,8 @@ class MeetingReviewerHandler extends ReviewerHandler {
 		if (!$meeting) {
 			$isValid = false;
 		} elseif ($user && empty($newKey)) {
-			if ($meeting->getUserId() != $user->getId()) {
+                        $metingAttendance = $meeting->getMeetingAttendanceOfUser($user->getId());
+			if (!$metingAttendance) {
 				$isValid = false;
 			}
 		} 
@@ -118,19 +116,18 @@ class MeetingReviewerHandler extends ReviewerHandler {
 		if (!$isValid) {
 			Request::redirect(null, Request::getRequestedPage());
 		}
-		$sectionDecisionIds = array();
 		$sectionDecisions = array();
 		$reviewIds = array();
 		$map = array();
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 		$reviewerSubmissionDao =& DAORegistry::getDAO('ReviewerSubmissionDAO');
 		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
-		$sectionDecisionIds = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
 		
-		foreach($sectionDecisionIds as $decisionId) {
-			$sectionDecision = $sectionDecisionDao->getSectionDecision($decisionId);
-			$review = $reviewerSubmissionDao->getReviewerSubmissionByReviewerAndDecisionId($user->getId(), $decisionId, $journal->getId());
-			$map[$decisionId] = $review->getReviewId();
+		foreach($mSectionDecisions as $mSectionDecision) {
+			$sectionDecision = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
+			$review = $reviewerSubmissionDao->getReviewerSubmissionByReviewerAndDecisionId($user->getId(), $mSectionDecision->getSectionDecisionId(), $journal->getId());
+			$map[$mSectionDecision->getSectionDecisionId()] = $review->getReviewId();
 			array_push($sectionDecisions, $sectionDecision);
 		}
 		$this->decisionReviewMap =& $map;

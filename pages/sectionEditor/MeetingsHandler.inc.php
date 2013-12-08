@@ -6,11 +6,6 @@
 * @var unknown_type
 */
 
-/**
- * Last update on February 2013
- * EL
-**/
-
 define('SECTION_EDITOR_ACCESS_EDIT', 0x00001);
 define('SECTION_EDITOR_ACCESS_REVIEW', 0x00002);
 
@@ -25,13 +20,13 @@ import('classes.meeting.MeetingAction');
 import('classes.meeting.MeetingAttendance');
 
 class MeetingsHandler extends Handler {
+    
+    	var $meeting;
+
 	/**
 	* Constructor
-	**/
-	var $meeting;
-	
+	**/	
 	function MeetingsHandler() {
-		
 		parent::Handler();
 		
 		$this->addCheck(new HandlerValidatorJournal($this));
@@ -41,7 +36,6 @@ class MeetingsHandler extends Handler {
                         $this->addCheck(new HandlerValidatorRoles($this, true, null, null, array(ROLE_ID_SECTION_EDITOR)));
 		elseif ( $page == 'editor' )
                         $this->addCheck(new HandlerValidatorRoles($this, true, null, null, array(ROLE_ID_EDITOR)));
-	
 	}
 
 	/**
@@ -93,14 +87,13 @@ class MeetingsHandler extends Handler {
 		$this->validate(0, true);
 		$this->setupTemplate(false);
 		$journal =& Request::getJournal();
-		$journalId = $journal->getId();
 		$user =& Request::getUser();
 		
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
 		$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
-		
-		$sort = Request::getUserVar('sort');
+
+                $sort = Request::getUserVar('sort');
 		$sort = isset($sort) ? $sort : 'id';
 		$sortDirection = Request::getUserVar('sortDirection');
 		$rangeInfo = Handler::getRangeInfo('meetings');
@@ -117,10 +110,10 @@ class MeetingsHandler extends Handler {
 		$map = array();
 			
 		foreach($meetingsArray as $meeting) {
-			$decisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
+			$mSectiondecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meeting->getId());
 			$secionDecisions = array();
-			foreach($decisionsId as $decisionId) {
-				$sectionDecision = $sectionDecisionDao->getSectionDecision($decisionId);
+			foreach($mSectiondecisions as $mSectiondecision) {
+				$sectionDecision = $sectionDecisionDao->getSectionDecision($mSectiondecision->getSectionDecisionId());
 				array_push($secionDecisions, $sectionDecision);
 			}
 			$map[$meeting->getId()] = $secionDecisions;
@@ -152,8 +145,8 @@ class MeetingsHandler extends Handler {
 		);
 		foreach ($duplicateParameters as $param)
 			$templateMgr->assign($param, Request::getUserVar($param));
-		
-		$templateMgr->display('sectionEditor/meetings/meetings.tpl');
+
+                $templateMgr->display('sectionEditor/meetings/meetings.tpl');
 	}
 
 
@@ -221,29 +214,21 @@ class MeetingsHandler extends Handler {
 		$meetingId = isset($args[0]) ? $args[0]: 0;
 		$this->validate($meetingId);
 		$this->setupTemplate(true, $meetingId);
-		$journal =& Request::getJournal();
-		$journalId = $journal->getId();
 		$user =& Request::getUser();
-		/*MEETING DETAILS*/
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$meeting =$meetingDao->getMeetingById($meetingId);
 		if(isset($meeting) && $meeting->getUploader()==$user->getSecretaryCommitteeId()){
 			/*LIST THE SUBMISSIONS*/
-			$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
-			$sectionDecisionsId =$meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+			$mSectionDecisions =$meeting->getMeetingSectionDecisions();
 			$sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 			$sectionDecisions = array();
-			foreach($sectionDecisionsId as $decisionId) {
-				$sectionDecisions[$decisionId] = $sectionDecisionDao->getSectionDecision($decisionId);
+			foreach($mSectionDecisions as $mSectionDecision) {
+				$sectionDecisions[$mSectionDecision->getSectionDecisionId()] = $sectionDecisionDao->getSectionDecision($mSectionDecision->getSectionDecisionId());
 			}
 			
-			/*RESPONSES FROM USERS*/
-			$meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');
-			$users = $meetingAttendanceDao->getMeetingAttendancesByMeetingId($meetingId);
 			$templateMgr =& TemplateManager::getManager();
 			$templateMgr->assign('sectionEditor', $user->getFullName());
 			$templateMgr->assign_by_ref('meeting', $meeting);
-			$templateMgr->assign_by_ref('users', $users);
 			$templateMgr->assign_by_ref('sectionDecisions', $sectionDecisions);
 			$templateMgr->assign('baseUrl', Config::getVar('general', "base_url"));
 			$templateMgr->display('sectionEditor/meetings/viewMeeting.tpl');
@@ -277,12 +262,12 @@ class MeetingsHandler extends Handler {
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$meeting =& $meetingDao->getMeetingById($meetingId);
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
-		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');	
 		$reviewerAttendances = $meetingAttendanceDao->getMeetingAttendancesByMeetingIdAndTypeOfUser($meetingId, MEETING_ERC_MEMBER);
 		$this->setupTemplate(true, $meetingId);
 		
-		$reviewerSent = MeetingAction::notifyReviewersMeeting($meeting, $informationType, $reviewerAttendances, $sectionDecisionsId, Request::getUserVar('send'));		
+		$reviewerSent = MeetingAction::notifyReviewersMeeting($meeting, $informationType, $reviewerAttendances, $mSectionDecisions, Request::getUserVar('send'));		
 		
 		$extReviewerAttendances = $meetingAttendanceDao->getMeetingAttendancesByMeetingIdAndTypeOfUser($meetingId, MEETING_EXTERNAL_REVIEWER);
 		
@@ -313,7 +298,7 @@ class MeetingsHandler extends Handler {
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$meeting =& $meetingDao->getMeetingById($meetingId);
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
-		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');	
 		$this->setupTemplate(true, $meetingId);
 
@@ -321,7 +306,7 @@ class MeetingsHandler extends Handler {
 
 		$investigatorAttendances = $meetingAttendanceDao->getMeetingAttendancesByMeetingIdAndTypeOfUser($meetingId, MEETING_INVESTIGATOR);
 
-		$extReviewerSent = MeetingAction::notifyExternalReviewerMeeting($meeting, $informationType, $extReviewerAttendances[$attendanceIncrementNumber], $attendanceIncrementNumber, $sectionDecisionsId, Request::getUserVar('send'));
+		$extReviewerSent = MeetingAction::notifyExternalReviewerMeeting($meeting, $informationType, $extReviewerAttendances[$attendanceIncrementNumber], $attendanceIncrementNumber, $mSectionDecisions, Request::getUserVar('send'));
 
 		if ($extReviewerSent) {
 			$attendanceIncrementNumber = $attendanceIncrementNumber+1;
@@ -354,13 +339,13 @@ class MeetingsHandler extends Handler {
 		$meetingDao =& DAORegistry::getDAO('MeetingDAO');
 		$meeting =& $meetingDao->getMeetingById($meetingId);
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
-		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');	
 		$this->setupTemplate(true, $meetingId);
 		
 		$investigatorAttendances = $meetingAttendanceDao->getMeetingAttendancesByMeetingIdAndTypeOfUser($meetingId, MEETING_INVESTIGATOR);
 
-		$investigatorSent = MeetingAction::notifyInvestigatorMeeting($meeting, $informationType, $investigatorAttendances[$attendanceIncrementNumber], $attendanceIncrementNumber, $sectionDecisionsId, Request::getUserVar('send'));
+		$investigatorSent = MeetingAction::notifyInvestigatorMeeting($meeting, $informationType, $investigatorAttendances[$attendanceIncrementNumber], $attendanceIncrementNumber, $mSectionDecisions, Request::getUserVar('send'));
 				
 		if ($investigatorSent) {
 			$attendanceIncrementNumber = $attendanceIncrementNumber+1;
@@ -385,9 +370,9 @@ class MeetingsHandler extends Handler {
 		$meeting =& $this->meeting;
 		
 		$meetingSectionDecisionDao =& DAORegistry::getDAO('MeetingSectionDecisionDAO');
-		$sectionDecisionsId = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
+		$mSectionDecisions = $meetingSectionDecisionDao->getMeetingSectionDecisionsByMeetingId($meetingId);
 		$this->setupTemplate(true, $meetingId);
-		if (MeetingAction::remindUserMeeting($meeting, $addresseeId, $sectionDecisionsId, Request::getUserVar('send'))) {
+		if (MeetingAction::remindUserMeeting($meeting, $addresseeId, $mSectionDecisions, Request::getUserVar('send'))) {
 			Request::redirect(null, null, 'viewMeeting', $meetingId);
 		}
 	}

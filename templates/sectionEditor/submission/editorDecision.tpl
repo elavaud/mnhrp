@@ -68,20 +68,6 @@ function checkSize(){
 				{translate key=$sectionDecision->getReviewStatusKey()} &nbsp; ({$sectionDecision->getDateDecided()|date_format:$datetimeFormatLong})
 			</td>
 		</tr>
-		
-		<!--
-		{if $meetingsCount>0}
-			<tr>
-				<td title="{translate key="editor.article.meetingInstruct"}" class="label" width="20%">[?] {translate key="editor.meeting.s"}</td>
-				<td class="value" width="80%">
-					{foreach from=$meetings item="meeting"}
-						<a href="{url op="viewMeeting" path=$meeting->getId()}">{$meeting->getPublicId()} {$meeting->getDate()|date_format:$datetimeFormatLong}</a><br/>
-					{/foreach}
-				</td>
-			</tr>
-		{/if}
-		-->
-		
 		{if $isSecretary == true}
 			<form method="post" action="{url op="recordDecision"}" onSubmit="return checkSize()" enctype="multipart/form-data">
 				<input type="hidden" name="articleId" value="{$submission->getId()}" />
@@ -220,6 +206,20 @@ function checkSize(){
 				</td>
 			</tr>
 		{/if}
+		
+		{assign var="meetings" value=$sectionDecision->getMeetings()}
+		
+		{if $meetings|@count gt 0}
+			<tr>
+				<td title="{translate key="editor.article.meetingInstruct"}" class="label" width="20%">[?] {translate key="editor.meeting.s"}</td>
+				<td class="value" width="80%">
+					{foreach from=$meetings item="meeting"}
+						<a href="{url op="viewMeeting" path=$meeting->getId()}">{$meeting->getPublicId()} {$meeting->getDate()|date_format:$datetimeFormatLong}</a><br/>
+					{/foreach}
+				</td>
+			</tr>
+		{/if}
+		
 	</table>
 {/foreach}
 
