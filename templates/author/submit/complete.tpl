@@ -28,7 +28,7 @@
     </tr>
 {foreach name=authors from=$article->getAuthors() item=author}
 	<tr valign="top">
-        <td class="label" width="20%">{if $author->getPrimaryContact()}Investigator{else}Co-Investigator{/if}</td>
+		<td width="20%" class="label">{if $author->getPrimaryContact()}{translate key="user.role.primaryInvestigator"}{else}{translate key="user.role.coinvestigator"}{/if}</td>
         <td class="value">
 			{$author->getFullName()|escape}<br />
 			{$author->getEmail()|escape}<br />
@@ -331,7 +331,7 @@
     	    <td class="label" width="20%">{translate key="proposal.biosafety"}</td>
     	    <td class="value">{if $riskAssessment->getBiosafety() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
-    	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.researchIncludes"}</b></td></tr>
+    	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.potentialRisk"}</b></td></tr>
     	<tr valign="top" id="riskLevelField">
     	    <td class="label" width="20%">{translate key="proposal.riskLevel"}</td>
     	    <td class="value">

@@ -13,7 +13,6 @@
  * @ingroup pages_sectionEditor
  * @brief Handle requests for section editor functions.
  *
- * Last modified: EL on February 17th 2013
  */
 
 // $Id$
@@ -22,6 +21,9 @@ switch ($op) {
 	//
 	// Submission Tracking
 	//
+    
+    	case 'downloadSummary':
+
 	case 'suggestUsername':
 	case 'submission':
 	case 'submissionRegrets':

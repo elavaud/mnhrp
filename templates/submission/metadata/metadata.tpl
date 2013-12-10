@@ -21,7 +21,7 @@
 <table width="100%" class="data">
 	{foreach name=authors from=$submission->getAuthors() item=author}
 	<tr valign="top">
-		<td {if $author->getPrimaryContact()}title="First investigator of the research."{else}title="Co-Investigator of the research."{/if}width="30%" class="label">{*translate key="user.name"*}{if $author->getPrimaryContact()}[?] Investigator{else}[?] Co-Investigator{/if}</td>
+		<td {if $author->getPrimaryContact()}title="{translate key="user.role.primaryInvestigatorInstruct"}"{else}title="{translate key="user.role.coinvestigatorInstruct"}"{/if}width="30%" class="label">{if $author->getPrimaryContact()}[?] {translate key="user.role.primaryInvestigator"}{else}[?] {translate key="user.role.coinvestigator"}{/if}</td>
 		<td width="70%" class="value">
 			{assign var=emailString value=$author->getFullName()|concat:" <":$author->getEmail():">"}
 			{url|assign:"url" page="user" op="email" redirectUrl=$currentUrl to=$emailString|to_array subject=$abstract->getScientificTitle()|strip_tags articleId=$submission->getId()}
@@ -50,7 +50,7 @@
 {assign var="abstracts" value=$submission->getAbstracts()}
 
 {foreach from=$abstractLocales item=localeName key=localeKey}
-	
+
 	<h6>{$localeName} {translate key="common.language"}</h6>
 	
 	{assign var="abstract" value=$abstracts[$localeKey]}
@@ -332,7 +332,7 @@
     	    <td class="label" width="30%">{translate key="proposal.biosafety"}</td>
     	    <td class="value">{if $riskAssessment->getBiosafety() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
-    	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.researchIncludes"}</b></td></tr>
+    	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.potentialRisk"}</b></td></tr>
     	<tr valign="top" id="riskLevelField">
     	    <td class="label" width="30%">{translate key="proposal.riskLevel"}</td>
     	    <td class="value">

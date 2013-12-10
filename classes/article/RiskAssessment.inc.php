@@ -11,6 +11,17 @@
  * @brief risk assessment class.
  * Added by EL on March 11th 2013
  */
+define ('RISK_ASSESSMENT_NO', 0);
+define ('RISK_ASSESSMENT_YES', 1);
+define ('RISK_ASSESSMENT_NOT_PROVIDED', 2);
+
+define ('RISK_ASSESSMENT_NO_MORE_THAN_MINIMAL', 1);
+define ('RISK_ASSESSMENT_MINORE_THAN_MINIMAL', 2);
+define ('RISK_ASSESSMENT_MORE_THAN_MINIMAL', 3);
+
+define ('RISK_ASSESSMENT_CONFLICT_OF_INTEREST_YES', 1);
+define ('RISK_ASSESSMENT_CONFLICT_OF_INTEREST_NO', 2);
+define ('RISK_ASSESSMENT_CONFLICT_OF_INTEREST_NOT_SURE', 3);
 
 class RiskAssessment extends DataObject {
 	
@@ -339,7 +350,31 @@ class RiskAssessment extends DataObject {
 	function setRiskLevel($riskLevel) {
 		return $this->setData('riskLevel', $riskLevel);
 	}
-
+        /**
+	 * Get a map for yes/no/not provided constant to locale key.
+	 * @return array
+	 */
+	function &getRiskLevelMap() {
+		static $riskLevelMap;
+		if (!isset($riskLevelMap)) {
+			$riskLevelMap = array(
+                                RISK_ASSESSMENT_NO_MORE_THAN_MINIMAL => 'proposal.riskLevelNoMore',
+				RISK_ASSESSMENT_MINORE_THAN_MINIMAL => 'proposal.riskLevelMinore',
+				RISK_ASSESSMENT_MORE_THAN_MINIMAL => 'proposal.riskLevelMore'
+			);
+		}
+		return $riskLevelMap;
+	}
+	
+	/**
+	 * Get a locale key for yes/no/not provided
+	 * @param $value
+	 */
+	function getRiskLevelKey() {
+		$riskLevelMap =& $this->getRiskLevelMap();
+		return $riskLevelMap[$this->getRiskLevel()];
+	}
+        
 	/**
 	 * Get listRisks.
 	 * @return string
@@ -420,6 +455,33 @@ class RiskAssessment extends DataObject {
 		return $this->setData('risksToCommunity', $risksToCommunity);
 	}
 	
+        /**
+	 * Get risksToTeam.
+	 * @return int
+	 */
+	function getLocalizedRisksApplyToString() {
+                $firstRisk = true;
+                $riskApplyTo = (string) '';
+                if ($this->getRisksToTeam() == RISK_ASSESSMENT_YES) {
+                    $riskApplyTo = Locale::translate('proposal.researchTeam');
+                    $firstRisk = false;
+                }
+                if ($this->getRisksToSubjects() == RISK_ASSESSMENT_YES) {
+                    if ($firstRisk) $riskApplyTo = Locale::translate('proposal.researchSubjects');
+                    else $riskApplyTo .= ' & '.Locale::translate('proposal.researchSubjects');
+                    $firstRisk = false;
+                } 
+                if ($this->getRisksToCommunity() == RISK_ASSESSMENT_YES) {
+                    if ($firstRisk) $riskApplyTo = Locale::translate('proposal.widerCommunity');
+                    else $riskApplyTo .= ' & '.Locale::translate('proposal.widerCommunity');
+                    $firstRisk = false;
+                } 
+                
+                if ($riskApplyTo == '') $riskApplyTo = Locale::translate('proposal.nobody');
+                
+		return $riskApplyTo;
+	}
+
 	/**
 	 * Get benefitsToParticipants.
 	 * @return int
@@ -467,8 +529,35 @@ class RiskAssessment extends DataObject {
 	function setKnowledgeOnDisease($knowledgeOnDisease) {
 		return $this->setData('knowledgeOnDisease', $knowledgeOnDisease);
 	}
-
-
+        
+        /**
+	 * Get risksToTeam.
+	 * @return int
+	 */
+	function getLocalizedBenefitsToString() {
+                $firstBenefit = true;
+                $benefitsTo = (string) '';
+                if ($this->getBenefitsToParticipants() == RISK_ASSESSMENT_YES) {
+                    $benefitsTo = Locale::translate('proposal.directBenefits');
+                    $firstBenefit = false;
+                }
+                if ($this->getKnowledgeOnCondition() == RISK_ASSESSMENT_YES) {
+                    if ($firstBenefit) $benefitsTo = Locale::translate('proposal.participantCondition');
+                    else $benefitsTo .= ' & '.Locale::translate('proposal.participantCondition');
+                    $firstBenefit = false;
+                } 
+                if ($this->getKnowledgeOnDisease() == RISK_ASSESSMENT_YES) {
+                    if ($firstBenefit) $benefitsTo = Locale::translate('proposal.diseaseOrCondition');
+                    else $benefitsTo .= ' & '.Locale::translate('proposal.diseaseOrCondition');
+                    $firstBenefit = false;
+                } 
+                
+                if ($benefitsTo == '') $benefitsTo = Locale::translate('proposal.noBenefits');
+                
+		return $benefitsTo;
+	}
+        
+        
 	/**
 	 * Get multiInstitutions.
 	 * @return int
@@ -501,6 +590,56 @@ class RiskAssessment extends DataObject {
 	 */
 	function setConflictOfInterest($conflictOfInterest) {
 		return $this->setData('conflictOfInterest', $conflictOfInterest);
-	}   
+	}
+        /**
+	 * Get a map for yes/no/not provided constant to locale key.
+	 * @return array
+	 */
+	function &getConflictOfInterestMap() {
+		static $conflictOfInterestMap;
+		if (!isset($conflictOfInterestMap)) {
+			$conflictOfInterestMap = array(
+                                RISK_ASSESSMENT_CONFLICT_OF_INTEREST_YES => 'common.yes',
+				RISK_ASSESSMENT_CONFLICT_OF_INTEREST_NO => 'common.no',
+				RISK_ASSESSMENT_CONFLICT_OF_INTEREST_NOT_SURE => 'common.notSure'
+			);
+		}
+		return $conflictOfInterestMap;
+	}	
+
+	/**
+	 * Get a locale key for yes/no/not provided
+	 * @param $value
+	 */
+	function getConflictOfInterestKey() {
+		$conflictOfInterestMap =& $this->getConflictOfInterestMap();
+		return $conflictOfInterestMap[$this->getConflictOfInterest()];
+	}
+        
+        /**
+	 * Get a map for yes/no/not provided constant to locale key.
+	 * @return array
+	 */
+	function &getYesNoMap() {
+		static $yesNoMap;
+		if (!isset($yesNoMap)) {
+			$yesNoMap = array(
+                                RISK_ASSESSMENT_NOT_PROVIDED => 'common.dataNotProvided',
+				RISK_ASSESSMENT_NO => 'common.no',
+				RISK_ASSESSMENT_YES => 'common.yes'
+			);
+		}
+		return $yesNoMap;
+	}	
+	/**
+	 * Get a locale key for yes/no/not provided
+	 * @param $value
+	 */
+	function getYesNoKey($value) {
+		$yesNoMap =& $this->getYesNoMap();
+		return $yesNoMap[$value];
+	}
+        
+        
 }
 ?>

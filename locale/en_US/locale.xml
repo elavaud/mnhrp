@@ -161,7 +161,7 @@
     <message key="article.scientificTitle">Scientific title</message>
     <message key="article.proposalType">Proposal Type</message>
     <message key="article.publicTitle">Public title</message>
-	<message key="article.authors">Investigator</message> /*Replaced "Authors" with "Investigator"*/
+	<message key="article.authors">Investigator(s)</message> /*Replaced "Authors" with "Investigator"*/
 	<message key="article.indexingInformation">Indexing Information</message>
 	<message key="article.metadata">Metadata</message>
 	<message key="article.journalSection">Ethics Review Committee</message>
@@ -274,7 +274,7 @@
         <message key="proposal.studentInstitution">Institution</message>
         <message key="proposal.studentSupervisor">Supervisor of the student(s)</message>        
         <message key="proposal.studentSupervisorName">Full Name and title</message>
-        <message key="proposal.academicDegree">Academic degree:</message>
+        <message key="proposal.academicDegree">Academic degree</message>
         <message key="proposal.proposalType">Proposal Type</message>
         <message key="proposal.geoArea">Geographical Area(s)</message>
         <message key="proposal.otherInternationalGrantName">Please specify the agency:</message>
@@ -292,7 +292,7 @@
         <message key="proposal.otherErcDecision">If yes, other Committee Decision </message>
         <message key="proposal.nameOfIndustry">If yes, please specify:</message>
         <message key="proposal.proofOfRegistration">Proof Of Registration Included? </message>
-        <message key="proposal.dataCollection">Data Collection: </message>
+        <message key="proposal.dataCollection">Data Collection</message>
         <message key="proposal.sourceOfMonetary">Source(s) of Monetary or Material Support</message>
         <message key="proposal.industryGrant">Industry grant</message>
         <message key="proposal.mohGrant">Ministry of Health grant</message>
@@ -331,13 +331,13 @@
         <message key="proposal.stemCell">Stem cell research?</message>
         <message key="proposal.biosafety">Biosafety issue?</message>
         <message key="proposal.potentialRisk">Potential risks</message>
-        <message key="proposal.riskLevel">Level of the risk involved in Research:</message>
+        <message key="proposal.riskLevel">Level of the risk involved in Research</message>
         <message key="proposal.riskLevelNoMore">No more than minimal risk</message>
         <message key="proposal.riskLevelMinore">Minor increase over minimal risk</message>
         <message key="proposal.riskLevelMore">More than minor increase over minimal risk</message>
-        <message key="proposal.listRisks">Briefly list the risks:</message>
+        <message key="proposal.listRisks">Briefly list the risks</message>
         <message key="proposal.howRisksMinimized">How are risks minimized / managed?</message>
-        <message key="proposal.riskApplyTo">Risks apply to:</message>
+        <message key="proposal.riskApplyTo">Risks apply to</message>
         <message key="proposal.researchTeam">Research Team</message>
         <message key="proposal.researchSubjects">Research Subjects</message>
         <message key="proposal.widerCommunity">Wider Community</message> 
@@ -346,10 +346,10 @@
         <message key="proposal.directBenefits">Direct benefit to participants</message>
         <message key="proposal.participantCondition">Generalizable knowledge about participants' condition or disorder</message>
         <message key="proposal.diseaseOrCondition">Generalizable knowledge about disease or condition under study </message>
-        <message key="proposal.benefitsFromTheProject">Benefits from the research project:</message>
+        <message key="proposal.benefitsFromTheProject">Benefits from the research project</message>
         <message key="proposal.noBenefits">No benefits</message>
-        <message key="proposal.multiInstitutions">Multi-institution Project: </message>
-        <message key="proposal.conflictOfInterest">Conflict of Interest:</message>
+        <message key="proposal.multiInstitutions">Multi-institution Project </message>
+        <message key="proposal.conflictOfInterest">Conflict of Interest</message>
         <message key="proposal.conflictOfInterestInstruct">Does any member of the research team has any financial or technical conflict of interest in the proposed research (i.e. whether any member of the research team is likely to be affected, positively or negatively, by the outcomes of the research in financial or technical terms)</message>
         <message key="proposal.identityRevealedAbb">Identity revealed</message>
         <message key="proposal.unableToConsentAbb">Unable to consent</message>
@@ -477,14 +477,14 @@
 	<message key="user.role.layoutEditor">Layout Editor</message>
 	<message key="user.role.copyeditor">Copyeditor</message>
 	<message key="user.role.proofreader">Proofreader</message>
-	<message key="user.role.author">Investigator</message> /*Author to Investigator */
-        <!-- EL on April 3rd 2013 -->
-        <message key="user.role.coinvestigator">Co-Investigator</message>
+	<message key="user.role.author">Investigator</message>
+    <message key="user.role.primaryInvestigator">Primary Investigator</message>
+    <message key="user.role.coinvestigator">Co-Investigator(s)</message>
 	<message key="user.role.subscriptionManager">Subscription Manager</message>
 	<message key="user.role.managers">Administrators</message> /* Replaced Journal Managers with Committee Admins - spf */
-    <message key="user.role.editors">Secretaries</message> /*Editor to Secretary*/
+    <message key="user.role.editors">Secretaries</message>
     <message key="user.role.coordinators">Coordinators</message>
-        <message key="user.role.sectionEditors">Ethics Committees Secretaries</message>
+    <message key="user.role.sectionEditors">Ethics Committees Secretaries</message>
         
 	<message key="user.role.layoutEditors">Layout Editors</message>
 	<message key="user.role.copyeditors">Copyeditors</message>

@@ -36,19 +36,15 @@
 <table width="100%" class="data">
 	{foreach name=authors from=$submission->getAuthors() item=author}
 	<tr valign="top">
-		<td width="20%" class="label">{translate key="user.name"}</td>
+		<td width="20%" class="label">{if $author->getPrimaryContact()}{translate key="user.role.primaryInvestigator"}{else}{translate key="user.role.coinvestigator"}{/if}</td>
 		<td width="80%" class="value">
+			{$author->getFullName()|escape}<br />
+			{if $author->getAffiliation()}{$author->getAffiliation()|escape|nl2br|default:"&mdash;"}<br/>{/if}
 			{assign var=emailString value=$author->getFullName()|concat:" <":$author->getEmail():">"}
 			{url|assign:"url" page="user" op="email" redirectUrl=$currentUrl to=$emailString|to_array subject=$abstract->getScientificTitle()|strip_tags articleId=$submission->getId()}
 			{$author->getFullName()|escape} {icon name="mail" url=$url}
 		</td>
 	</tr>
-	{if $author->getAffiliation()}
-	<tr valign="top">
-		<td class="label">{translate key="user.affiliation"}</td>
-		<td class="value">{$author->getAffiliation()|escape|nl2br|default:"&mdash;"}</td>
-	</tr>
-	{/if}
 	{/foreach}
 </table>
 </div>

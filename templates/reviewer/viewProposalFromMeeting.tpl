@@ -401,7 +401,7 @@
     	    <td class="label" width="30%">{translate key="proposal.biosafety"}</td>
     	    <td class="value">{if $riskAssessment->getBiosafety() == "1"}{translate key="common.yes"}{else}{translate key="common.no"}{/if}</td>
     	</tr>
-    	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.researchIncludes"}</b></td></tr>
+    	<tr valign="top"><td colspan="2"><b><br/>{translate key="proposal.potentialRisk"}</b></td></tr>
     	<tr valign="top" id="riskLevelField">
     	    <td class="label" width="30%">{translate key="proposal.riskLevel"}</td>
     	    <td class="value">

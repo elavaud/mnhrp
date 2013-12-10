@@ -70,12 +70,12 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		$templateMgr->assign_by_ref('suppFiles', $submission->getSuppFiles());
 		$templateMgr->assign_by_ref('reviewFile', $submission->getReviewFile());
 		$templateMgr->assign_by_ref('journalSettings', $journalSettings);
+		$templateMgr->assign('abstractLocales', $journal->getSupportedLocaleNames());
 		$templateMgr->assign('userId', $user->getId());
 		$templateMgr->assign('isEditor', $isEditor);
 		$templateMgr->assign('isSectionEditor', $isSectionEditor);
 		$templateMgr->assign('enableComments', $enableComments);
 
-		$sectionDao =& DAORegistry::getDAO('SectionDAO');
 		$templateMgr->assign_by_ref('sections', $sectionDao->getSectionTitles($journal->getId()));
 		if ($enableComments) {
 			import('classes.article.Article');
@@ -2618,6 +2618,15 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		$this->submission =& $sectionEditorSubmission;
 		return true;
 	}
+        
+        
+        function downloadSummary($args){
+		$articleId = isset($args[0]) ? (int)$args[0] : 0;
+		$this->validate($articleId);
+		$submission =& $this->submission;
+		SectionEditorAction::automaticSummaryInPDF($submission);
+        }
+
 
 }
 ?>
