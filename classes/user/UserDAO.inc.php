@@ -182,21 +182,7 @@ class UserDAO extends PKPUserDAO {
 		$returner = new DAOResultFactory($result, $this, '_returnUserFromRowWithData');
 		return $returner;
 	}
-	
-		
-	function insertExternalReviewer($userId, $locale) {
-		$sql = 'INSERT INTO user_settings (user_id, locale, setting_name, setting_value, setting_type) '.
-			 ' values (?, ?, ?, ?, ?)';		
-		$this->update($sql, array($userId, $locale, 'externalReviewer', 'Yes', 'string'));
-		$this->flushCache();
-		return $userId;
-	}
-	
-	function deleteExternalReviewer($userId, $locale) {	
-		$this->update('DELETE FROM user_settings WHERE user_id = '.$userId.' AND setting_name = "externalReviewer"');
-		$this->flushCache();
-		return $userId;
-	}
+
 }
 
 ?>

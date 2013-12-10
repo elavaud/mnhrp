@@ -179,9 +179,6 @@ class CreateExternalReviewerForm extends Form {
 		//insert user
 		$userId = $userDao->insertUser($user);
 		
-		//add external reviewer setting		
-		$userDao->insertExternalReviewer($userId, Locale::getLocale());
-
 		// Add reviewing interests to interests table
 		$interestDao =& DAORegistry::getDAO('InterestDAO');
 		$interests = is_array(Request::getUserVar('interestsKeywords')) ? Request::getUserVar('interestsKeywords') : array();
@@ -209,7 +206,9 @@ class CreateExternalReviewerForm extends Form {
 		$role->setRoleId(ROLE_ID_REVIEWER);		
 		$roleDao->insertRole($role);
 		
-
+		$ercReviewersDao =& DAORegistry::getDAO('ErcReviewersDAO');
+                $ercReviewersDao->insertReviewer($journal->getId(), 0, $userId, 3);
+                        
 		if ($sendNotify) {
 			// Send welcome email to user
 			import('classes.mail.MailTemplate');
