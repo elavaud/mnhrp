@@ -2725,7 +2725,7 @@ class SectionEditorAction extends Action {
                 $pdf->ln();
 
                 $pdf->MultiRow($cell_width, Locale::translate('proposal.withHumanSubjects').': ', Locale::translate($proposalDetails->getYesNoKey($proposalDetails->getHumanSubjects())));
-		if ($proposalDetails->getNationwide() == PROPOSAL_DETAIL_YES) $pdf->MultiRow($cell_width, ' ', $proposalDetails->getLocalizedProposalTypeText());
+		if ($proposalDetails->getHumanSubjects() == PROPOSAL_DETAIL_YES) $pdf->MultiRow($cell_width, Locale::translate('proposal.proposalType').': ', $proposalDetails->getLocalizedProposalTypeText());
                 $pdf->ln();
 
                 $pdf->MultiRow($cell_width, Locale::translate('proposal.dataCollection').': ', Locale::translate($proposalDetails->getDataCollectionKey()));
