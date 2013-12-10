@@ -2785,7 +2785,8 @@ class SectionEditorAction extends Action {
                     $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.howRisksMinimized').': ', $riskAssessment->getHowRisksMinimized());
                 }
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.riskApplyTo').': ', $riskAssessment->getLocalizedRisksApplyToString());                
-      
+                $pdf->ln();
+
                 $pdf->SetFont('dejavusans','BI',11);
                 $pdf->MultiCell(0,$cell_height, Locale::translate('proposal.potentialBenefits'), 0, 'L');  
                 $pdf->ln();
