@@ -173,7 +173,7 @@
 		</tr>
 
 		<tr valign="top">
-			<td class="label">Nationality</td>
+			<td class="label">{fieldLabel name="country" key="user.natinality"}</td>
 			<td class="value">
 				<select name="country" id="country" class="selectMenu">
 					<option value=""></option>
@@ -181,12 +181,21 @@
 				</select>
 			</td>
 		</tr>
-
+		<tr valign="top">
+			<td class="label">{fieldLabel name="interests" key="user.register.reviewerInterests"}<br /><i>({translate key="user.register.reviewerInterestsInstruct"})</i></td>
+			<td class="value">
+				<ul id="interests"><li></li></ul>
+				<textarea name="interests" id="interestsTextOnly" rows="5" cols="40" class="textArea">
+					{foreach name=currentInterests from=$interestsKeywords item=interest}{$interest|urldecode}{if !$smarty.foreach.currentInterests.last}, {/if}{/foreach}
+				</textarea>
+			</td>
+		</tr>
+		<!--{*
 		<tr valign="top">
 			<td class="label">{fieldLabel name="biography" key="user.biography"}<br />{translate key="user.biography.description"}</td>
 			<td class="value"><textarea name="biography[{$formLocale|escape}]" id="biography" rows="5" cols="40" class="textArea">{$biography[$formLocale]|escape}</textarea></td>
 		</tr>
-
+		*}-->
 		<tr valign="top">
 			<td class="label">{fieldLabel name="sendPassword" key="user.sendPassword"}</td>
 			<td class="value">
@@ -228,15 +237,16 @@
 		{/if}{* $captchaEnabled *}
 		
 </table>
-
-<div id="reviewerInterestsContainer" style="margin-left:40px; display: none;">
+<!--{*
+<div id="reviewerInterestsContainer" style="margin-left:40px;>
 	<label class="desc">{translate key="user.register.reviewerInterests"}</label>
 	<ul id="interests"><li></li></ul>
 	<textarea name="interests" id="interestsTextOnly" rows="5" cols="40" class="textArea">
 			{foreach name=currentInterests from=$interestsKeywords item=interest}{$interest|urldecode}{if !$smarty.foreach.currentInterests.last}, {/if}{/foreach}
 	</textarea>
 	<span class="instruct">{translate key="user.interests.description"}</span>
-</div> 
+</div>
+*}-->
 <br />
 <p><input type="submit" value="{translate key="user.register"}" class="button defaultButton" /> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="document.location.href='{url page="index" escape=false}'" /></p>
 

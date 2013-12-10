@@ -70,6 +70,7 @@
 	<message key="user.middleName">Middle name</message>
 	<message key="user.myAccount">My Account</message>
 	<message key="user.name">Name</message>
+	<message key="user.natinality">Nationality</message>
 	<message key="user.other">Other</message>
 	<message key="user.password">Password</message>
 	<message key="user.repeatPassword">Repeat Password</message>
