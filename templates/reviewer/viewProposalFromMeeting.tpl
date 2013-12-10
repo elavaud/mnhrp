@@ -2,12 +2,13 @@
  * submissionForFullReview.tpl
  * $Id$
  *}
+
 {strip}
-{assign var="articleId" value=$submission->getArticleId()}
-{assign var="proposalId" value=$submission->getLocalizedProposalId()}
-{translate|assign:"pageTitleTranslated" key="submission.page.proposalFromMeeting" id=$proposalId}
-{assign var="pageCrumbTitle" value="article.submission"}
-{include file="common/header.tpl"}
+	{assign var="articleId" value=$submission->getArticleId()}
+	{assign var="proposalId" value=$submission->getLocalizedProposalId()}
+	{translate|assign:"pageTitleTranslated" key="submission.page.proposalFromMeeting" id=$proposalId}
+	{assign var="pageCrumbTitle" value="article.submission"}
+	{include file="common/header.tpl"}
 {/strip}
 
 <ul class="menu">
@@ -16,6 +17,7 @@
 		<li><a href="{url op="proposalsFromMeetings"}">{translate key="common.queue.short.meetingProposals"}</a></li>
 	{/if}
 </ul>
+
 <div class="separator"></div>
 
 <script type="text/javascript">
@@ -59,7 +61,7 @@
 <div class="separator"></div>
 
 <div id="files">
-<h3>{translate key="common.file.s"}</h3>
+	<h3>{translate key="common.file.s"}</h3>
 	<table width="100%" class="data">
 		<tr valign="top">
 			<td width="30%" class="label">
@@ -75,18 +77,18 @@
 			</td>
 		</tr>
 		{if count($previousFiles)>1}
-		{assign var="count" value=0}
-		<tr>
-			<td class="label">{translate key="submission.previousProposalFile"}</td>
-			<td width="70%" class="value">
-				{foreach name="previousFiles" from=$previousFiles item=previousFile}
-					{assign var="count" value=$count+1}
-					{if $count > 1}
-            			<a href="{url op="downloadProposalFromMeetingFile" path=$submission->getArticleId()|to_array:$previousFile->getFileId()}" class="file">{$previousFile->getFileName()|escape}</a><br />
-					{/if}
-				{/foreach}
-			</td>
-		</tr>
+			{assign var="count" value=0}
+			<tr>
+				<td class="label">{translate key="submission.previousProposalFile"}</td>
+				<td width="70%" class="value">
+					{foreach name="previousFiles" from=$previousFiles item=previousFile}
+						{assign var="count" value=$count+1}
+						{if $count > 1}
+            				<a href="{url op="downloadProposalFromMeetingFile" path=$submission->getArticleId()|to_array:$previousFile->getFileId()}" class="file">{$previousFile->getFileName()|escape}</a><br />
+						{/if}
+					{/foreach}
+				</td>
+			</tr>
 		{/if}
 		<tr valign="top">
 			<td class="label">
@@ -476,5 +478,3 @@
 </div>
 
 {include file="common/footer.tpl"}
-
-

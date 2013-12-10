@@ -8,18 +8,20 @@
  *
  * $Id$
  *}
+ 
 {strip}
-{assign var="pageTitle" value="common.queue.long.$pageToDisplay"}
+	{assign var="pageTitle" value="common.queue.long.$pageToDisplay"}
 {include file="common/header.tpl"}
 {/strip}
 
 {if !$dateFrom}
-{assign var="dateFrom" value="--"}
+	{assign var="dateFrom" value="--"}
 {/if}
 
 {if !$dateTo}
-{assign var="dateTo" value="--"}
+	{assign var="dateTo" value="--"}
 {/if}
+
 <ul class="menu">
 	<li{if ($pageToDisplay == "active")} class="current"{/if}><a href="{url path="active"}">{translate key="common.queue.short.active"}</a></li>
 	<li{if ($pageToDisplay == "completed")} class="current"{/if}><a href="{url path="completed"}">{translate key="common.queue.short.completed"}</a></li>

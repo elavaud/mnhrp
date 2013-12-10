@@ -11,11 +11,11 @@
  
 
 {if !$dateFrom}
-{assign var="dateFrom" value="--"}
+	{assign var="dateFrom" value="--"}
 {/if}
 
 {if !$dateTo}
-{assign var="dateTo" value="--"}
+	{assign var="dateTo" value="--"}
 {/if}
 
  <form method="post" name="submit" action="{url op='index' path='active'}">
@@ -45,71 +45,70 @@
     <br/>
 	<input type="submit" value="{translate key="common.search"}" class="button" />
 </form>
+
 <br/><br/><br/>
+
 <div id="submissions">
-<table class="listing" width="100%">
-	<tr><td colspan="6"><strong>ACTIVE PROPOSALS</strong></td></tr>
-	<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
-	<tr class="heading" valign="bottom">
-		<td width="5%">ID</td> <!-- Replaced id with ID, SPF, 21 Dec 2011 -->
-		<td width="5%"><span class="disabled">{translate key="submission.date.mmdd"}</span><br />{sort_heading key="common.assigned" sort='assignDate'}</td>
-		<!-- <td width="5%">{sort_heading key="submissions.sec" sort="section"}</td> *} Commented out by MSB, Sept25,2011-->
-		<td width="55%">{sort_heading key="article.title" sort='title'}</td>
-		<td width="15%" align="right"><span class="disabled">{translate key="submission.date.mmdd"}</span><br />{sort_heading key="submission.due" sort='dueDate'}</td>
-		<td width="15%" align="right"><span class="disabled">{translate key="submission.date.mmdd"}</span><br />Confirmed</td>
-		<td width="15%" align="right">{translate key="submission.recommendation"}</td>
-		
-		
-	</tr>
-	<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
-{assign var="count" value=0}
-{iterate from=submissions item=submission}
-	{assign var="articleId" value=$submission->getLocalizedProposalId()}
-	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-	{assign var="reviewId" value=$submission->getReviewId()}
-		
-		
-		<tr valign="top">
-			<td>{$articleId|escape}</td>
-			<td>{$submission->getDateNotified()|date_format:$dateFormatLong}</td>
-			<td><a href="{url op="submission" path=$reviewId}" class="action">{$abstract->getScientificTitle()|escape}</a></td>
-			<td class="nowrap" align="right">{$submission->getDateDue()|date_format:$dateFormatLong}</td>
-			<td class="nowrap" align="right">
-				{if $submission->getDateConfirmed()!=null && !$submission->getDeclined()}
-				 	{$submission->getDateConfirmed()|date_format:$dateFormatLong}
-				{elseif $submission->getDeclined()}
-					<span class="disabled">Declined</span>
-				{else}
-					&mdash;
-				{/if}
-			</td>
-			<td align="right">			
-				{assign var="recommendation" value=$submission->getRecommendation()}
-				{if $recommendation != 0}
-					{translate key=$reviewerRecommendationOptions.$recommendation}
-				{else}
-					&mdash;
-				{/if}				
-			</td>			
+	<table class="listing" width="100%">
+		<tr><td colspan="6"><strong>{translate key="common.reviewerActiveProposals"}</strong></td></tr>
+		<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
+		<tr class="heading" valign="bottom">
+			<td width="5%">{translate key="common.id"}</td>
+			<td width="5%"><span class="disabled">{translate key="submission.date.mmdd"}</span><br />{sort_heading key="common.assigned" sort='assignDate'}</td>
+			<td width="55%">{sort_heading key="article.title" sort='title'}</td>
+			<td width="15%" align="right"><span class="disabled">{translate key="submission.date.mmdd"}</span><br />{sort_heading key="submission.due" sort='dueDate'}</td>
+			<td width="15%" align="right"><span class="disabled">{translate key="submission.date.mmdd"}</span><br />{translate key="common.confirmed"}</td>
+			<td width="15%" align="right">{translate key="submission.recommendation"}</td>
 		</tr>
+		<tr><td colspan="6" class="headseparator">&nbsp;</td></tr>
+		{assign var="count" value=0}
+		{iterate from=submissions item=submission}
+			{assign var="articleId" value=$submission->getLocalizedProposalId()}
+			{assign var="abstract" value=$submission->getLocalizedAbstract()}
+			{assign var="reviewId" value=$submission->getReviewId()}
 		
 		
-		<td colspan="6" class="{if $submissions->eof()}end{/if}separator">&nbsp;</td>
-		{assign var="count" value=$count+1}
-{/iterate}
-{if $submissions->wasEmpty()}
-	<tr>
-		<td colspan="6" class="nodata">{translate key="submissions.noSubmissions"}</td>
-	</tr>
-	<tr>
-		<td colspan="6" class="endseparator">&nbsp;</td>
-	</tr>
-{else}
-	<tr>
-		<td colspan="4" align="left">{page_info iterator=$submissions}</td>
-		<td colspan="2" align="right">{page_links anchor="submissions" name="submissions" iterator=$submissions sort=$sort sortDirection=$sortDirection}</td>
-	</tr>
-{/if}
-</table>
+			<tr valign="top">
+				<td>{$articleId|escape}</td>
+				<td>{$submission->getDateNotified()|date_format:$dateFormatLong}</td>
+				<td><a href="{url op="submission" path=$reviewId}" class="action">{$abstract->getScientificTitle()|escape}</a></td>
+				<td class="nowrap" align="right">{$submission->getDateDue()|date_format:$dateFormatLong}</td>
+				<td class="nowrap" align="right">
+					{if $submission->getDateConfirmed()!=null && !$submission->getDeclined()}
+				 		{$submission->getDateConfirmed()|date_format:$dateFormatLong}
+					{elseif $submission->getDeclined()}
+						<span class="disabled">{translate key="submissions.declined"}</span>
+					{else}
+						&mdash;
+					{/if}
+				</td>
+				<td align="right">			
+					{assign var="recommendation" value=$submission->getRecommendation()}
+					{if $recommendation != 0}
+						{translate key=$reviewerRecommendationOptions.$recommendation}
+					{else}
+						&mdash;
+					{/if}				
+				</td>			
+			</tr>
+			<tr>
+				<td colspan="6" class="{if $submissions->eof()}end{/if}separator">&nbsp;</td>
+			</tr>
+			{assign var="count" value=$count+1}
+		{/iterate}
+		{if $submissions->wasEmpty()}
+			<tr>
+				<td colspan="6" class="nodata">{translate key="submissions.noSubmissions"}</td>
+			</tr>
+			<tr>
+				<td colspan="6" class="endseparator">&nbsp;</td>
+			</tr>
+		{else}
+			<tr>
+				<td colspan="4" align="left">{page_info iterator=$submissions}</td>
+				<td colspan="2" align="right">{page_links anchor="submissions" name="submissions" iterator=$submissions sort=$sort sortDirection=$sortDirection}</td>
+			</tr>
+		{/if}
+	</table>
 </div>
 

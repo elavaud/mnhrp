@@ -255,6 +255,7 @@
         <message key="author.submit.suppFile.questionnaire">Questionnaires</message>
         <!-- <message key="author.submit.suppFile.local">Local</message> removed SPF 9 Dec 2011-->
         <message key="author.submit.suppFile.ethicalClearance">Local Ethical Clearance</message>
+        <message key="author.submit.suppFile.proofOfPayment">Proof of Payment</message>
         <message key="author.submit.suppFile.proofOfRegistration">Proof of Registration</message>
         <message key="author.submit.suppFile.otherErcDecision">Other Committee Decision</message>
         <message key="author.submit.suppFile.review">Review</message>

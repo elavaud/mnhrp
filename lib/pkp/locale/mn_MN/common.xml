@@ -45,6 +45,11 @@
         
 	<message key="common.activate">Activate</message>
 	<message key="common.active">Active</message>
+    <message key="common.archivedProposals">ARCHIVED PROPOSALS</message>
+    <message key="common.activeProposals">ACTIVE PROPOSALS (Awaiting Decision/Revise and Resubmit)</message>
+    <message key="common.reviewerActiveProposals">ACTIVE PROPOSALS</message>
+    <message key="common.approvedProposals">APPROVED PROPOSALS (Research Ongoing)</message>
+    <message key="common.approvalDate">Approval Date</message>
 	<message key="common.add">Add</message>
 	<message key="common.addSelf">Start Initial Review</message>
 	<message key="common.all">All</message>
@@ -89,6 +94,7 @@
     <message key="common.comments">Comments</message>
 	<message key="common.complete">Complete</message>
 	<message key="common.completed">Completed</message>
+	<message key="common.confirmed">Confirmed</message>    
 	<message key="common.continue">Continue</message>
 	<message key="common.copy">Copy</message>
 	<message key="common.country">Country</message>
@@ -166,13 +172,13 @@
 	<message key="common.notApplicable">Not applicable</message>
 	<message key="common.notApplicableShort">N/A</message>
 	<message key="common.notAvailable">Not available</message>
-        <!-- Added by EL on March 9th 2013-->
-        <message key="common.notSure">Not sure</message>
+    <message key="common.notSure">Not sure</message>
 	<message key="common.note">Note</message>
 	<message key="common.notes">Notes</message>
 	<message key="common.notify">Notify</message>
 	<message key="common.off">Off</message>
 	<message key="common.on">On</message>
+    <message key="common.ongoing">Ongoing</message>
     <message key="common.ok">OK</message>
 	<message key="common.options">Options</message>
 	<message key="common.order">Order</message>
@@ -352,15 +358,27 @@
 	<message key="search.date">Date</message>
 	<message key="search.dateFrom">From</message>
 	<message key="search.dateTo">Until</message>
+    <message key="search.exportSearchResults">Export Search Results</message>
+    <message key="search.hideExportOptions">Hide Export Options</message>
+    <message key="search.exportIntruct">Please check fields you would like to export.</message>
+    <message key="search.studentExport">If student research, Institution &amp; Academic Degree</message>
+    <message key="search.nonStudent">Non Student Research</message>
+    <message key="search.researchDates">Dates of research</message>
+    <message key="search.inclusive">Inclusive</message>
 	<message key="search.discipline">Discipline(s)</message>
     <message key="search.exportSearchResults">Export Search Results</message>
     <message key="search.exportIntruct">Please check fields you would like to export.</message>
     <message key="search.hideExportOptions">Hide Export Options</message>
 	<message key="search.fullText">Full Text</message>
+    <message key="search.fromTitle">Search from Title or Keyword(s)</message>
+    <message key="search.startDate">Start date of the research</message>
+    <message key="search.startDateAbr">Start date</message>
+    <message key="search.endDateAbr">End date</message>
 	<message key="search.indexTerms">Index terms</message>
 	<message key="search.matchAll">Match all categories</message>
 	<message key="search.noKeywordError">You must enter at least one search keyword.</message>
 	<message key="search.noResults">No Results</message>
+    <message key="search.results">result(s)</message>
 	<message key="search.operator.and">and</message>
 	<message key="search.operator.not">not</message>
 	<message key="search.operator.or">or</message>
@@ -371,6 +389,7 @@
 	<message key="search.searchResults">Search Results</message>
     <message key="search.studentExport">If student research, Institution &amp; Academic Degree</message>
 	<message key="search.subject">Keyword(s)</message>
+    <message key="search.takingPlaceIn">Taking place in</message>
 	<message key="search.titleIndex">Browse Title Index</message>
 	<message key="search.title">Title</message>
 	<message key="search.titlesAndAbstract">Title(s) and abstract</message>

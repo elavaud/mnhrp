@@ -36,9 +36,9 @@
 					<td class="label">{translate key="reviewer.article.schedule.decision"}</td>
 					<td class="value">
 						{if $submission->getCancelled()}
-							Canceled
+							{translate key="common.cancelled"}
 						{elseif $submission->getDeclined()}
-							Declined
+							{translate key="submissions.declined"}
 						{else}
 							{assign var=recommendation value=$submission->getRecommendation()}
 							{if $recommendation === '' || $recommendation === null}
@@ -58,8 +58,8 @@
 			<tr valign="top">
 				<td class="label">{translate key="reviewer.article.schedule.isAttending"} </td>
 				<td class="value">	
-					<input type="radio" name="isAttending" id="acceptMeetingSchedule" value="1" {if  $submission->getIsAttending() == 1 } checked="checked"{/if} > </input> Yes
-					<input type="radio" name="isAttending" id="regretMeetingSchedule" value="0" {if  $submission->getIsAttending() == 0 } checked="checked"{/if} > </input> No
+					<input type="radio" name="isAttending" id="acceptMeetingSchedule" value="1" {if  $submission->getIsAttending() == 1 } checked="checked"{/if} > </input> {translate key="common.yes"}
+					<input type="radio" name="isAttending" id="regretMeetingSchedule" value="0" {if  $submission->getIsAttending() == 0 } checked="checked"{/if} > </input> {translate key="common.no"}
 				</td>
 			</tr> 
 			<tr>
@@ -290,11 +290,12 @@
 
 
 {if $journal->getLocalizedSetting('reviewGuidelines') != ''}
-<div class="separator"></div>
-<div id="reviewerGuidelines">
-<h3>{translate key="reviewer.article.reviewerGuidelines"}</h3>
-<p>{$journal->getLocalizedSetting('reviewGuidelines')|nl2br}</p>
-</div>
+	<div class="separator"></div>
+
+	<div id="reviewerGuidelines">
+		<h3>{translate key="reviewer.article.reviewerGuidelines"}</h3>
+		<p>{$journal->getLocalizedSetting('reviewGuidelines')|nl2br}</p>
+	</div>
 {/if}
 
 

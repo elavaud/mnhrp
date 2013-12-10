@@ -5,18 +5,20 @@
  *
  * $Id$
  *}
+
 {strip}
-{assign var="pageTitle" value="common.queue.long.meetingProposals"}
-{include file="common/header.tpl"}
+	{assign var="pageTitle" value="common.queue.long.meetingProposals"}
+	{include file="common/header.tpl"}
 {/strip}
 
 {if !$dateFrom}
-{assign var="dateFrom" value="--"}
+	{assign var="dateFrom" value="--"}
 {/if}
 
 {if !$dateTo}
-{assign var="dateTo" value="--"}
+	{assign var="dateTo" value="--"}
 {/if}
+
 <ul class="menu">
 	<li><a href="{url op="meetings"}">{translate key="common.queue.short.meetingList"}</a></li>
 	{if $isReviewer}
@@ -27,13 +29,12 @@
 <div class="separator"></div>
 <br/>
  
-
 {if !$dateFrom}
-{assign var="dateFrom" value="--"}
+	{assign var="dateFrom" value="--"}
 {/if}
 
 {if !$dateTo}
-{assign var="dateTo" value="--"}
+	{assign var="dateTo" value="--"}
 {/if}
 
 <form method="post" name="submit" action="{url op='proposalsOfMeetings'}">
@@ -55,37 +56,36 @@
 </form>
 
 <div id="submissions">
-<table class="listing" width="100%">
-	<tr><td colspan="3" class="headseparator">&nbsp;</td></tr>
-	<tr class="heading" valign="bottom">
-		<td width="20%">{translate key="common.proposalId"}</td>
-		<td width="60%">{translate key="article.title" sort='title'}</td>
-		<td width="20%">Investigator</td>
-	</tr>
-	<tr><td colspan="3" class="headseparator">&nbsp;</td></tr>
-{iterate from=sectionDecisions item=sectionDecision}
-		<tr valign="top">
-			<td>{$sectionDecision->getProposalId()|escape}</td>
-			<td><a href="{url op="viewProposalFromMeeting" path=$sectionDecision->getId()}" class="action">{$sectionDecision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
-   			<td>{$sectionDecision->getAuthorString()|truncate:40:"..."|escape}</td>		
+	<table class="listing" width="100%">
+		<tr><td colspan="3" class="headseparator">&nbsp;</td></tr>
+		<tr class="heading" valign="bottom">
+			<td width="20%">{translate key="common.proposalId"}</td>
+			<td width="60%">{translate key="article.title" sort='title'}</td>
+			<td width="20%">Investigator</td>
 		</tr>
-				
-		<td colspan="3" class="separator">&nbsp;</td>
-{/iterate}
-{if $sectionDecisions->wasEmpty()}
-	<tr>
-		<td colspan="3" class="nodata">{translate key="submissions.noSubmissions"}</td>
-	</tr>
-	<tr>
-		<td colspan="3" class="endseparator">&nbsp;</td>
-	</tr>
-{else}
-	<tr>
-		<td colspan="3" align="left">{page_info iterator=$sectionDecisions}</td>
-		<td colspan="3" align="right">{page_links anchor="sectionDecisions" name="sectionDecisions" iterator=$sectionDecisions sort=$sort sortDirection=$sortDirection}</td>
-	</tr>
-{/if}
-</table>
+		<tr><td colspan="3" class="headseparator">&nbsp;</td></tr>
+		{iterate from=sectionDecisions item=sectionDecision}
+			<tr valign="top">
+				<td>{$sectionDecision->getProposalId()|escape}</td>
+				<td><a href="{url op="viewProposalFromMeeting" path=$sectionDecision->getId()}" class="action">{$sectionDecision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+   				<td>{$sectionDecision->getAuthorString()|truncate:40:"..."|escape}</td>		
+			</tr>	
+			<td colspan="3" class="separator">&nbsp;</td>
+		{/iterate}
+		{if $sectionDecisions->wasEmpty()}
+			<tr>
+				<td colspan="3" class="nodata">{translate key="submissions.noSubmissions"}</td>
+			</tr>
+			<tr>
+				<td colspan="3" class="endseparator">&nbsp;</td>
+			</tr>
+		{else}
+			<tr>
+				<td colspan="3" align="left">{page_info iterator=$sectionDecisions}</td>
+				<td colspan="3" align="right">{page_links anchor="sectionDecisions" name="sectionDecisions" iterator=$sectionDecisions sort=$sort sortDirection=$sortDirection}</td>
+			</tr>
+		{/if}
+	</table>
 </div>
 
 {include file="common/footer.tpl"}

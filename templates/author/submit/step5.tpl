@@ -479,7 +479,7 @@ function checkSubmissionChecklist(elements) {
 
 <div class="separator"></div>
 
-{if $authorFees && $article->getLocalizedStudentInitiatedResearch() != "Yes"}
+{if $authorFees && $article->getLocalizedFundsRequired() > 5000}
 	{include file="author/submit/authorFees.tpl" showPayLinks=1}
 	{if $currentJournal->getLocalizedSetting('waiverPolicy') != ''}
 		{if $manualPayment}
@@ -519,7 +519,7 @@ function checkSubmissionChecklist(elements) {
 
 {call_hook name="Templates::Author::Submit::Step5::AdditionalItems"}
 <p><font color=#FF0000>Attention:<br />Before finishing the submission please make sure that all data you entered are correct. Once submitted the proposal can't be modified.</font></p>
-<p><input type="submit" value="{translate key="author.submit.finishSubmission"}" class="button defaultButton" {if $authorFees && $article->getLocalizedStudentInitiatedResearch() != 'Yes'} onclick="return checkSubmissionChecklist(document.getElementById('paymentSent'))"{/if} /> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="confirmAction('{url page="author"}', '{translate|escape:"jsparam" key="author.submit.cancelSubmission"}')" /></p>
+<p><input type="submit" value="{translate key="author.submit.finishSubmission"}" class="button defaultButton" {if $authorFees && $article->getLocalizedFundsRequired() > 5000} onclick="return checkSubmissionChecklist(document.getElementById('paymentSent'))"{/if} /> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="confirmAction('{url page="author"}', '{translate|escape:"jsparam" key="author.submit.cancelSubmission"}')" /></p>
 </form>
 
 {include file="common/footer.tpl"}

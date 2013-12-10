@@ -129,7 +129,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 				return parent::validate();
 			} elseif ( Request::getUserVar('paymentSent') ) {
 				return parent::validate();
-			} elseif ( $this->article->getLocalizedStudentInitiatedResearch() == "Yes" ) {
+			} elseif ( $this->article->getLocalizedFundsRequired() < 5000 ) {
 				return parent::validate();
 			} else {
 				$queuedPayment =& $paymentManager->createQueuedPayment($journalId, PAYMENT_TYPE_SUBMISSION, $user->getId(), $articleId, $journal->getSetting('submissionFee'));

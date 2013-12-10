@@ -1240,18 +1240,18 @@
             <tr><td><br/></td></tr>
             <tr valign="top" id="fundsRequiredField">
                 <td width="20%" class="label">{fieldLabel name="fundsRequired" required="true" key="proposal.fundsRequired"}</td>
-                <td width="80%" class="value"><input type="text" class="textField" name="fundsRequired[{$formLocale|escape}]" id="fundsRequired" value="{$fundsRequired[$formLocale]|escape}" size="20" maxlength="255" /></td>
+                <td width="80%" class="value"><input type="text" class="textField" name="fundsRequired[{$formLocale|escape}]" id="fundsRequired" value="{$fundsRequired[$formLocale]|escape}" size="20" maxlength="255" />&nbsp;US$</td>
             </tr>
             <tr valign="top" id="fundsRequiredInstructField">
                 <td width="20%" class="label">&nbsp;</td>
                 <td width="80%" class="value"><span><i>{translate key="proposal.fundsRequiredInstruct"}</i></span></td>
             </tr>
-			<tr valign="top">
+			<tr valign="top" style="display: none;">
                 <td width="20%" class="label"></td>
                 <td width="80%" class="value">
-                	<input type="radio" name="selectedCurrency[{$formLocale|escape}]" value="USD" {if  $selectedCurrency[$formLocale] == "USD" } checked="checked"{/if}  />US Dollar(s)
+                	<input type="radio" name="selectedCurrency[{$formLocale|escape}]" value="USD"  checked="checked" />US Dollar(s)
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="selectedCurrency[{$formLocale|escape}]" value="MNT" {if  $selectedCurrency[$formLocale] == "MNT" } checked="checked"{/if} />Tugrik(s)
+                    <input type="radio" name="selectedCurrency[{$formLocale|escape}]" value="MNT"/>Tugrik(s)
                 </td>
             </tr>
             <tr><td><br/></td></tr>

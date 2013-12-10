@@ -6,29 +6,30 @@
  *
  * $Id$
  *}
+ 
 {strip}
-{assign var="meetingPublicId" value=$meeting->getPublicId()}
-{translate|assign:"pageTitleTranslated" key="common.queue.long.viewMeeting" id=$meetingPublicId}
-{assign var="pageCrumbTitle" value="common.queue.long.viewMeeting"}
-{include file="common/header.tpl"}
+	{assign var="meetingPublicId" value=$meeting->getPublicId()}
+	{translate|assign:"pageTitleTranslated" key="common.queue.long.viewMeeting" id=$meetingPublicId}
+	{assign var="pageCrumbTitle" value="common.queue.long.viewMeeting"}
+	{include file="common/header.tpl"}
 {/strip}
 
 {literal}
-<script type="text/javascript">
+	<script type="text/javascript">
 	
-	function editAnswer(){
-    	$('#replyMeetingForm').show();
-    	$('#editAnswer').hide();
-    	$('#editAnswerHide').show();	
-	}
+		function editAnswer(){
+    		$('#replyMeetingForm').show();
+    		$('#editAnswer').hide();
+    		$('#editAnswerHide').show();	
+		}
 
-	function editAnswerHide(){
-    	$('#replyMeetingForm').hide();
-    	$('#editAnswer').show();
-    	$('#editAnswerHide').hide();		
-	}
+		function editAnswerHide(){
+    		$('#replyMeetingForm').hide();
+    		$('#editAnswer').show();
+    		$('#editAnswerHide').hide();		
+		}
     	
-</script>
+	</script>
 {/literal}
 
 <ul class="menu">
@@ -40,91 +41,92 @@
 
 <div class="separator"></div>
 <br/>
+
 <div id="details">
-<h2>{translate key="reviewer.meetings.details}</h2>
-<div class="separator"></div>
-<table width="100%" class="data">
-<tr valign="top">
-	<td class="label" width="20%">{translate key="editor.meeting.id"}</td>
-	<td class="value" width="80%">{$meeting->getPublicId()}</td>
-</tr>
-<tr valign="top">
-	<td class="label" width="20%">{translate key="reviewer.meetings.erc"}</td>
-	<td class="value" width="80%">{$erc->getLocalizedTitle()}</td>
-</tr>
-<tr valign="top">
-	<td class="label" width="20%">{translate key="editor.meeting.schedule"}</td>
-	<td class="value" width="80%">{$meeting->getDate()|date_format:$datetimeFormatLong}</td>
-</tr>
-<tr valign="top">
-	<td class="label" width="20%">{translate key="editor.meeting.length"}</td>
-	<td class="value" width="80%">{$meeting->getLength()} mn</td>
-</tr>
-<tr valign="top">
-	<td class="label" width="20%">{translate key="editor.meeting.location"}</td>
-	<td class="value" width="80%">{$meeting->getLocation()}</td>
-</tr>
-<tr valign="top">
-	<td class="label" width="20%">{translate key="reviewer.meetings.scheduleStatus"}</td>
-	<td class="value" width="80%">{$meeting->getStatusKey()}</td>
-</tr>
-</table>
+	<h2>{translate key="reviewer.meetings.details}</h2>
+	<div class="separator"></div>
+	<table width="100%" class="data">
+		<tr valign="top">
+			<td class="label" width="20%">{translate key="editor.meeting.id"}</td>
+			<td class="value" width="80%">{$meeting->getPublicId()}</td>
+		</tr>
+		<tr valign="top">
+			<td class="label" width="20%">{translate key="reviewer.meetings.erc"}</td>
+			<td class="value" width="80%">{$erc->getLocalizedTitle()}</td>
+		</tr>
+		<tr valign="top">
+			<td class="label" width="20%">{translate key="editor.meeting.schedule"}</td>
+			<td class="value" width="80%">{$meeting->getDate()|date_format:$datetimeFormatLong}</td>
+		</tr>
+		<tr valign="top">
+			<td class="label" width="20%">{translate key="editor.meeting.length"}</td>
+			<td class="value" width="80%">{$meeting->getLength()} mn</td>
+		</tr>
+		<tr valign="top">
+			<td class="label" width="20%">{translate key="editor.meeting.location"}</td>
+			<td class="value" width="80%">{$meeting->getLocation()}</td>
+		</tr>
+		<tr valign="top">
+			<td class="label" width="20%">{translate key="reviewer.meetings.scheduleStatus"}</td>
+			<td class="value" width="80%">{$meeting->getStatusKey()}</td>
+		</tr>
+	</table>
 </div>
 <br/>
 
 <div id="submissions">
-<h2>{translate key="reviewer.meetings.submissions"}</h2>
-<div class="separator"></div>
-<table width="100%" class="listing">
-	<tr class="heading" valign="bottom">
-		<td width="10%">{translate key="article.article"} {translate key="common.id"}</td>
-		<td width="20%">{translate key="article.authors"}</td>
-		<td width="40%">{translate key="article.title"}</td>
-		<td width="15%">{translate key="submissions.reviewRound"}</td>
-		<td width="15%">{translate key="common.status"}</td>
-	</tr>
-	<tr><td colspan="5" class="headseparator">&nbsp;</td></tr>
+	<h2>{translate key="reviewer.meetings.submissions"}</h2>
+	<div class="separator"></div>
+	<table width="100%" class="listing">
+		<tr class="heading" valign="bottom">
+			<td width="10%">{translate key="article.article"} {translate key="common.id"}</td>
+			<td width="20%">{translate key="article.authors"}</td>
+			<td width="40%">{translate key="article.title"}</td>
+			<td width="15%">{translate key="submissions.reviewRound"}</td>
+			<td width="15%">{translate key="common.status"}</td>
+		</tr>
+		<tr><td colspan="5" class="headseparator">&nbsp;</td></tr>
 	
-	{assign var="decisionCount" value=0}
-	{foreach from=$sectionDecisions item=decision}
-		{assign var="key" value=$decision->getId()}
-		{if $isReviewer}
-			<tr valign="top">
-				<td>{$decision->getProposalId()|escape}</td>
-   				<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>		
-   				<td><a href="{url op="viewProposalFromMeeting" path=$decision->getId()}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
-	        	<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
-				<td>{translate key=$decision->getReviewStatusKey()}</td>
+		{assign var="decisionCount" value=0}
+		{foreach from=$sectionDecisions item=decision}
+			{assign var="key" value=$decision->getId()}
+			{if $isReviewer}
+				<tr valign="top">
+					<td>{$decision->getProposalId()|escape}</td>
+   					<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>		
+   					<td><a href="{url op="viewProposalFromMeeting" path=$decision->getId()}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+	        		<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
+					<td>{translate key=$decision->getReviewStatusKey()}</td>
+				</tr>
+				<tr><td colspan="5" class="separator"></td></tr>
+				{assign var="decisionCount" value=$submissionCount+1}
+			{elseif $map.$key}
+   				<tr valign="top">
+					<td>{$decision->getProposalId()|escape}</td>
+   					<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>
+   					<td><a href="{url op="submission" path=$map.$key}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
+	        		<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
+					<td>{translate key=$decision->getReviewStatusKey()}</td>
+				</tr>
+				<tr><td colspan="5" class="separator"></td></tr>
+				{assign var="decisionCount" value=$submissionCount+1}
+			{/if}
+		{/foreach}
+	
+		{if empty($sectionDecisions)}
+			<tr>
+				<td colspan="5" class="nodata">{translate key="submissions.noSubmissions"}</td>
 			</tr>
-			<tr><td colspan="5" class="separator"></td></tr>
-			{assign var="decisionCount" value=$submissionCount+1}
-		{elseif $map.$key}
-   			<tr valign="top">
-				<td>{$decision->getProposalId()|escape}</td>
-   				<td>{$decision->getAuthorString()|truncate:40:"..."|escape}</td>
-   				<td><a href="{url op="submission" path=$map.$key}" class="action">{$decision->getLocalizedProposalTitle()|strip_unsafe_html|truncate:60:"..."}</a></td>
-	        	<td>{translate key=$decision->getReviewTypeKey()} - {$decision->getRound()}</td>
-				<td>{translate key=$decision->getReviewStatusKey()}</td>
-			</tr>
-			<tr><td colspan="5" class="separator"></td></tr>
-			{assign var="decisionCount" value=$submissionCount+1}
 		{/if}
-	{/foreach}
-	
-	{if empty($sectionDecisions)}
-	<tr>
-		<td colspan="5" class="nodata">{translate key="submissions.noSubmissions"}</td>
-	</tr>
-	{/if}
-	<tr>
-		<td colspan="5" class="endseparator">&nbsp;</td>
-	</tr>
-	{if !empty($sectionDecisions)}
-	<tr>
-		<td colspan="5" align="left">{$decisionCount} {translate key="submissions.proposal.s"}</td>
-	</tr>
-	{/if}
-</table>
+		<tr>
+			<td colspan="5" class="endseparator">&nbsp;</td>
+		</tr>
+		{if !empty($sectionDecisions)}
+			<tr>
+				<td colspan="5" align="left">{$decisionCount} {translate key="submissions.proposal.s"}</td>
+			</tr>
+		{/if}
+	</table>
 </div>
 <br/>
 

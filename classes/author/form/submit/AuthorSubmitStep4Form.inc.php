@@ -34,6 +34,7 @@ class AuthorSubmitStep4Form extends AuthorSubmitForm {
             "author.submit.suppFile.summary" => "author.submit.suppFile.summary",
             "author.submit.suppFile.informedConsent" => "author.submit.suppFile.informedConsent",
             "author.submit.suppFile.minues" => "author.submit.suppFile.minutes",
+            "author.submit.suppFile.proofOfPayment" => "author.submit.suppFile.proofOfPayment",
             "author.submit.suppFile.funding" => "author.submit.suppFile.funding",
             "author.submit.suppFile.cv" => "author.submit.suppFile.cv",
             "author.submit.suppFile.questionnaire" => "author.submit.suppFile.questionnaire",

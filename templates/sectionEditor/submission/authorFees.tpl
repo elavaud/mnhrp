@@ -19,8 +19,8 @@
 		{if ($submissionPayment->getPayMethodPluginName()) == 'ManualPayment'}Payment received in cash or cheque<br/>Date: {$submissionPayment->getTimestamp()|date_format:$datetimeFormatLong}
 		{elseif ($submissionPayment->getPayMethodPluginName()) == 'Waiver'}Waiver by the secretary<br/>Date: {$submissionPayment->getTimestamp()|date_format:$datetimeFormatLong}
 		{/if}
-	{elseif $submission->getLocalizedStudentInitiatedResearch() == 'Yes'}
-		<b>Payment issue solved</b><br/>Payment method:&nbsp;&nbsp;Exempt of fee (student research)
+	{elseif $submission->getLocalizedFundsRequired() < 5000}
+		<b>Payment issue solved</b><br/>Payment method:&nbsp;&nbsp;Exempt of fee (under 5000 US$)
 	{else}
 		Please confirm the reception of the waive of the payment:<br/>
 		<input type="button" value="Payment Received" class="button" onclick="confirmAction('{url op="waiveSubmissionFee" path=$submission->getArticleId() markAsPaid=true}', 'Please be sure you received the payment.')" />
