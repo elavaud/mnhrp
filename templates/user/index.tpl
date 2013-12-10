@@ -151,41 +151,44 @@
 			{assign var="authorSubmissionsCount" value=$submissionsCount.Author.$journalId}
 			<tr>
 				<td>&#187; <a href="{url journal=$journalPath page="author"}">{translate key="user.role.author"}</a></td>
-				<td></td>
-				<td align="left">
-					{if $authorSubmissionsCount[0]}
-						<a href="{url journal=$journalPath page="author" path="proposalsToSubmit"}">{translate key="common.queue.short.proposalsToSubmit"} ({$authorSubmissionsCount[0]})</a> 
-					{else}
-						<span class="disabled">{translate key="common.queue.short.proposalsToSubmit"} (0)</span>
-					{/if}
-				</td>
-				<td align="left">{* EL on August 18, 2012 *}
-					{if $authorSubmissionsCount[1]}
-						<a href="{url journal=$journalPath page="author" path="proposalsInReview"}">{translate key="common.queue.short.proposalsInReview"} ({$authorSubmissionsCount[1]})</a> 
-					{else}
-						<span class="disabled">{translate key="common.queue.short.proposalsInReview"} (0)</span>
-					{/if}
-				</td>
-				<td align="right">[<a href="{url journal=$journalPath page="author" op="submit"}">{translate key="author.submit"}</a>]</td>
-			</tr>
-			<tr>
 				<td>&nbsp;</td>
-				<td></td>
-				<td align="left">
-					{if $authorSubmissionsCount[2]}
-						<a href="{url journal=$journalPath page="author" path="ongoingResearches"}">{translate key="common.queue.short.ongoingResearches"} ({$authorSubmissionsCount[2]})</a> {* EL on August 18, 2012 *}
-					{else}
-						<span class="disabled">{translate key="common.queue.short.ongoingResearches"} (0)</span>
-					{/if}
+				<td align="left" colspan="2">
+					<table width="100%">
+						<tr>
+							<td width="50%">
+								{if $authorSubmissionsCount[0]}
+									<a href="{url journal=$journalPath page="author" path="proposalsToSubmit"}">{translate key="common.queue.short.proposalsToSubmit"} ({$authorSubmissionsCount[0]})</a> 
+								{else}
+									<span class="disabled">{translate key="common.queue.short.proposalsToSubmit"} (0)</span>
+								{/if}
+							</td>
+							<td width="50%">
+								{if $authorSubmissionsCount[1]}
+									<a href="{url journal=$journalPath page="author" path="proposalsInReview"}">{translate key="common.queue.short.proposalsInReview"} ({$authorSubmissionsCount[1]})</a> 
+								{else}
+									<span class="disabled">{translate key="common.queue.short.proposalsInReview"} (0)</span>
+								{/if}							
+							</td>
+						</tr>
+						<tr>
+							<td width="50%">
+								{if $authorSubmissionsCount[2]}
+									<a href="{url journal=$journalPath page="author" path="ongoingResearches"}">{translate key="common.queue.short.ongoingResearches"} ({$authorSubmissionsCount[2]})</a> {* EL on August 18, 2012 *}
+								{else}
+									<span class="disabled">{translate key="common.queue.short.ongoingResearches"} (0)</span>
+								{/if}							
+							</td>
+							<td width="50%">
+								{if $authorSubmissionsCount[3]}
+									<a href="{url journal=$journalPath page="author" path="completedResearches"}">{translate key="common.queue.short.completedResearches"} ({$authorSubmissionsCount[3]})</a> 
+								{else}
+									<span class="disabled">{translate key="common.queue.short.completedResearches"} (0)</span>
+								{/if}							
+							</td>
+						</tr>
+					</table>
 				</td>
-				<td align="left">{* EL on August 18, 2012 *}
-					{if $authorSubmissionsCount[3]}
-						<a href="{url journal=$journalPath page="author" path="completedResearches"}">{translate key="common.queue.short.completedResearches"} ({$authorSubmissionsCount[3]})</a> 
-					{else}
-						<span class="disabled">{translate key="common.queue.short.completedResearches"} (0)</span>
-					{/if}
-				</td>
-				<td align="right">&nbsp;</td>
+				<td align="right" valign="middle" colspan="2"><h5><a href="{url journal=$journalPath page="author" op="submit"}">{translate key="author.submit"}!</a></h5></td>
 			</tr>
 		{/if}
 		{if $isValid.Reviewer.$journalId}
