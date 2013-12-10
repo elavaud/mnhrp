@@ -251,6 +251,7 @@
         <message key="author.submit.suppFile.funding">Funding</message>
         <message key="author.submit.suppFile.cv">CV of Principal Investigator</message>
         <message key="author.submit.suppFile.localEthicalApproval">Local Ethical Approval</message>
+        <message key="author.submit.suppFile.minutes">Minutes</message>
         <message key="author.submit.suppFile.questionnaire">Questionnaires</message>
         <!-- <message key="author.submit.suppFile.local">Local</message> removed SPF 9 Dec 2011-->
         <message key="author.submit.suppFile.ethicalClearance">Local Ethical Clearance</message>

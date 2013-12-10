@@ -1545,7 +1545,7 @@
         	<tr valign="top"><td colspan="2"><b>{translate key="proposal.potentialRisk"}</b></td></tr>
         	<tr valign="top"><td colapse="2">&nbsp;</td></tr>
         	<tr valign="top" id="riskLevelField">
-        		<td width="30%" class="label">{fieldLabel name="riskLevel" required="true" key="proposal.riskLevel"}</td>
+        		<td title="{translate key="proposal.riskLevelInstruct"}" width="30%" class="label">[?] {fieldLabel name="riskLevel" required="true" key="proposal.riskLevel"}</td>
         		<td width="70%" class="value">
             		<select name="riskLevel" class="selectMenu" id="riskLevel">
             			<option value=""></option>
