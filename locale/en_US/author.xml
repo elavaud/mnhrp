@@ -240,7 +240,7 @@
         <message key="author.submit.suppFile.summary">Summary</message>
         <message key="author.submit.suppFile.proposal">Proposal</message>
         <message key="author.submit.suppFile.informedConsent">Informed Consent</message>
-        <message key="author.submit.suppFile.funding">Funding</message>
+        <message key="author.submit.suppFile.funding">Detailed budget</message>
         <message key="author.submit.suppFile.cv">CV of Principal Investigator</message>
         <message key="author.submit.suppFile.localEthicalApproval">Local Ethical Approval</message>
         <message key="author.submit.suppFile.questionnaire">Questionnaires</message>
