@@ -665,9 +665,7 @@ class AboutHandler extends Handler {
 		$aboutFileManager = new AboutFileManager();
                 
                 $aboutFileManager->downloadFile($fileId);
-                
-		Request::redirect(null, 'about');
-	}
+      	}
 
 }
 
