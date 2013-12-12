@@ -139,6 +139,10 @@
 	<message key="common.false">False</message>
 	<message key="common.file">File</message>
     <message key="common.file.s">File(s)</message>
+	<message key="common.file.policy">Policy File(s)</message>
+	<message key="common.file.usermanuals">User Manual(s)</message>
+	<message key="common.file.templates">Template(s)</message>
+	<message key="common.file.miscellaneous">Miscellaneous File(s)</message>
 	<message key="common.fileName">File name</message>
 	<message key="common.fileSize">File size</message>
 	<message key="common.fileType">File type</message>

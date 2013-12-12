@@ -20,7 +20,7 @@
 		<li>&#187; <a href="{url op="announcements"}">{translate key="manager.announcements"}</a></li>
 	{/if}
 	<li>&#187; <a href="{url op="files"}">{translate key="manager.filesBrowser"}</a></li>
-	
+	<li>&#187; <a href="{url op="aboutFiles"}">{translate key="manager.aboutFiles"}</a></li>
     <li>&#187; <a href="{url op="sections"}">{translate key="section.sections"}</a></li>
     <!--<li>&#187; <a href="{url op="institutions"}">{translate key="insitution.institutions"}</a></li>-->
     <li>&#187; <a href="{url op="reviewForms"}">{translate key="manager.reviewForms"}</a></li>

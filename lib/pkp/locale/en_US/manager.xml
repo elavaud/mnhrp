@@ -13,6 +13,25 @@
   -->
 
 <locale name="en_US" full_name = "English">
+	<message key="manager.aboutFiles">About Files</message>
+	<message key="manager.aboutFiles.aboutFile">Upload / edit about file</message>
+	<message key="manager.aboutFiles.delete">Are you sure you want to delete this file?</message>
+	<message key="manager.aboutFiles.description">This section allows you to manage all the files publicly available in the "About" page.</message>
+	<message key="manager.aboutFiles.name">File name</message>
+	<message key="manager.aboutFiles.noFile">No File Uploaded</message>
+	<message key="manager.aboutFiles.type">File type</message>
+	<message key="manager.aboutFiles.miscellaneousFile">Miscellaneous File</message>
+	<message key="manager.aboutFiles.miscellaneousFiles">Miscellaneous File(s)</message>
+	<message key="manager.aboutFiles.nameRequired">Please enter the name of the file.</message>
+	<message key="manager.aboutFiles.policyFile">Policy File</message>
+	<message key="manager.aboutFiles.policyFiles">Policy File(s)</message>
+	<message key="manager.aboutFiles.replaceFile">Replace file</message>	
+	<message key="manager.aboutFiles.template">Template</message>
+	<message key="manager.aboutFiles.templates">Template(s)</message>
+	<message key="manager.aboutFiles.typeRequired">Please select the type of the file.</message>
+	<message key="manager.aboutFiles.uploadNewFile">Upload new file</message>	
+    <message key="manager.aboutFiles.userManual">User Manual</message>
+    <message key="manager.aboutFiles.userManuals">User Manual(s)</message>
 	<message key="manager.announcements">Announcements</message>
 	<message key="manager.announcements.confirmDelete">Are you sure you want to permanently delete this announcement?</message>
 	<message key="manager.announcements.create">Create New Announcement</message>

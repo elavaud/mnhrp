@@ -75,9 +75,9 @@
 	<!-- Navigation -->
 	<message key="navigation.journalHelp">Health Research Portal Help</message>
 
-	<message key="navigation.archives">Archives</message>
-	<message key="navigation.current">Current</message>
-	<message key="navigation.otherJournals">Other Sites</message>
+	<message key="navigation.archives">Архив</message>
+	<message key="navigation.current">Одоогиин баидал</message>
+	<message key="navigation.otherJournals">Бүсад вэб хүүдсүүд</message>
 	<message key="navigation.browseByIssue">By Issue</message>
 	<message key="navigation.browseByAuthor">By investigator</message>
 	<message key="navigation.infoForAuthors">For investigators</message>

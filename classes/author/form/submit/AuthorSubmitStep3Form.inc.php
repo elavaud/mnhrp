@@ -82,6 +82,7 @@ class AuthorSubmitStep3Form extends AuthorSubmitForm {
 		import('classes.file.ArticleFileManager');
 		$articleFileManager = new ArticleFileManager($this->articleId);
 		$articleDao =& DAORegistry::getDAO('ArticleDAO');
+                
 		if ($articleFileManager->uploadedFileExists($fileName)) {
 			if ($this->article->getSubmissionFileId()) {
 				$articleFileManager->deleteFile($this->article->getSubmissionFileId());

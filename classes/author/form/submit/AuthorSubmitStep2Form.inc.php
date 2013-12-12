@@ -61,20 +61,20 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
 		$this->addCheck(new FormValidator($this, 'supervisorEmail', 'required', 'author.submit.form.supervisorEmail'));
                 
                 // Source of Monetary and Material Support
-                $this->addCheck(new FormValidatorLocale($this, 'fundsRequired', 'required', 'author.submit.form.fundsRequiredRequired', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'selectedCurrency', 'required', 'author.submit.form.selectedCurrency', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'industryGrant', 'required', 'author.submit.form.industryGrant', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'nameOfIndustry', 'required', 'author.submit.form.nameOfIndustry', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'internationalGrant', 'required', 'author.submit.form.internationalGrant', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'internationalGrantName', 'required', 'author.submit.form.internationalGrantName', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'otherInternationalGrantName', 'required', 'author.submit.form.otherInternationalGrantName', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'mohGrant', 'required', 'author.submit.form.mohGrant', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'governmentGrant', 'required', 'author.submit.form.governmentGrant', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'governmentGrantName', 'required', 'author.submit.form.governmentGrantName', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'universityGrant', 'required', 'author.submit.form.universityGrant', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'selfFunding', 'required', 'author.submit.form.selfFunding', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'otherGrant', 'required', 'author.submit.form.otherGrant', $this->getRequiredLocale()));
-                $this->addCheck(new FormValidatorLocale($this, 'specifyOtherGrant', 'required', 'author.submit.form.specifyOtherGrantField', $this->getRequiredLocale()));
+                $this->addCheck(new FormValidatorLocale($this, 'fundsRequired', 'required', 'author.submit.form.fundsRequiredRequired', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'selectedCurrency', 'required', 'author.submit.form.selectedCurrency', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'industryGrant', 'required', 'author.submit.form.industryGrant', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'nameOfIndustry', 'required', 'author.submit.form.nameOfIndustry', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'internationalGrant', 'required', 'author.submit.form.internationalGrant', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'internationalGrantName', 'required', 'author.submit.form.internationalGrantName', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'otherInternationalGrantName', 'required', 'author.submit.form.otherInternationalGrantName', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'mohGrant', 'required', 'author.submit.form.mohGrant', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'governmentGrant', 'required', 'author.submit.form.governmentGrant', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'governmentGrantName', 'required', 'author.submit.form.governmentGrantName', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'universityGrant', 'required', 'author.submit.form.universityGrant', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'selfFunding', 'required', 'author.submit.form.selfFunding', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'otherGrant', 'required', 'author.submit.form.otherGrant', 'en_US'));
+                $this->addCheck(new FormValidatorLocale($this, 'specifyOtherGrant', 'required', 'author.submit.form.specifyOtherGrantField', 'en_US'));
  		
  		// Risk Assessment
                 $this->addCheck(new FormValidator($this, 'identityRevealed', 'required', 'author.submit.form.identityRevealedRequired'));
@@ -251,22 +251,22 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
 			
                         
                         
-                        $internationalGrantNameArray = $article->getInternationalGrantName(null);
+                        $internationalGrantNameArray = $article->getInternationalGrantName('en_US');
                         if (empty($internationalGrantNameArray)) {
                             $internationalGrantNameArray = array ('en_US' => (string) '');
                         }
-                        $internationalGrantName[Locale::getLocale()] = explode("+", $internationalGrantNameArray[Locale::getLocale()]);
+                        $internationalGrantName['en_US'] = explode("+", $internationalGrantNameArray['en_US']);
                         $g = 0;
-                        foreach ($internationalGrantName[Locale::getLocale()] as $grant){
+                        foreach ($internationalGrantName['en_US'] as $grant){
                             if (preg_match('#^Other\s\(.+\)$#', $grant)){
                                 $tempGrant = $grant;
                                 $grant = preg_replace('#^Other\s\(.+\)$#','OTHER', $grant);
                                 $tempGrant = preg_replace('#^Other\s\(#','', $tempGrant);
                                 $tempGrant = preg_replace('#\)$#','', $tempGrant);
-                                $article->setOtherInternationalGrantName($tempGrant, Locale::getLocale());
+                                $article->setOtherInternationalGrantName($tempGrant, 'en_US');
                             }
                             $test3 = array($g => $grant);
-                            $internationalGrantName[Locale::getLocale()] = array_replace ($internationalGrantName[Locale::getLocale()], $test3);
+                            $internationalGrantName['en_US'] = array_replace ($internationalGrantName['en_US'], $test3);
                             $g++;
                             unset ($grant);
                         }
@@ -683,16 +683,16 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 ///////////////////////////////////////////
                 $article->setInternationalGrant($this->getData('internationalGrant'), null); 
                 $internationalGrantNameArray = $this->getData('internationalGrantName');
-                foreach($internationalGrantNameArray[Locale::getLocale()] as $i => $grant) {
+                foreach($internationalGrantNameArray['en_US'] as $i => $grant) {
                         if($grant == "OTHER") {
                                 $otherGrant = $this->getData('otherInternationalGrantName');
                         if($otherGrant != "") {
-                                $internationalGrantNameArray[Locale::getLocale()][$i] = "Other (". $otherGrant[Locale::getLocale()] .")";
+                                $internationalGrantNameArray[Locale::getLocale()][$i] = "Other (". $otherGrant['en_US'] .")";
                         }
                         }
                 }
 
-                $internationalGrantName[Locale::getLocale()] = implode("+", $internationalGrantNameArray[Locale::getLocale()]);
+                $internationalGrantName['en_US'] = implode("+", $internationalGrantNameArray['en_US']);
                 $article->setInternationalGrantName($internationalGrantName, null); // Localized
 
                 $article->setFundsRequired($this->getData('fundsRequired'), null); // Localized

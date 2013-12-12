@@ -12,7 +12,6 @@
 
 <locale name="en_US" full_name = "English">
 	<message key="user.affiliation">Affiliation</message>
-    <message key="user.uhsStudent">UHS Student</message>
     <message key="user.studentId">Student ID</message>
     <message key="user.tel">Phone number</message>
 	<message key="user.affiliation.description">(Your institution, e.g. "Simon Fraser University")</message>

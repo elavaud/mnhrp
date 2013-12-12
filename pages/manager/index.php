@@ -134,6 +134,17 @@ switch ($op) {
 		import('pages.manager.FilesHandler');
 		break;
 	//
+	// About Files Manager
+	//
+	case 'aboutFiles':
+	case 'aboutFileEdit':
+        case 'updateAboutFile':
+	case 'aboutFileDelete':
+	case 'aboutFileDownload':
+        	define('HANDLER_CLASS', 'AboutFilesHandler');
+		import('pages.manager.AboutFilesHandler');
+		break;
+	//
 	// Subscription Policies 
 	//
 	case 'subscriptionPolicies':

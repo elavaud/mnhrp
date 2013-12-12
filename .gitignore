@@ -12,3 +12,4 @@ cache/t_config/*
 *.orig
 /cache
 /.classpath
+/public/about/*

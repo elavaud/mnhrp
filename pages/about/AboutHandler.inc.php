@@ -30,48 +30,25 @@ class AboutHandler extends Handler {
 	function index() {
 		$this->validate();
 		$this->setupTemplate();
+                
+                $aboutFileDao =& DAORegistry::getDAO('AboutFileDAO');
 
 		$templateMgr =& TemplateManager::getManager();
-		$journalDao =& DAORegistry::getDAO('JournalDAO');
-		$journalPath = Request::getRequestedJournalPath();
+                $policyFiles = $aboutFileDao->getAboutFilesByType(ABOUT_FILE_POLICY);
+                $userManuals = $aboutFileDao->getAboutFilesByType(ABOUT_FILE_USER_MANUAL);
+                $templates = $aboutFileDao->getAboutFilesByType(ABOUT_FILE_TEMPLATE);
+                $miscellaneousFiles = $aboutFileDao->getAboutFilesByType(ABOUT_FILE_MISCELLANEOUS);
+                
+		$templateMgr->assign_by_ref('policyFiles', $policyFiles);
+		$templateMgr->assign('countPolicyFiles', count($policyFiles));
+                $templateMgr->assign_by_ref('userManuals', $userManuals);
+		$templateMgr->assign('countUserManuals', count($userManuals));
+		$templateMgr->assign_by_ref('templates', $templates);
+		$templateMgr->assign('countTemplates', count($templates));
+		$templateMgr->assign_by_ref('miscellaneousFiles', $miscellaneousFiles);
+		$templateMgr->assign('countMiscellaneousFiles', count($miscellaneousFiles));
 
-		if ($journalPath != 'index' && $journalDao->journalExistsByPath($journalPath)) {
-			$journal =& Request::getJournal();
-
-			$journalSettingsDao =& DAORegistry::getDAO('JournalSettingsDAO');
-			$templateMgr->assign_by_ref('journalSettings', $journalSettingsDao->getJournalSettings($journal->getId()));
-
-			$customAboutItems =& $journalSettingsDao->getSetting($journal->getId(), 'customAboutItems');
-			if (isset($customAboutItems[Locale::getLocale()])) $templateMgr->assign('customAboutItems', $customAboutItems[Locale::getLocale()]);
-			elseif (isset($customAboutItems[Locale::getPrimaryLocale()])) $templateMgr->assign('customAboutItems', $customAboutItems[Locale::getPrimaryLocale()]);
-
-			foreach ($this->getPublicStatisticsNames() as $name) {
-				if ($journal->getSetting($name)) {
-					$templateMgr->assign('publicStatisticsEnabled', true);
-					break;
-				} 
-			}
-			
-			// Hide membership if the payment method is not configured
-			import('classes.payment.ojs.OJSPaymentManager');
-			$paymentManager =& OJSPaymentManager::getManager();
-			$templateMgr->assign('paymentConfigured', $paymentManager->isConfigured());
-
-			$groupDao =& DAORegistry::getDAO('GroupDAO');
-			$groups =& $groupDao->getGroups(ASSOC_TYPE_JOURNAL, $journal->getId(), GROUP_CONTEXT_PEOPLE);
-
-			$templateMgr->assign_by_ref('peopleGroups', $groups);
-			$templateMgr->assign('helpTopicId', 'user.about');
-			$templateMgr->display('about/index.tpl');
-		} else {
-			$site =& Request::getSite();
-			$about = $site->getLocalizedAbout();
-			$templateMgr->assign('about', $about);
-
-			$journals =& $journalDao->getEnabledJournals(); //Enabled Added
-			$templateMgr->assign_by_ref('journals', $journals);
-			$templateMgr->display('about/site.tpl');
-		}
+                $templateMgr->display('about/index.tpl');
 	}
 
 
@@ -676,6 +653,20 @@ class AboutHandler extends Handler {
 		import ('pages.manager.ManagerHandler');
 		import ('pages.manager.StatisticsHandler');
 		return StatisticsHandler::getPublicStatisticsNames();
+	}
+        
+        
+        function downloadAboutFile($args) {
+		$this->validate();
+            	$fileId = isset($args[0]) ? (int) $args[0] : 0;
+                
+                import('classes.file.AboutFileManager');
+                
+		$aboutFileManager = new AboutFileManager();
+                
+                $aboutFileManager->downloadFile($fileId);
+                
+		Request::redirect(null, 'about');
 	}
 
 }

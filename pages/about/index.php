@@ -27,12 +27,7 @@ switch($op) {
 	case 'subscriptions':
 	case 'memberships':
 	case 'submissions':
-	
-		/* Commented out by EL April 4 2012*/
-		//case 'journalSponsorship':
-		//case 'siteMap':
-		//case 'history':
-		//case 'aboutThisPublishingSystem':
+	case 'downloadAboutFile':
 	case 'statistics':
 		define('HANDLER_CLASS', 'AboutHandler');
 		import('pages.about.AboutHandler');

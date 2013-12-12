@@ -38,7 +38,7 @@ function checkSize(){
 {/if}
 
 <p>{translate key=$howToKeyName supportName=$journalSettings.supportName supportEmail=$journalSettings.supportEmail supportPhone=$journalSettings.supportPhone}</p>
-
+<!--
 {if $articleComments}
     <div class="separator"></div>
     <div id="articleComments">
@@ -50,7 +50,7 @@ function checkSize(){
         </li>
     </div>
 {/if}
-
+-->
 <div class="separator"></div>
 
 <div id="submissionFile">

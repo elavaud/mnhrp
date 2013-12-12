@@ -13,7 +13,6 @@
 <div class="separator"></div>
 
 <form name="submit" method="post" action="{url op="saveSubmit" path=$submitStep}">
-	{assign var="formLocale" value="en_US"}
     <input type="hidden" name="articleId" value="{$articleId|escape}" />
 {include file="common/formErrors.tpl"}
 
@@ -717,7 +716,7 @@
 {if $currentJournal->getSetting('requireAuthorCompetingInterests')}
             <tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="authors-$authorIndex-competingInterests" key="author.competingInterests" competingInterestGuidelinesUrl=$competingInterestGuidelinesUrl}</td>
-                <td width="80%" class="value"><textarea name="authors[{$authorIndex|escape}][competingInterests][{$formLocale|escape}]" class="textArea" id="authors-{$authorIndex|escape}-competingInterests" rows="5" cols="40">{$author.competingInterests[$formLocale]|escape}</textarea></td>
+                <td width="80%" class="value"><textarea name="authors[{$authorIndex|escape}][competingInterests][{$eng|escape}]" class="textArea" id="authors-{$authorIndex|escape}-competingInterests" rows="5" cols="40">{$author.competingInterests[$formLocale]|escape}</textarea></td>
             </tr>
 {/if}{* requireAuthorCompetingInterests *}
 
@@ -1236,11 +1235,11 @@
     <div id="sourcesOfGrant">
         <h3>{translate key="proposal.sourceOfMonetary"}</h3>
         <table width="100%" class="data">
-
+			{assign var="eng" value="en_US"}
             <tr><td><br/></td></tr>
             <tr valign="top" id="fundsRequiredField">
                 <td width="20%" class="label">{fieldLabel name="fundsRequired" required="true" key="proposal.fundsRequired"}</td>
-                <td width="80%" class="value"><input type="text" class="textField" name="fundsRequired[{$formLocale|escape}]" id="fundsRequired" value="{$fundsRequired[$formLocale]|escape}" size="20" maxlength="255" />&nbsp;US$</td>
+                <td width="80%" class="value"><input type="text" class="textField" name="fundsRequired[{$eng|escape}]" id="fundsRequired" value="{$fundsRequired[$eng]|escape}" size="20" maxlength="255" />&nbsp;US$</td>
             </tr>
             <tr valign="top" id="fundsRequiredInstructField">
                 <td width="20%" class="label">&nbsp;</td>
@@ -1249,9 +1248,9 @@
 			<tr valign="top" style="display: none;">
                 <td width="20%" class="label"></td>
                 <td width="80%" class="value">
-                	<input type="radio" name="selectedCurrency[{$formLocale|escape}]" value="USD"  checked="checked" />US Dollar(s)
+                	<input type="radio" name="selectedCurrency[{$eng|escape}]" value="USD"  checked="checked" />US Dollar(s)
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="selectedCurrency[{$formLocale|escape}]" value="MNT"/>Tugrik(s)
+                    <input type="radio" name="selectedCurrency[{$eng|escape}]" value="MNT"/>Tugrik(s)
                 </td>
             </tr>
             <tr><td><br/></td></tr>
@@ -1259,43 +1258,43 @@
         	<tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="industryGrant" required="true" key="proposal.industryGrant"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="industryGrant[{$formLocale|escape}]" id="industryGrant" value="Yes" {if  $industryGrant[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="industryGrant[{$eng|escape}]" id="industryGrant" value="Yes" {if  $industryGrant[$eng] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="industryGrant[{$formLocale|escape}]" id="industryGrant" value="No" {if  $industryGrant[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="industryGrant[{$eng|escape}]" id="industryGrant" value="No" {if  $industryGrant[$eng] == "No" } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
             <tr valign="top" id="nameOfIndustryField"  style="display: none;">
                 <td width="20%" class="label">&nbsp;</td>
                 <td width="80%" class="value">
                     <span style="font-style: italic;">{fieldLabel name="nameOfIndustry" required="true" key="proposal.nameOfIndustry"}</span>&nbsp;&nbsp;
-                    <input type="text" name="nameOfIndustry[{$formLocale|escape}]" id="nameOfIndustry" size="20" value="{$nameOfIndustry[$formLocale]|escape}" />
+                    <input type="text" name="nameOfIndustry[{$eng|escape}]" id="nameOfIndustry" size="20" value="{$nameOfIndustry[$eng]|escape}" />
                 </td>
             </tr>
         	<tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="internationalGrant" required="true" key="proposal.internationalGrant"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="internationalGrant[{$formLocale|escape}]" id="internationalGrant" value="Yes" {if  $internationalGrant[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="internationalGrant[{$eng|escape}]" id="internationalGrant" value="Yes" {if  $internationalGrant[$eng] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="internationalGrant[{$formLocale|escape}]" id="internationalGrant" value="No" {if  $internationalGrant[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="internationalGrant[{$eng|escape}]" id="internationalGrant" value="No" {if  $internationalGrant[$eng] == "No" } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
             
 {assign var="isOtherInternationalGrantNameSelected" value=false}
-{foreach from=$internationalGrantName[$formLocale] key=i item=type}
+{foreach from=$internationalGrantName[$eng] key=i item=type}
             <tr valign="top" {if $i == 0}id="firstInternationalGrantName" class="internationalGrantName"{else}id="internationalGrantNameField" class="internationalGrantNameSupp"{/if}>
                 <td width="20%" class="label">&nbsp;</td>
                 <td width="80%" class="value">
                 	<span  style="font-style: italic;">{fieldLabel name="internationalGrantName" required="true" key="proposal.internationalGrantName"}</span>&nbsp;&nbsp;
-                    <select name="internationalGrantName[{$formLocale|escape}][]" id="internationalGrantName" class="selectMenu" onchange="showOrHideOtherInternationalGrantName(this.value);">
+                    <select name="internationalGrantName[{$eng|escape}][]" id="internationalGrantName" class="selectMenu" onchange="showOrHideOtherInternationalGrantName(this.value);">
                         <option value=""></option>
                         {foreach from=$agencies key=id item=igName}
                             {if $igName.code != "NA"}
                                 {assign var="isSelected" value=false}
-                                {foreach from=$internationalGrantName[$formLocale] key=id item=selectedTypes}
-                                    {if $internationalGrantName[$formLocale][$i] == $igName.code}
+                                {foreach from=$internationalGrantName[$eng] key=id item=selectedTypes}
+                                    {if $internationalGrantName[$eng][$i] == $igName.code}
                                         {assign var="isSelected" value=true}
                                     {/if}
-                                    {if $internationalGrantName[$formLocale][$i] == "OTHER"}{assign var="isOtherInternationalGrantNameSelected" value=true}{/if}
+                                    {if $internationalGrantName[$eng][$i] == "OTHER"}{assign var="isOtherInternationalGrantNameSelected" value=true}{/if}
                                 {/foreach}
                                 <option value="{$igName.code}" {if $isSelected==true}selected="selected"{/if} >{$igName.name}</option>
                             {/if}
@@ -1314,55 +1313,55 @@
                 <td width="20%" class="label"></td>
                 <td width="80%" class="value">
                 <span style="font-style: italic;">{fieldLabel name="otherPrimarySponsor" required="true" key="proposal.otherInternationalGrantName"}</span>&nbsp;&nbsp;
-                <input type="text" class="textField" name="otherInternationalGrantName[{$formLocale|escape}]" id="otherInternationalGrantName" value="{if $isOtherInternationalGrantNameSelected == false}NA{else}{$otherInternationalGrantName[$formLocale]|escape}{/if}" size="20" maxlength="255" />
+                <input type="text" class="textField" name="otherInternationalGrantName[{$eng|escape}]" id="otherInternationalGrantName" value="{if $isOtherInternationalGrantNameSelected == false}NA{else}{$otherInternationalGrantName[$eng]|escape}{/if}" size="20" maxlength="255" />
                 </td>
             </tr>
             
         	<tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="mohGrant" required="true" key="proposal.mohGrant"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="mohGrant[{$formLocale|escape}]" id="mohGrant" value="Yes" {if  $mohGrant[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="mohGrant[{$eng|escape}]" id="mohGrant" value="Yes" {if  $mohGrant[$eng] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="mohGrant[{$formLocale|escape}]" id="mohGrant" value="No" {if  $mohGrant[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="mohGrant[{$eng|escape}]" id="mohGrant" value="No" {if  $mohGrant[$eng] == "No" } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
         	<tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="governmentGrant" required="true" key="proposal.governmentGrant"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="governmentGrant[{$formLocale|escape}]" id="governmentGrantY" value="Yes" {if  $governmentGrant[$formLocale] == "Yes"} checked="checked"{/if}  onclick="showOrHideGovernmentGrant('Yes')"/>{translate key="common.yes"}
+                    <input type="radio" name="governmentGrant[{$eng|escape}]" id="governmentGrantY" value="Yes" {if  $governmentGrant[$eng] == "Yes"} checked="checked"{/if}  onclick="showOrHideGovernmentGrant('Yes')"/>{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="governmentGrant[{$formLocale|escape}]" id="governmentGrant" value="No" {if  $governmentGrant[$formLocale] == "No" } checked="checked"{/if} onclick="showOrHideGovernmentGrant('No')"/>{translate key="common.no"}
+                    <input type="radio" name="governmentGrant[{$eng|escape}]" id="governmentGrant" value="No" {if  $governmentGrant[$eng] == "No" } checked="checked"{/if} onclick="showOrHideGovernmentGrant('No')"/>{translate key="common.no"}
                 </td>
             </tr>
             <tr valign="top" id="governmentGrantNameField" style="display: none;">
                 <td width="20%" class="label">&nbsp;</td>
                 <td width="80%" class="value">
                     <span style="font-style: italic;">{fieldLabel name="governmentGrantName" required="true" key="proposal.governmentGrantName"}</span>&nbsp;&nbsp;
-                    <input type="text" name="governmentGrantName[{$formLocale|escape}]" id="governmentGrantName" size="20" value="{$governmentGrantName[$formLocale]|escape}" />
+                    <input type="text" name="governmentGrantName[{$eng|escape}]" id="governmentGrantName" size="20" value="{$governmentGrantName[$eng]|escape}" />
                 </td>
             </tr>
         	<tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="universityGrant" required="true" key="proposal.universityGrant"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="universityGrant[{$formLocale|escape}]" id="universityGrant" value="Yes" {if  $universityGrant[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="universityGrant[{$eng|escape}]" id="universityGrant" value="Yes" {if  $universityGrant[$eng] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="universityGrant[{$formLocale|escape}]" id="universityGrant" value="No" {if  $universityGrant[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="universityGrant[{$eng|escape}]" id="universityGrant" value="No" {if  $universityGrant[$eng] == "No" } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
         	<tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="selfFunding" required="true" key="proposal.selfFunding"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="selfFunding[{$formLocale|escape}]" id="selfFunding" value="Yes" {if  $selfFunding[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="selfFunding[{$eng|escape}]" id="selfFunding" value="Yes" {if  $selfFunding[$eng] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="selfFunding[{$formLocale|escape}]" id="selfFunding" value="No" {if  $selfFunding[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="selfFunding[{$eng|escape}]" id="selfFunding" value="No" {if  $selfFunding[$eng] == "No" } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
         	<tr valign="top">
                 <td width="20%" class="label">{fieldLabel name="otherGrant" required="true" key="proposal.otherGrant"}</td>
                 <td width="80%" class="value">
-                    <input type="radio" name="otherGrant[{$formLocale|escape}]" id="otherGrant" value="Yes" {if  $otherGrant[$formLocale] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
+                    <input type="radio" name="otherGrant[{$eng|escape}]" id="otherGrant" value="Yes" {if  $otherGrant[$eng] == "Yes" } checked="checked"{/if}  />{translate key="common.yes"}
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="radio" name="otherGrant[{$formLocale|escape}]" id="otherGrant" value="No" {if  $otherGrant[$formLocale] == "No" } checked="checked"{/if} />{translate key="common.no"}
+                    <input type="radio" name="otherGrant[{$eng|escape}]" id="otherGrant" value="No" {if  $otherGrant[$eng] == "No" } checked="checked"{/if} />{translate key="common.no"}
                 </td>
             </tr>
 
@@ -1370,7 +1369,7 @@
             	<td width="20%" class="label">&nbsp;</td>
             	<td width="80%" class="value">
 					<span style="font-style: italic;">{fieldLabel name="specifyOtherGrant" required="true" key="proposal.specifyOtherGrantField"}</span>&nbsp;&nbsp;
-                    <input type="text" name="specifyOtherGrant[{$formLocale|escape}]" id="specifyOtherGrant" size="20" value="{$specifyOtherGrant[$formLocale]|escape}" />
+                    <input type="text" name="specifyOtherGrant[{$eng|escape}]" id="specifyOtherGrant" size="20" value="{$specifyOtherGrant[$eng]|escape}" />
             	</td>
             </tr>
             
