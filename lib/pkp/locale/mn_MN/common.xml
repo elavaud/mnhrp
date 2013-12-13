@@ -279,7 +279,7 @@
 	<message key="icon.view.alt">Харагдац</message>
 	<message key="locale.primary">Анхны байрлал</message>
 	<message key="locale.supported">Дэмжигдсэн байрлал</message>
-	<message key="navigation.about">Тухай</message>
+	<message key="navigation.about">Бидний тухай</message>
 	<message key="navigation.browse">Хайх</message>
 	<message key="navigation.browseByTitle">Гарчгаар</message>
 	<message key="navigation.dashboard">Хянах самбар</message>
