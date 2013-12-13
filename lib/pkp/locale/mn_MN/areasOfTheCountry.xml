@@ -9,35 +9,35 @@
 -->
 
 <countries>
-    <country code="ARR" name="Arkhangai"/>
-    <country code="BGD" name="Baganuur district (UB City)"/>
-    <country code="BGK" name="Bagakhangai district (UB City)"/>
-    <country code="BAO" name="Bayan-Ölgii"/>
-    <country code="BAK" name="Bayankhongor"/>
-    <country code="BAG" name="Bayangol district (UB City)"/>
-    <country code="BAZ" name="Bayanzurkh district (UB City)"/>
-    <country code="BUL" name="Bulgan"/>
-    <country code="CGD" name="Chingeltei district (UB City)"/>
-    <country code="DAU" name="Darkhan-Uul"/>
-    <country code="DOD" name="Dornod"/>
-    <country code="DOG" name="Dornogovi"/>
-    <country code="DUG" name="Dundgovi"/>
-    <country code="GOA" name="Govi-Altai"/>
-    <country code="GOS" name="Govisümber"/>
-    <country code="KHU" name="Khan-Uul district (UB City)"/>
-    <country code="KHE" name="Khentii"/>
-    <country code="KHD" name="Khovd"/>
-    <country code="KHS" name="Khövsgöl"/>
-    <country code="NLD" name="Nalaikh district (UB City)"/>
-    <country code="OMN" name="Ömnögovi"/>
-    <country code="ORK" name="Orkhon"/>
-    <country code="OVO" name="Övörkhangai"/>
-    <country code="SEL" name="Selenge"/>
-    <country code="SUK" name="Sükhbaatar"/>
-    <country code="SKD" name="Shükhbaatar district (UB City)"/>
-    <country code="SGD" name="Songinokhairkhan district (UB City)"/>
-    <country code="TOV" name="Töv"/>
-    <country code="UBC" name="Ulaanbaatar City"/>
-    <country code="UVS" name="Uvs"/>
-    <country code="ZAV" name="Zavkhan"/>
+    <country code="ARR" name="Архангай"/>
+    <country code="BGD" name="Багануур дүүрэг (Улаанбаатар хот)"/>
+    <country code="BGK" name="Багахангай дүүрэг (Улаанбаатар хот)"/>
+    <country code="BAO" name="Баян-Өлгий"/>
+    <country code="BAK" name="Баянхонгор"/>
+    <country code="BAG" name="Баянгол дүүрэг (Улаанбаатар хот)"/>
+    <country code="BAZ" name="Баянзүрх дүүрэг (Улаанбаатар хот)"/>
+    <country code="BUL" name="Булган"/>
+    <country code="CGD" name="Чингэлтэй дүүрэг (Улаанбаатар хот)"/>
+    <country code="DAU" name="Дархан-Уул"/>
+    <country code="DOD" name="Дорнод"/>
+    <country code="DOG" name="Дорноговь"/>
+    <country code="DUG" name="Дундговь"/>
+    <country code="GOA" name="Говь-Алтай"/>
+    <country code="GOS" name="Говьсүмбэр"/>
+    <country code="KHU" name="Хан-Уул дүүрэг (Улаанбаатар хот)"/>
+    <country code="KHE" name="Хэнтий"/>
+    <country code="KHD" name="Ховд"/>
+    <country code="KHS" name="Хөвсгөл"/>
+    <country code="NLD" name="Налайх дүүрэг (Улаанбаатар хот)"/>
+    <country code="OMN" name="Өмнөговь"/>
+    <country code="ORK" name="Орхон"/>
+    <country code="OVO" name="Өвөрхангай"/>
+    <country code="SEL" name="Сэлэнгэ"/>
+    <country code="SUK" name="Сүхбаатар"/>
+    <country code="SKD" name="Сүхбаатар дүүрэг (Улаанбаатар хот)"/>
+    <country code="SGD" name="Сонгинохайрхан дүүрэг (Улаанбаатар хот)"/>
+    <country code="TOV" name="Төв"/>
+    <country code="UBC" name="Улаанбаатар хот"/>
+    <country code="UVS" name="Увс"/>
+    <country code="ZAV" name="Завхан"/>
 </countries>

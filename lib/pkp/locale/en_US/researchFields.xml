@@ -11,8 +11,6 @@
     <researchField name="Biomedicine: Bacteriology" code="BIBA" />
     <researchField name="Biomedicine: Biochemistry" code="BIBC" />
     <researchField name="Biomedicine: Biology" code="BIBL" />
-    <researchField name="Biomedicine: Health Management" code="BIHM" />
-    <researchField name="Biomedicine: History" code="BIHI" />
     <researchField name="Biomedicine: Molecular biology" code="BIMB" />
     <researchField name="Biomedicine: Virology" code="BIVI" />
     
@@ -23,7 +21,9 @@
     <researchField name="Public Health: Non-communicable Disease" code="PUNC" />
     <researchField name="Public Health: Nutrition" code="PUNU" />
     <researchField name="Public Health: Tobacco" code="PUTO" />
-    
+    <researchField name="Public Health: History" code="PUHI" />
+    <researchField name="Public Health: Health Management" code="PUHM" />
+
     <researchField name="Clinical Medicine: Clinical Research" code="CMCR" />
     <researchField name="Clinical Medicine: Randomized Control Trial" code="CMRC" />
     

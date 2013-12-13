@@ -8,6 +8,9 @@
 <agencies>
     <agency name="Asian Development Bank" code="ADB" />
     <agency name="Australian Agency for International Development (AUSAID)" code="AUSAID" />
+    <agency name="World Vision" code="WV" />
+    <agency name="Korean International Cooperation Agency" code="KOICA" />
+    <agency name="Japan International Cooperation Agency" code="JICA" />
     <agency name="Ministry of Health" code="MoH" />
     <agency name="Institut de Recherche pour le Développement" code="IRD" />
     <agency name="Institut Pasteur" code="IP" />
