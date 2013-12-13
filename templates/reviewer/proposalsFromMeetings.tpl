@@ -40,7 +40,7 @@
 	{assign var="dateTo" value="--"}
 {/if}
 
-<form method="post" name="submit" action="{url op='proposalsOfMeetings'}">
+<form method="post" name="submit" action="{url op='proposalsFromMeetings'}">
 	<input type="hidden" name="sort" value="id"/>
 	<input type="hidden" name="sortDirection" value="ASC"/>
 	<select name="searchField" size="1" class="selectMenu">
