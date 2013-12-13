@@ -19,8 +19,8 @@
 {/strip}
 
 <ul class="menu">
-	<li{if ($pageToDisplay == "submissionSummary")} class="current"{/if}><a href="{url op="submission" path=$submission->getId()|to_array:"submissionSummary"}">{translate key="reviewer.article.submissionSummary"}</a></li>
-	<li{if ($pageToDisplay == "submissionReview")} class="current"{/if}><a href="{url op="submission" path=$submission->getId()|to_array:"submissionReview"}">{translate key="reviewer.article.submissionReview"}</a></li>
+	<li{if ($pageToDisplay == "submissionSummary")} class="current"{/if}><a href="{url op="submission" path=$submission->getReviewId()|to_array:"submissionSummary"}">{translate key="reviewer.article.submissionSummary"}</a></li>
+	<li{if ($pageToDisplay == "submissionReview")} class="current"{/if}><a href="{url op="submission" path=$submission->getReviewId()|to_array:"submissionReview"}">{translate key="reviewer.article.submissionReview"}</a></li>
 </ul>
 
 

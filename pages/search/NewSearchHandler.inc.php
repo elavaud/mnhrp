@@ -167,7 +167,7 @@ class NewSearchHandler extends Handler {
 			$investigatorEmail = true;
 		}
 		
-		if (Request::getUserVar('title')) {
+		if (Request::getUserVar('scientificTitle')) {
 			$columns = $columns + array('title' => Locale::translate('article.scientificTitle'));
 		}
 		
@@ -239,15 +239,16 @@ class NewSearchHandler extends Handler {
 		
 		$fp = fopen('php://output', 'wt');
 		String::fputcsv($fp, array_values($columns));
-		
-		$articleDao =& DAORegistry::getDAO('ArticleDAO');
+
+                $articleDao =& DAORegistry::getDAO('ArticleDAO');
 		
 		$results = $articleDao->searchCustomizedProposalsPublic($query, $region, $statusFilter, $fromDate, $toDate, $investigatorName, $investigatorAffiliation, $investigatorEmail, $researchField, $proposalType, $duration, $area, $dataCollection, $status, $studentResearch, $primarySponsor, $fundsRequired, $dateSubmitted);
 		
-		
 		foreach ($results as $result) {
 			$abstract = $result->getLocalizedAbstract();
-			foreach ($columns as $index => $junk) {
+			$proposalDetails = $result->getProposalDetails();
+			$studentInfo = $proposalDetails->getStudentResearchInfo();
+                        foreach ($columns as $index => $junk) {
 				if ($index == 'investigator') {
 					$columns[$index] = $result->getPrimaryAuthor();
 				} elseif ($index == 'investigator_affiliation') {
@@ -257,26 +258,26 @@ class NewSearchHandler extends Handler {
 				} elseif ($index == 'title') {
 					$columns[$index] = $abstract->getScientificTitle();
 				} elseif ($index == 'research_field') {
-					$columns[$index] = $result->getLocalizedResearchFieldText();
+					$columns[$index] = $proposalDetails->getLocalizedResearchFieldText();
 				} elseif ($index == 'proposal_type') {
-					$columns[$index] = $result->getLocalizedProposalTypeText();
+					$columns[$index] = $proposalDetails->getLocalizedProposalTypeText();
 				} elseif ($index == "duration") {
-					$columns[$index] = date("d M Y", strtotime($result->getLocalizedStartDate()))." to ".date("d M Y", strtotime($result->getLocalizedEndDate()));
+					$columns[$index] = $proposalDetails->getStartDate()." to ".$proposalDetails->getEndDate();
 				} elseif ($index == 'area') {
-					if ($result->getLocalizedMultiCountryResearch() == "Yes") $columns[$index] = "Multi-country Research";
-					elseif ($result->getLocalizedNationwide() != "No") $columns[$index] = "Nationwide Research";
-					else  $columns[$index] = $result->getLocalizedProposalCountryText();
+					if ($proposalDetails->getMultiCountryResearch() == PROPOSAL_DETAIL_YES) $columns[$index] = "Multi-country Research";
+					elseif ($proposalDetails->getNationwide() == PROPOSAL_DETAIL_YES) $columns[$index] = "Nationwide Research";
+					else  $columns[$index] = $proposalDetails->getLocalizedGeoAreasText();
 				} elseif ($index == 'data_collection') {
-					$columns[$index] = $result->getLocalizedDataCollection();
+					$columns[$index] = Locale::translate($proposalDetails->getDataCollectionKey());
 				} elseif ($index == 'status') {
 					if ($result->getStatus() == '11') $columns[$index] = 'Complete';
 					else $columns[$index] = 'Ongoing';
 				} elseif ($index == 'student_institution') {
-					if ($result->getLocalizedStudentInstitution() != "NA") $columns[$index] = $result->getLocalizedStudentInstitution(); else $columns[$index] = "Non Student Research";
+					if ($proposalDetails->getStudentResearch() == PROPOSAL_DETAIL_YES) $columns[$index] = $studentInfo->getStudentInstitution(); else $columns[$index] = "Non Student Research";
 				} elseif ($index == 'academic_degree') {
-					if ($result->getLocalizedAcademicDegree() != "NA") $columns[$index] = $result->getLocalizedAcademicDegree();else $columns[$index] = "Non Student Research";
+					if ($proposalDetails->getStudentResearch() == PROPOSAL_DETAIL_YES) $columns[$index] = Locale::translate($studentInfo->getDegreeKey());else $columns[$index] = "Non Student Research";
 				} elseif ($index == 'primary_sponsor') {
-					$columns[$index] = $result->getLocalizedPrimarySponsor();
+					$columns[$index] = $proposalDetails->getPrimarySponsor();
 				} elseif ($index == 'date_submitted') {
 					$columns[$index] = $result->getDateSubmitted();
 				} 

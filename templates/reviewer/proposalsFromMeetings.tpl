@@ -23,9 +23,9 @@
 	<li class="current"><a href="{url op="meetings}">{translate key="reviewer.meetings"}</a></li>
 </ul>
 <ul class="menu">
-	<li><a href="{url op="meetings"}">{translate key="common.queue.short.meetingList"}</a></li>
+	<li><a href="{url op="meetings"}">{translate key="common.queue.long.meetingList"}</a></li>
 	{if $isReviewer}
-		<li class="current"><a href="{url op="proposalsFromMeetings"}">{translate key="common.queue.short.meetingProposals"}</a></li>
+		<li class="current"><a href="{url op="proposalsFromMeetings"}">{translate key="common.queue.long.meetingProposals"}</a></li>
 	{/if}
 </ul>
 

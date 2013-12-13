@@ -10,11 +10,14 @@
 	{assign var="pageCrumbTitle" value="article.submission"}
 	{include file="common/header.tpl"}
 {/strip}
-
 <ul class="menu">
-	<li><a href="{url op="meetings"}">{translate key="common.queue.short.meetingList"}</a></li>
+	<li><a href="{url journal=$journalPath page="reviewer" path="active"}">{translate key="common.queue.short.reviewAssignments"}</a></li>
+	<li class="current"><a href="{url op="meetings}">{translate key="reviewer.meetings"}</a></li>
+</ul>
+<ul class="menu">
+	<li><a href="{url op="meetings"}">{translate key="common.queue.long.meetingList"}</a></li>
 	{if $isReviewer}
-		<li><a href="{url op="proposalsFromMeetings"}">{translate key="common.queue.short.meetingProposals"}</a></li>
+		<li class="current"><a href="{url op="proposalsFromMeetings"}">{translate key="common.queue.long.meetingProposals"}</a></li>
 	{/if}
 </ul>
 
@@ -261,7 +264,7 @@
 	<table class="listing" width="100%">
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.fundsRequired"}</td>
-        	<td class="value">{$submission->getFundsRequired('en_US')()} {$submission->getSelectedCurrency('en_US')}</td>
+        	<td class="value">{$submission->getFundsRequired('en_US')} {$submission->getSelectedCurrency('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.industryGrant"}</td>
