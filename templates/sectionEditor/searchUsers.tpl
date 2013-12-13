@@ -38,7 +38,6 @@
 				<option value="NA"></option>
 				<option value="Chair">{$ercAbbrev} Chair</option>
 				<option value="Vice-Chair">{$ercAbbrev} Vice-Chair</option>
-				<option value="Secretary">{$ercAbbrev} Secretary</option>
 				<option value="Member">{$ercAbbrev} Member</option>	
 			</select>
 		</td>
