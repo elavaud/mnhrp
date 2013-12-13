@@ -18,7 +18,10 @@
 {if !$dateTo}
 	{assign var="dateTo" value="--"}
 {/if}
-
+<ul class="menu">
+	<li><a href="{url journal=$journalPath page="reviewer" path="active"}">{translate key="common.queue.short.reviewAssignments"}</a></li>
+	<li class="current"><a href="{url op="meetings}">{translate key="reviewer.meetings"}</a></li>
+</ul>
 <ul class="menu">
 	<li><a href="{url op="meetings"}">{translate key="common.queue.short.meetingList"}</a></li>
 	{if $isReviewer}

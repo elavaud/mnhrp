@@ -23,10 +23,15 @@
 {/if}
 
 <ul class="menu">
+	<li class="current"><a href="{url path="active"}">{translate key="common.queue.short.reviewAssignments"}</a></li>
+	<li><a href="{url journal=$journalPath page="reviewer" op="meetings}">{translate key="reviewer.meetings"}</a></li>
+</ul>
+
+<ul class="menu">
 	<li{if ($pageToDisplay == "active")} class="current"{/if}><a href="{url path="active"}">{translate key="common.queue.short.active"}</a></li>
 	<li{if ($pageToDisplay == "completed")} class="current"{/if}><a href="{url path="completed"}">{translate key="common.queue.short.completed"}</a></li>
 </ul>
-<p style="text-align:right"><a href="{url journal=$journalPath page="reviewer" op="meetings}" class="action">{translate key="reviewer.meetings"}</a></p>
+
 <br />
 
 {include file="reviewer/$pageToDisplay.tpl"}
