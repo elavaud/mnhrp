@@ -7,36 +7,24 @@
   * Copyright (c) 2000-2011 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
-  * Localization strings for the en_US (English) locale.
+  * Localization strings for the mn_MN (Mongolian) locale.
   -->
 
-<locale name="en_US" full_name = "English">
-	<!-- Author Submission -->
-
-	<!-- FIXME: end -->
-
-	
+<locale name="mn_MN" full_name = "Mongolian">
 	<message key="submission.abstractViews">Abstract Views</message>
 	<message key="submission.accepted">Accepted</message>
 	<message key="submission.acknowledge">Acknowledge</message>
 	<message key="submission.addSuppFile">Add a Supplementary File</message>
     <message key="submission.agencies">Agencies</message>
 	<message key="submission.ask">Ask</message>
-	<message key="submission.backToSubmissionEditing">Back to Submission Editing</message>
-	<message key="submission.changeComments">Change to</message>
-	<message key="submission.citations">References</message>
-	
 	<message key="submission.comments.addComment">Add Comment</message>
 	<message key="submission.comments.comments">Comments</message>
 	<message key="submission.comments.confirmDelete">Are you sure you would like to delete this comment?</message>
-	<message key="submission.comments.corrections">Corrections</message>
 	<message key="submission.comments.editComment">Edit Comment</message>
 	<message key="submission.comments.importPeerReviews">Import Peer Reviews</message>
-	<message key="submission.comments.importPeerReviews.reviewerLetter">Reviewer {$reviewerLetter}:</message>
 	<message key="submission.comments.noComments">No Comments</message>
 	<message key="submission.comments.noReviews">No Reviews</message>
 	<message key="submission.comments.review">Review</message>
-	<message key="submission.comments.sendDecisionToReviewers">Send Reviewers editorial decision</message>
 	<message key="submission.comments.subject">Subject</message>
 	<message key="submission.complete">Complete</message>
 	<message key="submission.continuingReview">Continuing Review</message>
@@ -73,7 +61,6 @@
 	<message key="submission.event.reviewer.reviewResubmitted">Review resubmitted</message>
 	<message key="submission.event.reviewer.reviewRevision">Reviewer revisions file updated</message>
 	<message key="submission.files">Files</message>
-	<message key="submission.galley">Galley</message>
 	<message key="submission.history.clearLog">Clear Log</message>
 	<message key="submission.history">History</message>
 	<message key="submission.history.noLogEntries">No log entries.</message>
@@ -88,13 +75,13 @@
 	<message key="submission.lastModified">Last modified</message>
 	<message key="submission.metadata">Submission Metadata</message>
 	<message key="submission.noReviewAssignments">No Review Assignments</message>
+    <message key="submission.originalFile">Main proposal file</message>
     <message key="submission.originalFileInstruct">Main file of the research proposal. Please click on its title (blue link) for downloading it.</message>
 	<message key="submission.page.editing">{$id} Editing</message>
 	<message key="submission.page.history">{$id} History</message>
 	<message key="submission.page.review">{$id} Review</message>
     <message key="submission.page.proposalFromMeeting">{$id} Information</message>
 	<message key="submission.page.summary">{$id} Summary</message>
-	<message key="submission.page.citations">{$id} Citations</message>
 	<message key="submission.peerReview">Peer&amp;nbsp;Review</message>
     <message key="submission.previousProposalFile">Previous proposal file(s)</message>
     <message key="submission.previousProposalFileInstruct">In case of a re-submission, here are the main proposal files previously submitted. Plese click on their title to download them.</message>
@@ -136,10 +123,6 @@
 	<message key="submissions.noSubmissions">No Submissions</message>
     <message key="submissions.proposal.s">Proposal(s)</message>
 	<message key="submissions.queuedEditing">In Editing</message>
-	<message key="submissions.queued">Queued</message>
-	<message key="submissions.queuedUnassigned">Awaiting assignment</message>
-
-	<message key="submissions.ruling">Ruling</message>
 	<message key="submissions.submit">Date of submission</message>
 	<message key="submissions.submitted">Submitted</message>
 	<message key="submission.start">Start</message>
@@ -150,21 +133,14 @@
     <message key="submission.submitterInstruct">The user who submitted the proposal through this health research portal. It could not be the same person as the investigator of the research.</message>
 	<message key="submission.summary">Summary</message>
 	<message key="submission.supplementaryFiles">Supplementary Files</message>
-
-        <message key="submission.progressReports">Interim Progress Reports</message>
-        <message key="submission.completionReports">Completion Reports</message>
-        <message key="submission.extensionRequest">Request For Extension</message>
-        <message key="submission.withdrawReports">Reason for Withdrawal</message>
-        <message key="submission.withdrawLack">Lack of Funding</message>
-        <message key="submission.withdrawAdverse">Adverse Event</message>
-
-        <!-- Added by: EL, April 18, 2012 -->
-        <message key="submission.rawDataFile">Raw Data File</message>
-        <message key="submission.otherSuppResearchOutput">Other Supplementary Research Output</message>
-
-	<message key="submission.supportingAgencies">Supporting Agencies</message>
-	<message key="submission.currentAgencies">Current Agencies</message>
-	<message key="submission.indexingInformation">Indexing Information</message>
+    <message key="submission.progressReports">Interim Progress Reports</message>
+    <message key="submission.completionReports">Completion Reports</message>
+    <message key="submission.extensionRequest">Request For Extension</message>
+    <message key="submission.withdrawReports">Reason for Withdrawal</message>
+    <message key="submission.withdrawLack">Lack of Funding</message>
+    <message key="submission.withdrawAdverse">Adverse Event</message>
+    <message key="submission.rawDataFile">Raw Data File</message>
+    <message key="submission.otherSuppResearchOutput">Other Supplementary Research Output</message>
 	<message key="submission.titleAndAbstract">Titles and abstract</message>
 	<message key="submission.underway">Underway</message>
 	<message key="submission.uploadFileTo">Upload file to</message>
@@ -173,7 +149,6 @@
 	<message key="submission.uploadSuccessful">Your file has been uploaded.</message>
 	<message key="submission.uploadSuccessfulContinue">Your file has been uploaded.  Press continue to edit the file's metadata.</message>
 	<message key="submission.loadMessage">Please wait while your file is uploaded to the server.</message>
-	<message key="submission.artworkFileDetails">Artwork File Details</message>
 	<message key="submission.fileDetails">File Details</message>
 	<message key="submission.nameRequired">A name is required for this item.</message>
 	<message key="submission.date.mmdd">MM-DD</message>

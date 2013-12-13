@@ -18,7 +18,7 @@
 	</tr>
         <tr>
 		<td title="{translate key="common.idInstruct"}" width="20%" class="label">[?] {translate key="common.proposalId"}</td>
-		<td width="80%" colspan="2" class="data">{$submission->getLocalizedProposalId()|escape}</td>
+		<td width="80%" colspan="2" class="data">{$submission->getProposalId('en_US')|escape}</td>
 	</tr>
 	<tr>
 		<td title="{translate key="proposal.scientificTitleInstruct"}" width="20%" class="label">[?] {translate key="article.title"}</td>
@@ -84,6 +84,7 @@
 		<td>{$publishedArticle->getViews()}</td>
 	</tr>
 	{/if}
+	<!--
 	{assign var="proposalStatus" value=$submission->getSubmissionStatus()}
 	{assign var="proposalStatusKey" value=$submission->getProposalStatusKey($proposalStatus)}
 	<tr valign="top" id="proposalStatus">
@@ -95,6 +96,7 @@
 			{/if}
 		</td>
 	</tr>
+	-->
 	{if $proposalStatus == PROPOSAL_STATUS_WITHDRAWN}
 		<tr id="withdrawnReasons">
 			<td class="label">&nbsp;</td>

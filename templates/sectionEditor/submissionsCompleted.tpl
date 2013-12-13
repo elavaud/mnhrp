@@ -25,7 +25,7 @@
     {assign var="lastDecision" value=$submission->getLastSectionDecision()}
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
 	{assign var="articleId" value=$submission->getArticleId()}
-    {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+    {assign var="proposalId" value=$submission->getProposalId('en_US')}
 	<tr valign="top">
 		<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
    		<td>{$submission->getFirstAuthor()|truncate:20:"..."|escape}</td> <!-- Get first author. Added by MSB, Sept 25, 2011 -->

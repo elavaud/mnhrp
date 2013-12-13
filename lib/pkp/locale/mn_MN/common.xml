@@ -15,8 +15,7 @@
 <locale name="en_US" full_name = "English">
 	<message key="about.aboutSite">About the Site</message>
     
-        <!-- Changed "Contact" by "Secretariat". EL April 3 2012-->
-        <message key="about.contact">The National Ethics Committee for Health Research</message>
+    <message key="about.contact">The National Ethics Committee for Health Research</message>
         
 	<message key="about.contact.email">Email</message>
 	<message key="about.contact.fax">Fax</message>
@@ -37,11 +36,9 @@
 	<message key="announcement.posted">Posted</message>
 	<message key="announcement.viewLink">More...</message>
 	<message key="announcement.view">View Announcement</message>
-	<message key="common.actingAsUserGroup.userIsNotInTargetUserGroup">You are not in this user group.</message>
 	<message key="common.action">Action</message>
     
-        <!-- Added by EL on April 26, 2012 -->
-        <message key="common.disableEnable">Disable/Enable</message>
+    <message key="common.disableEnable">Disable/Enable</message>
         
 	<message key="common.activate">Activate</message>
 	<message key="common.active">Active</message>
@@ -70,22 +67,6 @@
 	<message key="common.captchaField.badCaptcha">The characters you entered did not match the characters in the image. Please check the characters and try again.</message>
 	<message key="common.captchaField.description">Please enter the letters as they appear in the image above.</message>
 	<message key="common.captchaField">Validation</message>
-	<message key="common.ccLicense"><![CDATA[
-		<br /><br />
-		<a target="_new" rel="license" href="http://creativecommons.org/licenses/by/3.0/">
-			<img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png"/>
-		</a>
-		<br/>
-		This work is licensed under a <a rel="license" target="_new" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0  License</a>.
-	]]></message>
-	<message key="common.ccLicense.rt"><![CDATA[
-	<div class="rtBlock">
-		<br />
-		<a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_new"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by/3.0/80x15.png" /></a>
-		<br />
-		This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_new">Creative Commons Attribution 3.0 License</a>.
-	</div>
-	]]></message>
 	<message key="common.changesSaved">Your changes have been saved.</message>
 	<message key="common.chatRoom">Chat Room</message>
 	<message key="common.chooseOne">Choose One</message>
@@ -242,12 +223,6 @@
 	<message key="common.yes">Yes</message>
 	<message key="common.loading">Loading ...</message>
 	<message key="debug.databaseQueries">Number of database queries</message>
-	<message key="debug.executionTime">Page generated in</message>
-	<message key="debug.memoryUsage">Memory Usage</message>
-	<message key="debug.notes.localeListLoad">Loaded locale list "{$localeList}" from XML</message>
-	<message key="debug.notes.localeLoad">Loaded locale file "{$localeFile}" from XML</message>
-	<message key="debug.notes.missingLocaleKey">Missing locale key "{$key}".</message>
-	<message key="debug.notes">Notes:</message>
 	<message key="email.addAttachment">Add Attachment</message>
 	<message key="email.addBccRecipient">Add BCC</message>
 	<message key="email.addCcRecipient">Add CC</message>
@@ -263,7 +238,6 @@
 	<message key="email.email">Email</message>
 	<message key="email.from">From</message>
 	<message key="email.invalid">The email address {$email} is invalid.</message>
-	<message key="email.multipart">This is a multi-part message in MIME format.</message>
 	<message key="email.recipient">Recipient</message>
 	<message key="email.recipients">Recipients</message>
 	<message key="email.sender">Sender</message>
@@ -287,9 +261,6 @@
 	<message key="help.help">Help</message>
 	<message key="help.helpIndex">Help Index</message>
 	<message key="help.matchesFound">{$matches} matches found</message>
-	<message key="help.noMatchingTopics">No matching help topics were found.</message>
-	<message key="help.relatedTopics">Related Topics</message>
-	<message key="help.searchFor">Search help topics for</message>
 	<message key="help.searchResultsFor">Results for</message>
 	<message key="help.searchResults">Search Results</message>
 	<message key="help.search">Search Help</message>
@@ -315,9 +286,6 @@
 	<message key="navigation.browseByTitle">By Title</message>
 	<message key="navigation.dashboard">Dashboard</message>
 	<message key="navigation.home">Home</message>
-	<message key="navigation.infoForReaders">For Readers</message>
-	<message key="navigation.infoForReaders.long">Information For Readers</message>
-	<message key="navigation.items">{$from} - {$to} of {$total} Items</message>
 	<message key="navigation.login">Log In</message>
 	<message key="navigation.nextPage"><![CDATA[&gt;&gt;]]></message>
 	<message key="navigation.nextStep">Next Step</message>
@@ -329,17 +297,12 @@
 	<message key="navigation.userHome">User Home</message>
 	<message key="navigation.user">User</message>
 	<message key="notification.allow">Allow these types of notifications to appear in my notification feed.</message>
-	<message key="notification.confirmError">There was an error confirming your subscription.</message>
-	<message key="notification.confirmSuccess">You have been successfully subscribed.</message>
 	<message key="notification.email">Send me an email for these types of notifications.</message>
 	<message key="notification.location">View</message>
 	<message key="notification.mailList">Notification mailing list</message>
 	<message key="notification.mailList.emailInvalid">Please enter a valid email address.</message>
 	<message key="notification.mailList.privacyProtection">Privacy protection policy</message>
-	<message key="notification.mailList.protectedContent"><![CDATA[<a href="{$subscribeUrl}">Subscribe</a> to protected content.]]></message>
-	<message key="notification.mailList.submit"><![CDATA[<a href="{$submitUrl}">Submit</a> an article]]></message>
 	<message key="notification.mailList.register">You can register with this site to...</message>
-	<message key="notification.mailList.review"><![CDATA[Participate in the <a href="{$reviewUrl}">peer review</a> process]]></message>
 	<message key="notification.noneExist">You have no notifications at this time.</message>
 	<message key="notification.notification">Notification</message>
 	<message key="notification.notifications">Notifications</message>

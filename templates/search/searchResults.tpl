@@ -116,7 +116,7 @@ $(document).ready(
 				<input type="checkbox" name="duration" checked="checked"/>&nbsp;{translate key="search.researchDates"}
 			</td>
 			<td width="20%" class="value">
-				<input type="checkbox" name="area" checked="checked"/>&nbsp;{translate key='proposal.proposalCountry'}
+				<input type="checkbox" name="area" checked="checked"/>&nbsp;{translate key='proposal.geoArea'}
 			</td>
 		</tr>
 		<tr valign="top">

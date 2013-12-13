@@ -306,7 +306,7 @@ class ReviewerHandler extends Handler {
 		if ($articleId && $reviewId) {
 			$articleDao =& DAORegistry::getDAO('ArticleDAO');
 			$article =& $articleDao->getArticle($articleId);
-			$proposalId = $article->getLocalizedProposalId();
+			$proposalId = $article->getProposalId('en_US');
 			$pageHierarchy[] = array(Request::url(null, 'reviewer', 'submission', $reviewId), "$proposalId", true);
 		}
 		

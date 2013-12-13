@@ -29,7 +29,7 @@
 {/literal}
 
 <div id="setDueDate">
-<h3>Due Date for reviewers to review Proposal {$submission->getLocalizedProposalId()}</h3>
+<h3>Due Date for reviewers to review Proposal {$submission->getProposalId('en_US')}</h3>
 
 <p>{translate key="editor.article.designateDueDateDescription"}</p>
 

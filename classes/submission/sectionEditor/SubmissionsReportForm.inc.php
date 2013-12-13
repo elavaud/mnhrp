@@ -56,21 +56,23 @@ class SubmissionsReportForm extends Form {
 		);
 		$templateMgr->assign_by_ref('decisionsOptions', $decisionOptions);
 
-        $articleDao =& DAORegistry::getDAO('ArticleDAO');
-        $agencies = $articleDao->getAgencies();
-        $templateMgr->assign('agencies', $agencies);
-        
-        //Get research fields
-        $researchFields = $articleDao->getResearchFields();
-        $templateMgr->assign('researchFields', $researchFields);
-		
-        // Get proposal types
-        $proposalTypes = $articleDao->getProposalTypes();
-        $templateMgr->assign('proposalTypes', $proposalTypes);
-		
-		$countryDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-        $countries =& $countryDAO->getAreasOfTheCountry();
-        $templateMgr->assign_by_ref('countriesOptions', $countries);
+                $proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
+                
+                // Get list of agencies
+                $agencies = $proposalDetailsDao->getAgencies();
+                $templateMgr->assign('agencies', $agencies);
+
+                //Get research fields
+                $researchFields = $proposalDetailsDao->getResearchFields();
+                $templateMgr->assign('researchFields', $researchFields);
+
+                // Get proposal types
+                $proposalTypes = $proposalDetailsDao->getProposalTypes();
+                $templateMgr->assign('proposalTypes', $proposalTypes);
+
+                $countryDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+                $countries =& $countryDAO->getAreasOfTheCountry();
+                $templateMgr->assign_by_ref('countriesOptions', $countries);
                 
                 $fromDate = Request::getUserDateVar('dateFrom', 1, 1);
                 if ($fromDate !== null) $fromDate = date('Y-m-d H:i:s', $fromDate);

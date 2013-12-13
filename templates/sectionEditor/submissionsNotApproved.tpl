@@ -27,7 +27,7 @@
 	{assign var="status" value=$submission->getSubmissionStatus()}
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
             {assign var="articleId" value=$submission->getArticleId()}
-            {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+            {assign var="proposalId" value=$submission->getProposalId('en_US')}
 			<tr valign="top">
 				<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
 				<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>

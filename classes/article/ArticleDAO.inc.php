@@ -1025,7 +1025,7 @@ class ArticleDAO extends DAO {
 	function _searchArticleFromRow(&$article, &$row) {
 		if (isset($row['status'])) $article->setStatus($row['status']);
 		if (isset($row['article_id'])) $article->setId($row['article_id']);
-		if (isset($row['proposalid'])) $article->setProposalId($row['proposalid'], $article->getLocale());
+		if (isset($row['proposalid'])) $article->setProposalId($row['proposalid'], 'en_US');
 		if (isset($row['date_submitted'])) $article->setDateSubmitted($this->datetimeFromDB($row['date_submitted']));
 		if (isset($row['efname']) or isset($row['elname'])) $article->setPrimaryEditor($row['efname']." ".$row['elname']);
 		if (isset($row['afname']) or isset($row['alname'])) $article->setPrimaryAuthor($row['afname']." ".$row['alname']);

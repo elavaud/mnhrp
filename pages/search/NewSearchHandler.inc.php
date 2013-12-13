@@ -277,8 +277,6 @@ class NewSearchHandler extends Handler {
 					if ($result->getLocalizedAcademicDegree() != "NA") $columns[$index] = $result->getLocalizedAcademicDegree();else $columns[$index] = "Non Student Research";
 				} elseif ($index == 'primary_sponsor') {
 					$columns[$index] = $result->getLocalizedPrimarySponsor();
-				} elseif ($index == 'funds_required') {
-					$columns[$index] = $result->getLocalizedFundsRequired()." ".$result->getLocalizedSelectedCurrency();
 				} elseif ($index == 'date_submitted') {
 					$columns[$index] = $result->getDateSubmitted();
 				} 

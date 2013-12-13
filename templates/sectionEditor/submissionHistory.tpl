@@ -10,7 +10,7 @@
  * $Id$
  *}
 {strip}
-{translate|assign:"pageTitleTranslated" key="submission.page.history" id=$submission->getProposalId($submission->getLocale())}
+{translate|assign:"pageTitleTranslated" key="submission.page.history" id=$submission->getProposalId('en_US')}
 {assign var="pageCrumbTitle" value="submission.history"}
 {include file="common/header.tpl"}
 {/strip}
@@ -69,7 +69,7 @@
 </ul>
 
 {include file="sectionEditor/submission/summary.tpl"}
-{assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+{assign var="proposalId" value=$submission->getProposalId('en_US')}
 <div class="separator"></div>
 <div id="submissionEventLog">
 <h3>{translate key="submission.history.submissionEventLog"} - {translate key="submission.history.recentLogEntries"}</h3>

@@ -189,62 +189,62 @@
 	<table class="listing" width="100%">
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.fundsRequired"}</td>
-        	<td class="value">{$article->getLocalizedFundsRequired()} {$article->getLocalizedSelectedCurrency()}</td>
+        	<td class="value">{$article->getFundsRequired('en_US')} {$article->getSelectedCurrency('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.industryGrant"}</td>
-        	<td class="value">{$article->getLocalizedIndustryGrant()}</td>
+        	<td class="value">{$article->getIndustryGrant('en_US')}</td>
     	</tr>
-    	{if ($article->getLocalizedIndustryGrant()) == "Yes"}
+    	{if ($article->getIndustryGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="20%">&nbsp;</td>
-        		<td class="value">{$article->getLocalizedNameOfIndustry()}</td>
+        		<td class="value">{$article->getNameOfIndustry('en_US')}</td>
     		</tr>   
     	{/if}
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.internationalGrant"}</td>
-        	<td class="value">{$article->getLocalizedInternationalGrant()}</td>
+        	<td class="value">{$article->getInternationalGrant('en_US')}</td>
     	</tr>
-    	{if ($article->getLocalizedInternationalGrant()) == "Yes"}
+    	{if ($article->getInternationalGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="20%">&nbsp;</td>
         		<td class="value">
-        			{if $article->getLocalizedInternationalGrantName()}
-        				{$article->getLocalizedInternationalGrantNameText()} 
+        			{if $article->getInternationalGrantName()}
+        				{$article->getInternationalGrantNameText()} 
         			{/if}
         		</td>
     		</tr>     
     	{/if}
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.mohGrant"}</td>
-        	<td class="value">{$article->getLocalizedMohGrant()}</td>
+        	<td class="value">{$article->getMohGrant('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.governmentGrant"}</td>
-        	<td class="value">{$article->getLocalizedGovernmentGrant()}</td>
+        	<td class="value">{$article->getGovernmentGrant('en_US')}</td>
     	</tr>
-    	{if ($article->getLocalizedGovernmentGrant()) == "Yes"}
+    	{if ($article->getGovernmentGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="20%">&nbsp;</td>
-        		<td class="value">{$article->getLocalizedGovernmentGrantName()}</td>
+        		<td class="value">{$article->getGovernmentGrantName('en_US')}</td>
     		</tr>     
     	{/if}
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.universityGrant"}</td>
-        	<td class="value">{$article->getLocalizedUniversityGrant()}</td>
+        	<td class="value">{$article->getUniversityGrant('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.selfFunding"}</td>
-        	<td class="value">{$article->getLocalizedSelfFunding()}</td>
+        	<td class="value">{$article->getSelfFunding('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.otherGrant"}</td>
-        	<td class="value">{$article->getLocalizedOtherGrant()}</td>
+        	<td class="value">{$article->getOtherGrant('en_US')}</td>
     	</tr>
-    	{if ($article->getLocalizedOtherGrant()) == "Yes"}
+    	{if ($article->getOtherGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="20%">&nbsp;</td>
-        		<td class="value">{$article->getLocalizedSpecifyOtherGrant()}</td>
+        		<td class="value">{$article->getSpecifyOtherGrant('en_US')}</td>
     		</tr>    
     	{/if}
 	</table>

@@ -31,7 +31,7 @@
         {if ($status!=PROPOSAL_STATUS_DRAFT && $status!=PROPOSAL_STATUS_REVIEWED && $status != PROPOSAL_STATUS_EXEMPTED) || $decision==SUBMISSION_SECTION_DECISION_RESUBMIT}		
 			{assign var="count" value=$count+1}
             {assign var="articleId" value=$submission->getArticleId()}
-            {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+            {assign var="proposalId" value=$submission->getProposalId('en_US')}
 			<tr valign="top">
 				<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
 				<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>
@@ -88,7 +88,7 @@
         {if ($status==PROPOSAL_STATUS_REVIEWED && $decision==SUBMISSION_SECTION_DECISION_APPROVED)}
         	{assign var="count" value=$count+1}		
 			{assign var="articleId" value=$submission->getArticleId()}
-            {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+            {assign var="proposalId" value=$submission->getProposalId('en_US')}
 			<tr valign="top">
 				<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
 				<td>{$submission->getDateSubmitted()|date_format:$dateFormatLong}</td>
@@ -142,7 +142,7 @@
         {if ($status==PROPOSAL_STATUS_REVIEWED && $decision==SUBMISSION_SECTION_DECISION_DECLINED)}		
 			
             {assign var="articleId" value=$submission->getArticleId()}
-            {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+            {assign var="proposalId" value=$submission->getProposalId('en_US')}
 			{assign var="count" value=$count+1}
 			<tr valign="top">
 				<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>
@@ -196,7 +196,7 @@
         {if $status==PROPOSAL_STATUS_EXEMPTED}		
 			
             {assign var="articleId" value=$submission->getArticleId()}
-            {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+            {assign var="proposalId" value=$submission->getProposalId('en_US')}
 			{assign var="count" value=$count+1}
 			<tr valign="top">
 				<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>

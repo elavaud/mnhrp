@@ -22,7 +22,7 @@
 {iterate from=submissions1 item=submission}
 	{assign var="articleId" value=$submission->getArticleId()}
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
-        {assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+        {assign var="proposalId" value=$submission->getProposalId('en_US')}
 	<tr valign="top">
 		<td>{$proposalId|escape}</td>
 		<td>{$submission->getDateSubmitted()|date_format:$dateFormatShort}</td>

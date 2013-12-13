@@ -70,7 +70,7 @@ class SectionEditorAction extends Action {
 
 		$notificationManager->createNotification(
                     $sectionEditorSubmission->getUserId(), $message,
-                    $sectionEditorSubmission->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_SECTION_DECISION_COMMENT
+                    $sectionEditorSubmission->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_SECTION_DECISION_COMMENT
                 ); 
 
 		if (!HookRegistry::call('SectionEditorAction::recordDecision', array($sectionEditorSubmission, $decision, $reviewType, $round, $dateDecided, $lastDecisionId))) {
@@ -93,7 +93,7 @@ class SectionEditorAction extends Action {
 			import('classes.article.log.ArticleLog');
 			import('classes.article.log.ArticleEventLogEntry');
 			Locale::requireComponents(array(LOCALE_COMPONENT_APPLICATION_COMMON, LOCALE_COMPONENT_OJS_EDITOR));
-			ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_SECTION_DECISION, ARTICLE_LOG_TYPE_EDITOR, $user->getId(), 'log.editor.decision', array('editorName' => $user->getFullName(), 'articleId' => $sectionEditorSubmission->getLocalizedProposalId(), 'decision' => Locale::translate($decisions[$decision])));
+			ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_SECTION_DECISION, ARTICLE_LOG_TYPE_EDITOR, $user->getId(), 'log.editor.decision', array('editorName' => $user->getFullName(), 'articleId' => $sectionEditorSubmission->getProposalId('en_US'), 'decision' => Locale::translate($decisions[$decision])));
 		}
 	}
 
@@ -275,7 +275,7 @@ class SectionEditorAction extends Action {
 				$url = Request::url($journal->getPath(), 'reviewer', 'submission', array($reviewId));
 				$notificationManager->createNotification(
                 	$reviewAssignment->getReviewerId(), 'notification.type.reviewAssignment',
-                	$sectionEditorSubmission->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_SECTION_DECISION_COMMENT
+                	$sectionEditorSubmission->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_SECTION_DECISION_COMMENT
             	);
             	
 				$reviewAssignment->setDateNotified(Core::getCurrentDate());
@@ -378,13 +378,13 @@ class SectionEditorAction extends Action {
 					$url = Request::url($journal->getPath(), 'reviewer', 'submission', array($reviewId));
 					$notificationManager->createNotification(
                 		$reviewAssignment->getReviewerId(), 'notification.type.reviewAssignmentCanceled',
-                		$sectionEditorSubmission->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_SECTION_DECISION_COMMENT
+                		$sectionEditorSubmission->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_SECTION_DECISION_COMMENT
             		);
             	
 					// Add log
 					import('classes.article.log.ArticleLog');
 					import('classes.article.log.ArticleEventLogEntry');
-					ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_REVIEW_CANCEL, ARTICLE_LOG_TYPE_REVIEW, $reviewAssignment->getId(), 'log.review.reviewCancelled', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $sectionEditorSubmission->getLocalizedProposalId()));
+					ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_REVIEW_CANCEL, ARTICLE_LOG_TYPE_REVIEW, $reviewAssignment->getId(), 'log.review.reviewCancelled', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $sectionEditorSubmission->getProposalId('en_US')));
 				} else {
 					if (!Request::getUserVar('continued')) {
 						$email->addRecipient($reviewer->getEmail(), $reviewer->getFullName());
@@ -620,7 +620,7 @@ class SectionEditorAction extends Action {
 			$reviewer =& $userDao->getUser($reviewAssignment->getReviewerId());
 			if ($viewable) $message = 'notification.type.reviewerFile';
 			else $message = 'notification.type.reviewerFileDeleted';
-			$param = $article->getLocalizedProposalId().':<br/>A reviewer';
+			$param = $article->getProposalId('en_US').':<br/>A reviewer';
 			foreach ($notificationUsers as $userRole) {
 				$url = Request::url(null, $userRole['role'], 'submissionReview', $article->getId(), null, 'peerReview');
 				$notificationManager->createNotification(
@@ -1464,7 +1464,7 @@ class SectionEditorAction extends Action {
 		// Add log entry
 		import('classes.article.log.ArticleLog');
 		import('classes.article.log.ArticleEventLogEntry');
-		ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_COPYEDIT_FINAL, ARTICLE_LOG_TYPE_COPYEDIT, $user->getId(), 'log.copyedit.finalEditComplete', Array('copyeditorName' => $user->getFullName(), 'articleId' => $sectionEditorSubmission->getLocalizedProposalId()));
+		ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_COPYEDIT_FINAL, ARTICLE_LOG_TYPE_COPYEDIT, $user->getId(), 'log.copyedit.finalEditComplete', Array('copyeditorName' => $user->getFullName(), 'articleId' => $sectionEditorSubmission->getProposalId('en_US')));
 	}
 
 	/**
@@ -1485,7 +1485,7 @@ class SectionEditorAction extends Action {
 		// Add log
 		import('classes.article.log.ArticleLog');
 		import('classes.article.log.ArticleEventLogEntry');
-		ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_EDITOR_ARCHIVE, ARTICLE_LOG_TYPE_EDITOR, $sectionEditorSubmission->getArticleId(), 'log.editor.archived', array('articleId' => $sectionEditorSubmission->getLocalizedProposalId()));
+		ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_EDITOR_ARCHIVE, ARTICLE_LOG_TYPE_EDITOR, $sectionEditorSubmission->getArticleId(), 'log.editor.archived', array('articleId' => $sectionEditorSubmission->getProposalId('en_US')));
 	}
 
 	/**
@@ -1515,7 +1515,7 @@ class SectionEditorAction extends Action {
 		// Add log
 		import('classes.article.log.ArticleLog');
 		import('classes.article.log.ArticleEventLogEntry');
-		ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_EDITOR_RESTORE, ARTICLE_LOG_TYPE_EDITOR, $sectionEditorSubmission->getArticleId(), 'log.editor.restored', array('articleId' => $sectionEditorSubmission->getLocalizedProposalId()));
+		ArticleLog::logEvent($sectionEditorSubmission->getArticleId(), ARTICLE_LOG_EDITOR_RESTORE, ARTICLE_LOG_TYPE_EDITOR, $sectionEditorSubmission->getArticleId(), 'log.editor.restored', array('articleId' => $sectionEditorSubmission->getProposalId('en_US')));
 	}
 
 	/**
@@ -1575,7 +1575,7 @@ class SectionEditorAction extends Action {
 		$layoutProofSignoff = $signoffDao->build('SIGNOFF_PROOFREADING_LAYOUT', ASSOC_TYPE_ARTICLE, $submission->getArticleId());
 		if ($layoutSignoff->getUserId()) {
 			$layoutEditor =& $userDao->getUser($layoutSignoff->getUserId());
-			ArticleLog::logEvent($submission->getArticleId(), ARTICLE_LOG_LAYOUT_UNASSIGN, ARTICLE_LOG_TYPE_LAYOUT, $layoutSignoff->getId(), 'log.layout.layoutEditorUnassigned', array('editorName' => $layoutEditor->getFullName(), 'articleId' => $submission->getLocalizedProposalId()));
+			ArticleLog::logEvent($submission->getArticleId(), ARTICLE_LOG_LAYOUT_UNASSIGN, ARTICLE_LOG_TYPE_LAYOUT, $layoutSignoff->getId(), 'log.layout.layoutEditorUnassigned', array('editorName' => $layoutEditor->getFullName(), 'articleId' => $submission->getProposalId('en_US')));
 		}
 
 		$layoutSignoff->setUserId($editorId);
@@ -1592,7 +1592,7 @@ class SectionEditorAction extends Action {
 		$signoffDao->updateObject($layoutProofSignoff);
 
 		$layoutEditor =& $userDao->getUser($layoutSignoff->getUserId());
-		ArticleLog::logEvent($submission->getArticleId(), ARTICLE_LOG_LAYOUT_ASSIGN, ARTICLE_LOG_TYPE_LAYOUT, $layoutSignoff->getId(), 'log.layout.layoutEditorAssigned', array('editorName' => $layoutEditor->getFullName(), 'articleId' => $submission->getLocalizedProposalId()));
+		ArticleLog::logEvent($submission->getArticleId(), ARTICLE_LOG_LAYOUT_ASSIGN, ARTICLE_LOG_TYPE_LAYOUT, $layoutSignoff->getId(), 'log.layout.layoutEditorAssigned', array('editorName' => $layoutEditor->getFullName(), 'articleId' => $submission->getProposalId('en_US')));
 	}
 
 	/**
@@ -1940,7 +1940,7 @@ class SectionEditorAction extends Action {
 			$notificationManager = new NotificationManager();
 			$notificationUsers = $article->getAssociatedUserIds(false, true);
                 foreach ($notificationUsers as $userRole) {
-            	$param = $article->getLocalizedProposalId().':<br/>'.$user->getUsername().' commented ';
+            	$param = $article->getProposalId('en_US').':<br/>'.$user->getUsername().' commented ';
             	if ($userRole['role'] == 'sectionEditor') {
             		$param = $param.'the review of '.$reviewer->getUsername();
             		$url = Request::url(null, $userRole['role'], 'submissionReview', $article->getId(), null, 'peerReview');
@@ -2002,7 +2002,7 @@ class SectionEditorAction extends Action {
 			import('lib.pkp.classes.notification.NotificationManager');
 			$notificationManager = new NotificationManager();
 			$notificationUsers = $article->getAssociatedUserIds(true, false);
-			$param = $article->getLocalizedProposalId().': <br/>'.$user->getFullName().', <i>'.$user->getErcFunction($article->getSectionId()).'</i>,';
+			$param = $article->getProposalId('en_US').': <br/>'.$user->getFullName().', <i>'.$user->getErcFunction($article->getSectionId()).'</i>,';
 			foreach ($notificationUsers as $userRole) {
 				$url = Request::url(null, $userRole['role'], 'submissionReview', $article->getId(), null, 'editorDecision');
 				if ($user->getId()!=$userRole['id']) $notificationManager->createNotification(
@@ -2243,7 +2243,7 @@ class SectionEditorAction extends Action {
 				$url = Request::url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'copyedit');
 				$notificationManager->createNotification(
 				$userRole['id'], 'notification.type.copyeditComment',
-				$article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_COPYEDIT_COMMENT
+				$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_COPYEDIT_COMMENT
 				);
 			}
 
@@ -2296,7 +2296,7 @@ class SectionEditorAction extends Action {
 				$url = Request::url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'layout');
 				$notificationManager->createNotification(
 				$userRole['id'], 'notification.type.layoutComment',
-				$article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_LAYOUT_COMMENT
+				$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_LAYOUT_COMMENT
 				);
 			}
 
@@ -2349,7 +2349,7 @@ class SectionEditorAction extends Action {
 				$url = Request::url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'proofread');
 				$notificationManager->createNotification(
 				$userRole['id'], 'notification.type.proofreadComment',
-				$article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_PROOFREAD_COMMENT
+				$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_PROOFREAD_COMMENT
 				);
 			}
 
@@ -2395,8 +2395,8 @@ class SectionEditorAction extends Action {
 			$articleDao =& DAORegistry::getDAO('ArticleDAO');
 			$article =& $articleDao->getArticle($sectionDecision->getArticleId());
 			$notificationManager = new NotificationManager();
-			if ($accept == 1) $message = $article->getLocalizedProposalId().':<br/>'.$user->getUsername().' confirmed your ability';
-			else $message = $article->getLocalizedProposalId().':<br/>'.$user->getUsername().' confirmed your inability';
+			if ($accept == 1) $message = $article->getProposalId('en_US').':<br/>'.$user->getUsername().' confirmed your ability';
+			else $message = $article->getProposalId('en_US').':<br/>'.$user->getUsername().' confirmed your inability';
 			$url = Request::url(null, 'reviewer', 'submission', $reviewAssignment->getId());
             $notificationManager->createNotification(
             		$reviewAssignment->getReviewerId(), 'notification.type.reviewConfirmedBySecretary',
@@ -2412,7 +2412,7 @@ class SectionEditorAction extends Action {
 			$entry->setUserId($user->getId());
 			$entry->setDateLogged(Core::getCurrentDate());
 			$entry->setEventType(ARTICLE_LOG_REVIEW_CONFIRM_BY_PROXY);
-			$entry->setLogMessage($accept?'log.review.reviewAcceptedByProxy':'log.review.reviewDeclinedByProxy', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $article->getLocalizedProposalId(), 'userName' => $user->getFullName()));
+			$entry->setLogMessage($accept?'log.review.reviewAcceptedByProxy':'log.review.reviewDeclinedByProxy', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $article->getProposalId('en_US'), 'userName' => $user->getFullName()));
 			$entry->setAssocType(ARTICLE_LOG_TYPE_REVIEW);
 			$entry->setAssocId($reviewAssignment->getId());
 
@@ -2481,7 +2481,7 @@ class SectionEditorAction extends Action {
 			$entry->setUserId($user->getId());
 			$entry->setDateLogged(Core::getCurrentDate());
 			$entry->setEventType(ARTICLE_LOG_REVIEW_FILE_BY_PROXY);
-			$entry->setLogMessage('log.review.reviewFileByProxy', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $article->getLocalizedProposalId(), 'userName' => $user->getFullName()));
+			$entry->setLogMessage('log.review.reviewFileByProxy', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $article->getProposalId('en_US'), 'userName' => $user->getFullName()));
 			$entry->setAssocType(ARTICLE_LOG_TYPE_REVIEW);
 			$entry->setAssocId($reviewAssignment->getId());
 
@@ -2503,7 +2503,7 @@ class SectionEditorAction extends Action {
 		if ($articleId) {
 			$articleDao =& DAORegistry::getDAO('ArticleDAO');
 			$article =& $articleDao->getArticle($articleId);
-			$proposalId = $article->getLocalizedProposalId();
+			$proposalId = $article->getProposalId('en_US');
 			$breadcrumb[] = array(Request::url(null, $section, 'submission', $articleId), "$proposalId", true);
 		}
 
@@ -2568,7 +2568,7 @@ class SectionEditorAction extends Action {
                 
                 $pdf->SetTitle($journal->getJournalTitle());
                 
-                $pdf->SetSubject($sectionEditorSubmission->getLocalizedProposalId().' - '.Locale::translate('submission.summary'));                
+                $pdf->SetSubject($sectionEditorSubmission->getProposalId('en_US').' - '.Locale::translate('submission.summary'));                
                 
                 //$pdf->SetKeywords('TCPDF, PDF, example, tutorial');
 
@@ -2796,7 +2796,7 @@ class SectionEditorAction extends Action {
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.multiInstitutions').': ', Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getMultiInstitutions())));
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.conflictOfInterest').': ', Locale::translate($riskAssessment->getConflictOfInterestKey()));
                 
-                $pdf->Output($sectionEditorSubmission->getLocalizedProposalId().' - '.Locale::translate('submission.summary').'.pdf',"D");   
+                $pdf->Output($sectionEditorSubmission->getProposalId('en_US').' - '.Locale::translate('submission.summary').'.pdf',"D");   
                 
         }
 

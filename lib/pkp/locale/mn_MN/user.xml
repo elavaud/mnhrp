@@ -7,10 +7,10 @@
   * Copyright (c) 2000-2011 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
-  * Localization strings for the en_US (English) locale.
+  * Localization strings for the mn_MN (Mongolian) locale.
   -->
 
-<locale name="en_US" full_name = "English">
+<locale name="mn_MN" full_name = "Mongolian">
 	<message key="user.affiliation">Affiliation</message>
     <message key="user.studentId">Student ID</message>
     <message key="user.tel">Phone number</message>
@@ -19,14 +19,11 @@
 
 	<message key="user.authorization.accessDenied">Access denied.</message>
 	<message key="user.authorization.processAuthenticationTokenRequired">The process authentication token is missing or invalid.</message>
-	<message key="user.authorization.contextRequired">You cannot call this operation without a context (press, journal, conference, etc).</message>
 	<message key="user.authorization.loginRequired">Login required.</message>
 	<message key="user.authorization.privateOperation">The operation you tried to access is either private or doesn't exist.</message>
 	<message key="user.authorization.restrictedSiteAccess">You have been denied access. Access to this site is currently restricted.</message>
 	<message key="user.authorization.roleBasedAccessDenied">The current role does not have access to this operation.</message>
 	<message key="user.authorization.userGroupRequired">You have to set a valid user group to access this operation.</message>
-	<message key="user.biography">Bio statement</message>
-	<message key="user.biography.description">(E.g., department and rank)</message>
 	<message key="user.changeMyPassword">Change My Password</message>
 	<message key="user.changePassword">Change Password</message>
 	<message key="user.confirmEmail">Confirm Email</message>
@@ -43,9 +40,7 @@
 	<message key="user.initials">Initials</message>
 	<message key="user.interests">Reviewing interests</message>
     <message key="user.interests.description">(Separate interests by pressing the enter or comma key)</message>
-	<message key="user.gossip">Private Notes</message>
 	<message key="user.lastName">Last name</message>
-	<message key="user.profile.form.profileImageInvalid">Invalid profile image format or image too big. Accepted formats are .gif, .jpg, or .png, and the image must not exceed 150x150 pixels.</message>
 	<message key="user.login.accountDisabledWithReason">Your account has been disabled for the following reason: {$reason}</message>
 	<message key="user.login.accountDisabled">Your account has been disabled. Please contact the administrator for more information.</message>
 	<message key="user.login.accountNotValidated">Your email address has not been validated. Please check your email and follow the provided instructions. If you have not received an email, you may need to contact the site administrator for assistance.</message>
@@ -84,7 +79,6 @@
 	<message key="user.profile.form.oldPasswordInvalid">The current password you entered was incorrect.</message>
 	<message key="user.profile.form.openAccessNotifications">Issue open access email notifications</message>
 	<message key="user.profile.form.passwordRequired">A password is required.</message>
-	<message key="user.profile.form.profileImage">Profile Image</message>
 	<message key="user.profile.form.publishedNotifications">New issue published email notifications</message>
 	<message key="user.profile.form.urlInvalid">The specified URL is not valid. Please double-check the URL and try again. (Hint: Try adding http:// to the beginning of the URL.)</message>
 	<message key="user.profile.form.usernameRequired">A username is required.</message>
@@ -97,7 +91,7 @@
 	<message key="user.profile.publicProfile">User Profile</message>
 	<message key="user.profile.repeatNewPassword">Repeat new password</message>
 	<message key="user.register.form.emailExists">The selected email address is already in use by another user.</message>
-    <message key="user.register.form.tooManyMembers">Too many people are enrolled in your committee with the selected status. Please take note that only up to 5 secretaries, 1 chair, 1 Vice-Chair, and 20 Members are allowed (the chair and the vice-chair are considered as members).</message>
+    <message key="user.register.form.tooManyMembers">Too many people are enrolled in your committee with the selected status. Please take note that only up to 1 secretaries, 1 chair, 1 Vice-Chair, and 20 Members are allowed (the chair and the vice-chair are considered as members).</message>
 	<message key="user.register.form.passwordsDoNotMatch">The passwords do not match.</message>
 	<message key="user.register.form.emailsDoNotMatch">The email address fields do not match.</message>
 	<message key="user.register.form.usernameAlphaNumeric">The username can contain only alphanumeric characters, underscores, and hyphens, and must begin and end with an alphanumeric character.</message>
@@ -106,9 +100,7 @@
 	<message key="user.register.registerAs">Register as</message>
 	<message key="user.register">Register</message>
 	<message key="user.register.usernameRestriction">The username must contain only lowercase letters, numbers, and hyphens/underscores.</message>
-	<message key="user.role.reader">Reader</message>
-	<message key="user.role.readers">Readers</message>
-	<message key="user.role.reviewer">Committee Member</message>/*MSB replaced Reviewers with Committee Member*/)
+	<message key="user.role.reviewer">Committee Member</message>
 	<message key="user.role.reviewers">Ethics Committees Members</message> /*From reviewers*/
 	<message key="user.role.siteAdmin">Site Administrator</message>
 	<message key="user.role.siteAdmins">Site Administrators</message>
@@ -121,6 +113,5 @@
 	<message key="user.url">URL</message>
 	<message key="user.userHome">User Home</message>
 	<message key="user.username">Username</message>
-	<message key="user.workingLanguages">Working languages</message>
 	<message key="user.register.completeForm">Fill in this form to register to the Health Research Portal.</message>
 </locale>

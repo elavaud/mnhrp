@@ -26,7 +26,7 @@
 	
 	{iterate from=submissions item=submission}
 	<tr valign="top" {if $submission->getFastTracked()} class="fastTracked"{/if}>
-		{assign var="proposalId" value=$submission->getProposalId($submission->getLocale())}
+		{assign var="proposalId" value=$submission->getProposalId('en_US')}
 		{assign var="abstract" value=$submission->getLocalizedAbstract()}
 
 		<td>{if $proposalId}{$proposalId|escape}{else}&mdash;{/if}</td>

@@ -9,7 +9,7 @@
  * $Id$
  *}
 {strip}
-{translate|assign:"pageTitleTranslated" key="submission.page.summary" id=$submission->getLocalizedProposalId()}
+{translate|assign:"pageTitleTranslated" key="submission.page.summary" id=$submission->getProposalId('en_US')}
 {assign var="pageCrumbTitle" value="submission.summary"}
 {include file="common/header.tpl"}
 {/strip}
@@ -19,14 +19,12 @@
 	{if !$isEditor && $canReview}<li><a href="{url op="submissionReview" path=$submission->getId()}">{translate key="submission.review"}</a></li>{/if}
 </ul>
 
-<p style="text-align:right"><a href="{url op="downloadSummary" path=$submission->getId()}" class="file"><b>{translate key="common.download"} {translate key="submission.summary"}</b></a></p>
-
 {include file="sectionEditor/submission/management.tpl"}
-
+<!--{*
 <div class="separator"></div>
 
 {include file="sectionEditor/submission/status.tpl"}
-
+*}-->
 <div class="separator"></div>
 
 {include file="submission/metadata/metadata.tpl"}

@@ -269,7 +269,7 @@ class SectionDecision extends DataObject {
 	function getProposalId(){
 		$articleDao = DAORegistry::getDAO('ArticleDAO');
 		$article =& $articleDao->getArticle($this->getArticleId());
-		return $article->getLocalizedProposalId();
+		return $article->getProposalId('en_US');
 	}
         
 	/**

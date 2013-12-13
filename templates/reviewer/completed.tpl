@@ -60,7 +60,7 @@
 		</tr>
 		<tr><td colspan="5" class="headseparator">&nbsp;</td></tr>
 		{iterate from=submissions item=submission}
-			{assign var="articleId" value=$submission->getLocalizedProposalId()}
+			{assign var="articleId" value=$submission->getProposalId('en_US')}
 			{assign var="abstract" value=$submission->getLocalizedAbstract()}
 			{assign var="reviewId" value=$submission->getReviewId()}
 			<tr valign="top">

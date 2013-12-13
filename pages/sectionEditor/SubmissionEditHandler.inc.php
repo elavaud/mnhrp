@@ -1367,7 +1367,7 @@ class SubmissionEditHandler extends SectionEditorHandler {
 				$url = $request->url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'layout');
 				$notificationManager->createNotification(
 					$userRole['id'], 'notification.type.suppFileModified',
-					$article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_SUPP_FILE_MODIFIED
+					$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_SUPP_FILE_MODIFIED
 				);
 			}
 
@@ -1686,7 +1686,7 @@ class SubmissionEditHandler extends SectionEditorHandler {
 				$url = Request::url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'layout');
 				$notificationManager->createNotification(
 					$userRole['id'], 'notification.type.galleyModified',
-					$article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_GALLEY_MODIFIED
+					$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_GALLEY_MODIFIED
 				);
 			}
 

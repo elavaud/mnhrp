@@ -129,7 +129,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 				return parent::validate();
 			} elseif ( Request::getUserVar('paymentSent') ) {
 				return parent::validate();
-			} elseif ( $this->article->getLocalizedFundsRequired() < 5000 ) {
+			} elseif ( $this->article->getFundsRequired('en_US') < 5000 ) {
 				return parent::validate();
 			} else {
 				$queuedPayment =& $paymentManager->createQueuedPayment($journalId, PAYMENT_TYPE_SUBMISSION, $user->getId(), $articleId, $journal->getSetting('submissionFee'));
@@ -269,7 +269,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 				'authorUsername' => $user->getUsername(),
 				'address' => $sectionDao->getSettingValue($article->getSectionId(), 'address'),
 				'bankAccount' => $sectionDao->getSettingValue($article->getSectionId(), 'bankAccount'),
-				'proposalId' => $article->getProposalId(Locale::getLocale()),
+				'proposalId' => $article->getProposalId('en_US'),
 				'submissionUrl' => Request::url(null, 'author', 'submission', $article->getId())
 			));
 			$mail->send();
@@ -285,7 +285,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
                 foreach ($sectionEditors as $sectionEditor) {
                     $notificationManager->createNotification(
                         $sectionEditor->getId(), $message,
-                        $article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_ARTICLE_SUBMITTED
+                        $article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_ARTICLE_SUBMITTED
                     );
                 }
 

@@ -7,12 +7,12 @@
   * Copyright (c) 2003-2011 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
-  * Localization strings for the en_US (U.S. English) locale (default journal settings).
+  * Localization strings for the mn_MN (Mongolian) locale (default journal settings).
   *
   * $Id$
   -->
  
-<locale name="en_US" full_name="U.S. English">
+<locale name="mn_MN" full_name="Mongolian">
 	<!-- Section default -->
 	<!-- Edited by: spf, 3 March 2012
 	     Replaced Articles with Proposals

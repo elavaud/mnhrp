@@ -54,7 +54,7 @@
 	-->
 
 	<!-- Common Messages -->
-    <message key="common.openJournalSystems">The Health Research Portal Portal</message>
+    <message key="common.openJournalSystems">The Health Research Portal</message>
 	<message key="common.confirmComplete">Are you sure you wish to mark this task as completed? You may not be able to make changes afterwards.</message>
     <message key="common.homePageText"><![CDATA[<p>Mongolia Health Research Portal is an <i>integrated online health research management system</i> that offers substantial benefits for all stakeholders in health research. The Portal aims to improve accountability, efficiency and quality of health research conducted in Mongolia by providing information on all ongoing research and hence increasing transparency and by streamlining the ethics review process.<br/><br/>The Portal can be used to:<br/><br/><b>Submit research proposals</b> for review to Mongolia MOH Ethics Review Committee 24x7 from anywhere. Researchers need to register on the Portal. Once registered, you will have a permanent account and be able to submit research proposal in a paper-less way and to track the review status of your proposals.<br/><br/><b>Search ongoing and completed health research</b> from January 2014 onwards through a publically accessible research registry. No registration or log-in is required to search the ongoing research.<br/><br/><b>Access complete research reports</b> for the researches  started since 2014 once the research is completed. [Since the system has been launched only in January 2014, there are no research reports in the system at present, but will be added as and when a research is completed or over time]<br/><br/><b>Access information on all the applicable guidelines, rules, and regulations</b> related to health research (being added…).<br/><br/><b>Access a “Researchers' Directory”</b> containing information on the national and international researchers doing research in Mongolia (will be added soon...).</p>]]></message>
 	<message key="common.payment">Payment</message>
@@ -851,7 +851,7 @@ Active is how many reviews are currently being considered or underway.]]></messa
 	
 	<!-- Used in submission review -->
 	<message key="reviewer.article.fileToBeReviewed">File to be reviewed</message>
-	<message key="reviewer.article.notifyTheEditor">Notify The Editor</message>
+	<message key="reviewer.article.notifyTheEditor">Notify The Secretary</message>
 	<message key="reviewer.article.canDoReview">Will do the review</message>
 	<message key="reviewer.article.cannotDoReview">Unable to do the review</message>
 	<message key="reviewer.article.restrictedFileAccess">Submission will be made available, if and when reviewer agrees to undertake review</message>
@@ -917,7 +917,7 @@ Active is how many reviews are currently being considered or underway.]]></messa
         <message key="reviewer.article.enterCompetingInterests"><![CDATA[Declare whether or not you have competing interests with regard to this research (see <a target="_new" class="action" href="{$competingInterestGuidelinesUrl}">CI&nbsp;Policy</a>).]]></message>
 	<message key="reviewer.competingInterests">Competing Interests</message>
         <message key="reviewer.article.enterReviewA">For more information, please click on the bubble icon to open a chat room between you and the secretary of your committee.</message>
-        <message key="reviewer.article.uploadFile">Please upload the reivew of the proposal here.</message>
+        <message key="reviewer.article.uploadFile">Please upload the review of the proposal here.</message>
         <message key="reviewer.article.selectRecommendation">Select a recommendation and submit the review to complete the process. You must upload your review file before selecting a recommendation.</message>
 	<message key="reviewer.article.mustSelectDecision">No recommendation was selected. You must choose a recommendation to submit.</message>
 	<message key="reviewer.article.confirmDecision">Once you have recorded a decision you will no longer be able to make changes to this review. Are you sure you wish to continue?</message>
@@ -990,9 +990,9 @@ Active is how many reviews are currently being considered or underway.]]></messa
 
 	<!-- Submission History -->
 	
-	<message key="submission.logType.article">Article</message>
-	<message key="submission.logType.author">Author</message>
-	<message key="submission.logType.editor">Editor</message>
+	<message key="submission.logType.article">Proposal</message>
+	<message key="submission.logType.author">Investigator</message>
+	<message key="submission.logType.editor">Secretary</message>
 	<message key="submission.logType.review">Review</message>
 	<message key="submission.logType.copyedit">Copyedit</message>
 	<message key="submission.logType.layout">Layout</message>
@@ -1029,7 +1029,7 @@ current password.<br /><br />Enter your email address below to reset your passwo
 	<message key="user.register.privacyStatement">Privacy Statement</message>
 	<message key="user.register.alreadyRegisteredOtherJournal"><![CDATA[<a href="{$registerUrl}">Click here</a> if you are already registered with this or another journal on this site.]]></message>
 	<message key="user.register.notAlreadyRegisteredOtherJournal"><![CDATA[<a href="{$registerUrl}">Click here</a> if you are <strong>not</strong> already registered with this or another journal on this site.]]></message>
-	<message key="user.register.loginToRegister">Enter your existing username and password to register with this journal.</message>
+	<message key="user.register.loginToRegister">Enter your existing username and password to register with this system.</message>
 	<message key="user.register.registrationDisabled">The Health Research Portal is currently not accepting user registrations.</message>
 	<message key="user.register.form.passwordLengthTooShort">The password you entered is not long enough.</message>
 	<message key="user.register.readerDescription">Notified by email on publication of an issue of the journal.</message>
@@ -1082,13 +1082,13 @@ current password.<br /><br />Enter your email address below to reset your passwo
 
 
 	<!-- Search -->
-	<message key="search.browseAuthorIndex">Browse Author Index</message>
+	<message key="search.browseAuthorIndex">Browse Investigator Index</message>
 	<message key="search.searchFor">Search articles for</message>
-	<message key="search.author">Authors</message>
+	<message key="search.author">Investigators</message>
 	<message key="search.withinJournal">Within</message>
 	<message key="search.allJournals">All Journals</message>
 	<message key="search.authorIndex">Browse Author Index</message>
-	<message key="search.authorDetails">Author Details</message>
+	<message key="search.authorDetails">Investigator Details</message>
 	<message key="search.syntaxInstructions"><![CDATA[Search tips: <ul>
 	
 <li>Search terms are case-insensitive</li>
@@ -1174,7 +1174,7 @@ current password.<br /><br />Enter your email address below to reset your passwo
 	<message key="about.submissionPreparationChecklist.description">As part of the proposal process, authors are required to check off their proposal's compliance with all of the following items, and proposals may be returned to authors that do not adhere to these guidelines.</message>
 	<message key="about.copyrightNotice">Copyright Notice</message>
 	<message key="about.privacyStatement">Privacy Statement</message>
-	<message key="about.authorFees">Author Fees</message>
+	<message key="about.authorFees">Investigator Fees</message>
 	<message key="about.authorFeesMessage">This journal charges the following author fees.</message>
 	<message key="about.peerReviewProcess">Peer Review Process</message>
 	<message key="about.publicationFrequency">Publication Frequency</message>
@@ -1220,10 +1220,10 @@ current password.<br /><br />Enter your email address below to reset your passwo
 	<message key="payment.payNow">Pay Now</message>
 	<message key="payment.waive">Waive</message>
 	<message key="payment.alreadyPaid">Already Paid</message>
-	<message key="payment.alreadyPaidMessage">Select this box if you've already sent your payment to the journal in order to finish the submission process.  The proposal will not be reviewed until the payment arrives.  Click PAY NOW above to see the payment instructions.</message>
+	<message key="payment.alreadyPaidMessage">Select this box if you've already sent your payment to the health research portal in order to finish the submission process.  The proposal will not be reviewed until the payment arrives.  Click PAY NOW above to see the payment instructions.</message>
 	<message key="payment.paymentReceived">Payment Received</message>
 	<message key="payment.paymentSent">Payment has already been sent</message>
-	<message key="payment.authorFees">Author Fees</message>
+	<message key="payment.authorFees">Investigator Fees</message>
 	<message key="payment.type.submission">Submission Fee</message>
 	<message key="payment.type.publication">Publication Fee</message>
 	<message key="payment.type.fastTrack">Fast Track Review Fee</message>
@@ -1344,7 +1344,7 @@ Your server currently supports mbstring: <strong>{$supportsMBString}</strong>]]>
 	<message key="log.review.reviewAccepted">{$reviewerName} has accepted the review for proposal {$articleId}.</message>
 	<message key="log.review.reviewDeclinedByProxy">{$userName} has declined the review for proposal {$articleId} on behalf of {$reviewerName}.</message>
 	<message key="log.review.reviewAcceptedByProxy">{$userName} has accepted the review for proposal {$articleId} on behalf of {$reviewerName}.</message>
-	<message key="log.review.reviewFileByProxy">The Editor, {$userName}, has uploaded a review file for the proposal {$articleId} on behalf of the reviewer, {$reviewerName}.</message>
+	<message key="log.review.reviewFileByProxy">The Secretary, {$userName}, has uploaded a review file for the proposal {$articleId} on behalf of the reviewer, {$reviewerName}.</message>
 	<message key="log.review.reviewerFile">A reviewer file has been uploaded.</message>
 	<message key="log.editor.decision">A decision ({$decision}) for proposal {$proposalId} was recorded by {$editorName}.</message>
 
@@ -1446,7 +1446,7 @@ Validation may fail on search URLs that require posted form data.]]></message>
 	<message key="notification.type.reviewerFormComment">A review form review has been submitted for "{$param}".</message>
 	<message key="notification.type.reviewing">Reviewing Events</message>
 	<message key="notification.type.site">Site Events</message>
-	<message key="notification.type.submissionComment">An editor has made a comment on "{$param}".</message>
+	<message key="notification.type.submissionComment">A secretary has made a comment on "{$param}".</message>
 	<message key="notification.type.submissions">Submission Events</message>
 	<message key="notification.type.suppFileModified">"{$param}'s" supplementary file(s) has been modified.</message>
 	<message key="notification.type.userComment">A reader has made a comment on "{$param}"</message>

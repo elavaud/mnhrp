@@ -46,7 +46,7 @@ class Submission extends DataObject {
         var $removedAbstracts;
         
 	/** @var DAO for article */
-	var $articleDAO;
+	var $proposalDetailsDAO;
 		
 	/**
 	 * Constructor.
@@ -57,7 +57,7 @@ class Submission extends DataObject {
 		$this->removedAuthors = array();
 		$this->abstracts = array();
 		$this->removedAbstracts = array();
-                $this->articleDAO =& DAORegistry::getDAO('ArticleDAO');        
+                $this->proposalDetailsDAO =& DAORegistry::getDAO('ProposalDetailsDAO');        
 	}
 
 	/**
@@ -1242,7 +1242,6 @@ class Submission extends DataObject {
 		return $this->getData("authorEmail");
 	}
 	
-	
  	/**
 	 * Get "localized" industryGrant (if applicable).
 	 * @return string
@@ -1307,8 +1306,8 @@ class Submission extends DataObject {
 	 * Get "localized" internationalGrant full text.
 	 * @return string
 	 */	
-	function getLocalizedInternationalGrantNameText(){
-		return $this->articleDAO->getAgency($this->getLocalizedInternationalGrantName());
+	function getInternationalGrantNameText(){
+		return $this->proposalDetailsDAO->getAgency($this->getInternationalGrantName('en_US'));
 	}
 
 	/**

@@ -10,24 +10,34 @@
 
 <countries>
     <country code="ARR" name="Arkhangai"/>
+    <country code="BGD" name="Baganuur district (UB City)"/>
+    <country code="BGK" name="Bagakhangai district (UB City)"/>
     <country code="BAO" name="Bayan-Ölgii"/>
     <country code="BAK" name="Bayankhongor"/>
+    <country code="BAG" name="Bayangol district (UB City)"/>
+    <country code="BAZ" name="Bayanzurkh district (UB City)"/>
     <country code="BUL" name="Bulgan"/>
+    <country code="CGD" name="Chingeltei district (UB City)"/>
     <country code="DAU" name="Darkhan-Uul"/>
     <country code="DOD" name="Dornod"/>
     <country code="DOG" name="Dornogovi"/>
     <country code="DUG" name="Dundgovi"/>
     <country code="GOA" name="Govi-Altai"/>
     <country code="GOS" name="Govisümber"/>
+    <country code="KHU" name="Khan-Uul district (UB City)"/>
     <country code="KHE" name="Khentii"/>
     <country code="KHD" name="Khovd"/>
     <country code="KHS" name="Khövsgöl"/>
+    <country code="NLD" name="Nalaikh district (UB City)"/>
     <country code="OMN" name="Ömnögovi"/>
     <country code="ORK" name="Orkhon"/>
     <country code="OVO" name="Övörkhangai"/>
     <country code="SEL" name="Selenge"/>
     <country code="SUK" name="Sükhbaatar"/>
+    <country code="SKD" name="Shükhbaatar district (UB City)"/>
+    <country code="SGD" name="Songinokhairkhan district (UB City)"/>
     <country code="TOV" name="Töv"/>
+    <country code="UBC" name="Ulaanbaatar City"/>
     <country code="UVS" name="Uvs"/>
     <country code="ZAV" name="Zavkhan"/>
 </countries>

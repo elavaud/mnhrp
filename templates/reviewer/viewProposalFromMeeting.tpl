@@ -5,7 +5,7 @@
 
 {strip}
 	{assign var="articleId" value=$submission->getArticleId()}
-	{assign var="proposalId" value=$submission->getLocalizedProposalId()}
+	{assign var="proposalId" value=$submission->getProposalId('en_US')}
 	{translate|assign:"pageTitleTranslated" key="submission.page.proposalFromMeeting" id=$proposalId}
 	{assign var="pageCrumbTitle" value="article.submission"}
 	{include file="common/header.tpl"}
@@ -261,62 +261,62 @@
 	<table class="listing" width="100%">
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.fundsRequired"}</td>
-        	<td class="value">{$submission->getLocalizedFundsRequired()} {$submission->getLocalizedSelectedCurrency()}</td>
+        	<td class="value">{$submission->getFundsRequired('en_US')()} {$submission->getSelectedCurrency('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.industryGrant"}</td>
-        	<td class="value">{$submission->getLocalizedIndustryGrant()}</td>
+        	<td class="value">{$submission->getIndustryGrant('en_US')}</td>
     	</tr>
-    	{if ($submission->getLocalizedIndustryGrant()) == "Yes"}
+    	{if ($submission->getIndustryGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="30%">&nbsp;</td>
-        		<td class="value">{$submission->getLocalizedNameOfIndustry()}</td>
+        		<td class="value">{$submission->getNameOfIndustry('en_US')}</td>
     		</tr>   
     	{/if}
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.internationalGrant"}</td>
-        	<td class="value">{$submission->getLocalizedInternationalGrant()}</td>
+        	<td class="value">{$submission->getInternationalGrant('en_US')}</td>
     	</tr>
-    	{if ($submission->getLocalizedInternationalGrant()) == "Yes"}
+    	{if ($submission->getInternationalGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="30%">&nbsp;</td>
         		<td class="value">
-        			{if $submission->getLocalizedInternationalGrantName()}
-        				{$submission->getLocalizedInternationalGrantNameText()} 
+        			{if $submission->getInternationalGrantName()}
+        				{$submission->getInternationalGrantNameText()} 
         			{/if}
         		</td>
     		</tr>     
     	{/if}
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.mohGrant"}</td>
-        	<td class="value">{$submission->getLocalizedMohGrant()}</td>
+        	<td class="value">{$submission->getMohGrant('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.governmentGrant"}</td>
-        	<td class="value">{$submission->getLocalizedGovernmentGrant()}</td>
+        	<td class="value">{$submission->getGovernmentGrant('en_US')}</td>
     	</tr>
-    	{if ($submission->getLocalizedGovernmentGrant()) == "Yes"}
+    	{if ($submission->getGovernmentGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="30%">&nbsp;</td>
-        		<td class="value">{$submission->getLocalizedGovernmentGrantName()}</td>
+        		<td class="value">{$submission->getGovernmentGrantName('en_US')}</td>
     		</tr>     
     	{/if}
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.universityGrant"}</td>
-        	<td class="value">{$submission->getLocalizedUniversityGrant()}</td>
+        	<td class="value">{$submission->getUniversityGrant('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.selfFunding"}</td>
-        	<td class="value">{$submission->getLocalizedSelfFunding()}</td>
+        	<td class="value">{$submission->getSelfFunding('en_US')}</td>
     	</tr>
     	<tr valign="top">
         	<td class="label" width="30%">{translate key="proposal.otherGrant"}</td>
-        	<td class="value">{$submission->getLocalizedOtherGrant()}</td>
+        	<td class="value">{$submission->getOtherGrant('en_US')}</td>
     	</tr>
-    	{if ($submission->getLocalizedOtherGrant()) == "Yes"}
+    	{if ($submission->getOtherGrant('en_US')) == "Yes"}
      		<tr valign="top">
         		<td class="label" width="30%">&nbsp;</td>
-        		<td class="value">{$submission->getLocalizedSpecifyOtherGrant()}</td>
+        		<td class="value">{$submission->getSpecifyOtherGrant('en_US')}</td>
     		</tr>    
     	{/if}
 	</table>

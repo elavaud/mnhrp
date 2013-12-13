@@ -11,7 +11,7 @@
 </script>
 {/literal}
 <div id="submissions">
-<h4>{$submission->getLocalizedProposalId()}&nbsp;{translate key="editor.minutes.initialReview"}</h4>
+<h4>{$submission->getProposalId('en_US')}&nbsp;{translate key="editor.minutes.initialReview"}</h4>
 <br/>
 <form method="post" action="{url op="generateInitialReviewFile" path=$meeting->getId()|to_array:$submission->getId()}" enctype="multipart/form-data">				
 	<table class="data" width="100%">
@@ -21,7 +21,7 @@
 		</tr>
 		<tr>
 			<td class="label" width="20%">{translate key="common.proposalId"}</td>
-			<td class="value" width="80%">{$submission->getLocalizedProposalId()}</td>
+			<td class="value" width="80%">{$submission->getProposalId('en_US')}</td>
 		</tr>
 		<tr>
 			<td class="label" width="20%">{translate key="editor.minutes.pi"}</td>

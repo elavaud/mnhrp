@@ -114,10 +114,10 @@ class InitialReviewDecisionForm extends Form {
 		
 		$pdf = new PDF();
 		$pdf->AddPage();
-		$pdf->ChapterTitle('INITIAL REVIEW of ' . $submission->getLocalizedProposalId());
+		$pdf->ChapterTitle('INITIAL REVIEW of ' . $submission->getProposalId('en_US'));
 		$pdf->ChapterItemKeyVal('Protocol Title', $abstract->getScientificTitle(), "BU");
 		$pdf->ChapterItemKeyVal('Principal Investigator (PI)', $submission->getAuthorString(), "BU");
-		$pdf->ChapterItemKeyVal('Unique project identification # assigned', $submission->getLocalizedProposalId() , "BU");
+		$pdf->ChapterItemKeyVal('Unique project identification # assigned', $submission->getProposalId('en_US') , "BU");
 		$pdf->ChapterItemKeyVal('Responsible Staff Member', $submission->getUser()->getFullName(), "BU");
 
 		if($isUnanimous) {

@@ -127,7 +127,7 @@ class CommentHandler extends Handler {
 					$url = Request::url(null, null, 'view', array($articleId, $galleyId, $parentId));
 					$notificationManager->createNotification(
 						$userRole['id'], 'notification.type.userComment',
-						$article->getLocalizedProposalId(), $url, 1, NOTIFICATION_TYPE_USER_COMMENT
+						$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_USER_COMMENT
 					);
 				}
 
@@ -222,7 +222,7 @@ class CommentHandler extends Handler {
 				Request::url(null, 'article', 'view', array(
 					$article->getBestArticleId(Request::getJournal()), $galleyId
 				)),
-				String::stripUnsafeHtml($article->getLocalizedProposalId()),
+				String::stripUnsafeHtml($article->getProposalId('en_US')),
 				true
 			)
 		);

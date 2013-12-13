@@ -11,7 +11,7 @@
  * $Id$
  *}
 {strip}
-	{assign var="articleId" value=$submission->getLocalizedProposalId()}
+	{assign var="articleId" value=$submission->getProposalId('en_US')}
 	{assign var="reviewId" value=$reviewAssignment->getId()}
 	{translate|assign:"pageTitleTranslated" key="reviewer.article.$pageToDisplay" id=$articleId}
 	{assign var="pageCrumbTitle" value="reviewer.article.$pageToDisplay"}
@@ -47,7 +47,7 @@
 	<table width="100%" class="data">
 		<tr valign="top">
 			<td width="20%" class="label">{translate key="common.proposalId"}</td>
-			<td width="80%" class="value">{$submission->getLocalizedProposalId()|strip_unsafe_html}</td>
+			<td width="80%" class="value">{$submission->getProposalId('en_US')|strip_unsafe_html}</td>
 		</tr>
 		<tr valign="top">
 			<td width="20%" class="label">{translate key="article.title"}</td>

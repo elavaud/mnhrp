@@ -209,7 +209,7 @@ class ReportsHandler extends Handler {
         	$countries =& $countryDAO->getAreasOfTheCountry();
         	$countryField = array_keys($countries);
 		}
-$sort = Request::getUserVar('sort');
+                $sort = Request::getUserVar('sort');
 		$sort = isset($sort) ? $sort : 'id';
 		$sortDirection = Request::getUserVar('sortDirection');
 		$sortDirection = (isset($sortDirection) && ($sortDirection == 'ASC' || $sortDirection == 'DESC')) ? $sortDirection : 'ASC';
@@ -467,9 +467,7 @@ $sort = Request::getUserVar('sort');
 			$abstract = $submission->getLocalizedAbstract();
 			foreach ($columns as $index => $junk) {
 				if ($index == 'proposalId') {
-					$columns[$index] = $submission->getProposalId($submission->getLocale());
-				} elseif ($index == 'erc') {
-					$columns[$index] = $submission->getSectionAbbrev($submission->getLocale());
+					$columns[$index] = $submission->getProposalId('en_US');
 				} elseif ($index == 'decision') {
 					if ($submission->getEditorDecisionKey()) $columns[$index] = Locale::translate($submission->getEditorDecisionKey());
 					else $columns[$index] = 'None';
@@ -516,29 +514,29 @@ $sort = Request::getUserVar('sort');
 				} elseif ($index == 'duration') {
 					$columns[$index] = $submission->getLocalizedStartDate().' to '.$submission->getLocalizedEndDate();
 				} elseif ($index == 'budget') {
-					$columns[$index] = $submission->getLocalizedFundsRequired();
+					$columns[$index] = $submission->getFundsRequired('en_US');
 				} elseif ($index == 'currency') {
-					$columns[$index] = $submission->getLocalizedSelectedCurrency();
+					$columns[$index] = $submission->getSelectedCurrency('en_US');
 				} elseif ($index == 'otherErc') {
 					if ($submission->getLocalizedReviewedByOtherErc() == 'Yes') $columns[$index] = $submission->getLocalizedOtherErcDecision();
 					else  $columns[$index] = 'No';
 				} elseif ($index == 'industryGrant') {
-					if ($submission->getLocalizedIndustryGrant() == 'Yes') $columns[$index] = $submission->getLocalizedNameOfIndustry();
+					if ($submission->getIndustryGrant('en_US') == 'Yes') $columns[$index] = $submission->getNameOfIndustry('en_US');
 					else  $columns[$index] = 'No';
 				} elseif ($index == 'agencyGrant') {
-					if ($submission->getLocalizedInternationalGrant() == 'Yes') $columns[$index] = $submission->getLocalizedInternationalGrantName();
+					if ($submission->getInternationalGrant('en_US') == 'Yes') $columns[$index] = $submission->getInternationalGrantName('en_US');
 					else $columns[$index] = 'No';
 				} elseif ($index == 'mohGrant') {
-					$columns[$index] = $submission->getLocalizedMohGrant();
+					$columns[$index] = $submission->getMohGrant('en_US');
 				} elseif ($index == 'governmentGrant') {
-					if ($submission->getLocalizedGovernmentGrant() == 'Yes') $columns[$index] = $submission->getLocalizedGovernmentGrantName();
+					if ($submission->getGovernmentGrant('en_US') == 'Yes') $columns[$index] = $submission->getGovernmentGrantName('en_US');
 					else $columns[$index] = 'No';
 				} elseif ($index == 'universityGrant') {
-					$columns[$index] = $submission->getLocalizedUniversityGrant();
+					$columns[$index] = $submission->getUniversityGrant('en_US');
 				} elseif ($index == 'selfFunding') {
-					$columns[$index] = $submission->getLocalizedSelfFunding();
+					$columns[$index] = $submission->getSelfFunding('en_US');
 				} elseif ($index == 'otherGrant') {
-					if ($submission->getLocalizedOtherGrant() == 'Yes') $columns[$index] = $submission->getLocalizedSpecifyOtherGrant();
+					if ($submission->getOtherGrant('en_US') == 'Yes') $columns[$index] = $submission->getSpecifyOtherGrant('en_US');
 					else $columns[$index] = 'No';
 				}			
 			}						
