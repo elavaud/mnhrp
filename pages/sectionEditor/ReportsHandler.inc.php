@@ -465,7 +465,10 @@ class ReportsHandler extends Handler {
 		
 		foreach ($submissionsArray as $submission) {
 			$abstract = $submission->getLocalizedAbstract();
-			foreach ($columns as $index => $junk) {
+			$abstract = $submission->getLocalizedAbstract();
+			$abstract = $submission->getLocalizedAbstract();
+			$abstract = $submission->getLocalizedAbstract();
+                        foreach ($columns as $index => $junk) {
 				if ($index == 'proposalId') {
 					$columns[$index] = $submission->getProposalId('en_US');
 				} elseif ($index == 'decision') {

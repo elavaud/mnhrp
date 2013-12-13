@@ -132,45 +132,6 @@ class EditorSubmissionDAO extends DAO {
 			$primaryLocale,
 			'abbrev',
 			$locale,
-			'researchField',
-			'researchField',
-			$locale,
-			'proposalCountry',
-			'proposalCountry',
-			$locale,
-			'approvalDate',
-			$locale,
-			'proposalId',
-			'proposalId',
-			$locale,
-			'studentInitiatedResearch',
-			'studentInitiatedResearch',
-			$locale,
-			'academicDegree',
-			'academicDegree',
-			$locale,
-			'primarySponsor',
-			'primarySponsor',
-			$locale,
-			'secondarySponsors',
-			'secondarySponsors',
-			$locale,
-			'proposalType',
-			'proposalType',
-			$locale,
-			'dataCollection',
-			'dataCollection',
-			$locale,
-			'multiCountryResearch',
-			'multiCountryResearch',
-			$locale,
-			'nationwide',
-			'nationwide',
-			$locale,
-			'startDate',
-			$locale,
-			'endDate',
-			$locale,
 			$journalId
 		);
 		$searchSql = '';
@@ -218,25 +179,26 @@ class EditorSubmissionDAO extends DAO {
 				break;
 			case SUBMISSION_FIELD_DATE_APPROVED:
 				if (!empty($dateFrom)) {
-					$searchSql .= ' AND apd.setting_value >= ' . $this->datetimeToDB($dateFrom);
+					$searchSql .= ' AND sdec.date_decided >= ' . $this->datetimeToDB($dateFrom);
 				}
 				if (!empty($dateTo)) {
-					$searchSql .= ' AND apd.setting_value <= ' . $this->datetimeToDB($dateTo);
+					$searchSql .= ' AND sdec.date_decided <= ' . $this->datetimeToDB($dateTo);
 				}
 				break;
 		}
 		
 		if (!empty($researchFieldField)) {
-			$researchFieldSql = ' AND LOWER(COALESCE(atu.setting_value, atpu.setting_value)) LIKE LOWER(?)';
+			$researchFieldSql = ' AND LOWER(ad.research_fields) LIKE LOWER(?)';
 			$researchFieldField = '%'.$researchFieldField.'%';
 			$params[] = $researchFieldField;
 		}
 		if (!empty($countryField)) {
-			$countrySql = ' AND LOWER(COALESCE(apc.setting_value, appc.setting_value)) LIKE LOWER(?)';
+			$countrySql = ' AND LOWER(ad.geo_areas) LIKE LOWER(?)';
 			$countryField = '%'.$countryField.'%';
 			$params[] = $countryField;
 		}
 
+                
 		$sql = 'SELECT DISTINCT
 				a.*,
 				ab.clean_scientific_title AS submission_title,
@@ -258,47 +220,14 @@ class EditorSubmissionDAO extends DAO {
 				LEFT JOIN section_settings sal ON (sdec.section_id = sal.section_id AND sal.setting_name = ? AND sal.locale = ?)
 				
 				LEFT JOIN article_abstract ab ON (a.article_id = ab.article_id)
-				
-				LEFT JOIN article_settings atpu ON (a.article_id = atpu.article_id AND atpu.setting_name = ? AND atpu.locale = a.locale)
-				LEFT JOIN article_settings atu ON (a.article_id = atu.article_id AND atu.setting_name = ? AND atu.locale = ?)
-				
-				LEFT JOIN article_settings appc ON (a.article_id = appc.article_id AND appc.setting_name = ? AND appc.locale = a.locale)
-				LEFT JOIN article_settings apc ON (a.article_id = apc.article_id AND apc.setting_name = ? AND apc.locale = ?)
-				
-				LEFT JOIN article_settings apd ON (a.article_id = apd.article_id AND apd.setting_name = ? AND apd.locale = ?)	
-				
-				LEFT JOIN article_settings atid ON (a.article_id = atid.article_id AND atid.setting_name = ? AND atid.locale = a.locale)
-				LEFT JOIN article_settings aid ON (a.article_id = aid.article_id AND aid.setting_name = ? AND aid.locale = ?)
-				
-				LEFT JOIN article_settings str ON (a.article_id = str.article_id AND str.setting_name = ? AND str.locale = a.locale)
-				LEFT JOIN article_settings sr ON (a.article_id = sr.article_id AND sr.setting_name = ? AND sr.locale = ?)
+                                
+                                LEFT JOIN article_details ad ON (a.article_id = ad.article_id)
+                                
+                                LEFT JOIN article_student ast ON (a.article_id = ast.article_id)				
 
-				LEFT JOIN article_settings atd ON (a.article_id = atd.article_id AND atd.setting_name = ? AND atd.locale = a.locale)
-				LEFT JOIN article_settings ad ON (a.article_id = ad.article_id AND ad.setting_name = ? AND ad.locale = ?)
-
-				LEFT JOIN article_settings pts ON (a.article_id = pts.article_id AND pts.setting_name = ? AND pts.locale = a.locale)
-				LEFT JOIN article_settings ps ON (a.article_id = ps.article_id AND ps.setting_name = ? AND ps.locale = ?)				
-								
-				LEFT JOIN article_settings sts ON (a.article_id = sts.article_id AND sts.setting_name = ? AND sts.locale = a.locale)
-				LEFT JOIN article_settings ss ON (a.article_id = ss.article_id AND ss.setting_name = ? AND ss.locale = ?)				
-				
-				LEFT JOIN article_settings ptt ON (a.article_id = ptt.article_id AND ptt.setting_name = ? AND ptt.locale = a.locale)
-				LEFT JOIN article_settings pt ON (a.article_id = pt.article_id AND pt.setting_name = ? AND pt.locale = ?)	
-
-				LEFT JOIN article_settings dtc ON (a.article_id = dtc.article_id AND dtc.setting_name = ? AND dtc.locale = a.locale)
-				LEFT JOIN article_settings dc ON (a.article_id = dc.article_id AND dc.setting_name = ? AND dc.locale = ?)								
-				LEFT JOIN article_settings mtcr ON (a.article_id = mtcr.article_id AND mtcr.setting_name = ? AND mtcr.locale = a.locale)
-				LEFT JOIN article_settings mcr ON (a.article_id = mcr.article_id AND mcr.setting_name = ? AND mcr.locale = ?)
-				
-				LEFT JOIN article_settings ntwr ON (a.article_id = ntwr.article_id AND ntwr.setting_name = ? AND ntwr.locale = a.locale)
-				LEFT JOIN article_settings nwr ON (a.article_id = nwr.article_id AND nwr.setting_name = ? AND nwr.locale = ?)	
-
-				LEFT JOIN article_settings sd ON (a.article_id = sd.article_id AND sd.setting_name = ? AND sd.locale = ?)
-
-				LEFT JOIN article_settings ed ON (a.article_id = ed.article_id AND ed.setting_name = ? AND ed.locale = ?)
-			WHERE	sdec2.section_decision_id IS NULL
-				AND a.journal_id = ?
-				AND a.submission_progress = 0' .
+                         WHERE	sdec2.section_decision_id IS NULL
+                                AND (sdec.review_type <> 1 OR (sdec.review_type = 1 AND sdec.decision <> 0))
+				AND a.journal_id = ?' .
 				(!empty($additionalWhereSql)?" $additionalWhereSql":'');
 				
 		if ($sectionId) {
@@ -591,7 +520,7 @@ class EditorSubmissionDAO extends DAO {
 	**/
 	function getDecisionMapping($decision){
 		switch ($decision){
-			case 'editor.article.decision.approved': 		return SUBMISSION_SECTION_DECISION_APPROVED;
+			case 'editor.article.decision.approved': 	return SUBMISSION_SECTION_DECISION_APPROVED;
 			case 'editor.article.decision.resubmit': 	return SUBMISSION_SECTION_DECISION_RESUBMIT;
 			case 'editor.article.decision.declined': 	return SUBMISSION_SECTION_DECISION_DECLINED;
 			case 'editor.article.decision.complete': 	return SUBMISSION_SECTION_DECISION_COMPLETE;
@@ -688,11 +617,11 @@ return $returner;
 
 		$sql = "";
 		if (!empty($sresearch)) {
-			$sql .= " AND (LOWER(COALESCE(sr.setting_value, str.setting_value)) LIKE '".$sresearch."')";
+			$sql .= " AND (ad.student) LIKE '".$sresearch."')";
 		}
 
 		if (!empty($adegree)) {
-			$sql .= " AND (LOWER(COALESCE(ad.setting_value, atd.setting_value)) LIKE '".$adegree."')";
+			$sql .= " AND (ast.degree) LIKE '".$adegree."')";
 		}
 				
 		if(!empty($decisionFields)){
@@ -713,8 +642,8 @@ return $returner;
 			foreach ($primarySponsorField as $primarySponsor){
 				if(!empty($primarySponsor)){
 					$present = true;
-					if ($primarySponsorSql == "" || $primarySponsorSql == null) $primarySponsorSql = "LOWER(COALESCE(ps.setting_value, pts.setting_value)) LIKE '" . $primarySponsor . "%'";
-					else $primarySponsorSql .= " OR LOWER(COALESCE(ps.setting_value, pts.setting_value)) LIKE '" . $primarySponsor . "%'";
+					if ($primarySponsorSql == "" || $primarySponsorSql == null) $primarySponsorSql = "LOWER(ad.primary_sponsor) LIKE '" . $primarySponsor . "%'";
+					else $primarySponsorSql .= " OR LOWER(ad.primary_sponsor) LIKE '" . $primarySponsor . "%'";
 				}
 			} if ($present) $sql .= " AND (".$primarySponsorSql.")";
 		}
@@ -725,8 +654,8 @@ return $returner;
 			foreach ($secondarySponsorField as $secondarySponsor){
 				if(!empty($secondarySponsor)){
 					$present = true;
-					if ($secondarySponsorSql == "" || $secondarySponsorSql == null) $secondarySponsorSql = "LOWER(COALESCE(ss.setting_value, sts.setting_value)) LIKE '%" . $secondarySponsor . "%'";
-					else $secondarySponsorSql .= " OR LOWER(COALESCE(ss.setting_value, sts.setting_value)) LIKE '%" . $secondarySponsor . "%'";
+					if ($secondarySponsorSql == "" || $secondarySponsorSql == null) $secondarySponsorSql = "LOWER(ad.secondary_sponsors) LIKE '%" . $secondarySponsor . "%'";
+					else $secondarySponsorSql .= " OR LOWER(ad.secondary_sponsors) LIKE '%" . $secondarySponsor . "%'";
 				}
 			} if ($present) $sql .= " AND (".$secondarySponsorSql.")";
 		}
@@ -737,8 +666,8 @@ return $returner;
 			foreach ($researchFieldFields as $researchFieldField){
 				if(!empty($researchFieldField)){
 					$present = true;
-					if ($researchFieldSql == "" || $researchFieldSql == null) $researchFieldSql = "LOWER(COALESCE(atu.setting_value, atpu.setting_value)) LIKE '%" . $researchFieldField . "%'";
-					else $researchFieldSql .= " OR LOWER(COALESCE(atu.setting_value, atpu.setting_value)) LIKE '%" . $researchFieldField . "%'";
+					if ($researchFieldSql == "" || $researchFieldSql == null) $researchFieldSql = "LOWER(ad.research_fields) LIKE '%" . $researchFieldField . "%'";
+					else $researchFieldSql .= " OR LOWER(ad.research_fields) LIKE '%" . $researchFieldField . "%'";
 				}
 			} if ($present) $sql .= " AND (".$researchFieldSql.")";
 		} 
@@ -749,27 +678,27 @@ return $returner;
 			foreach ($proposalTypeFields as $proposalType){
 				if(!empty($proposalType)){
 					$present = true;
-					if ($proposalTypeSql == "" || $proposalTypeSql == null) $proposalTypeSql = "LOWER(COALESCE(pt.setting_value, ptt.setting_value)) LIKE '%" . $proposalType . "%'";
-					else $proposalTypeSql .= " OR LOWER(COALESCE(pt.setting_value, ptt.setting_value)) LIKE '%" . $proposalType . "%'";
+					if ($proposalTypeSql == "" || $proposalTypeSql == null) $proposalTypeSql = "LOWER(ad.proposal_types) LIKE '%" . $proposalType . "%'";
+					else $proposalTypeSql .= " OR LOWER(ad.proposal_types) LIKE '%" . $proposalType . "%'";
 				}
 			} if ($present) $sql .= " AND (".$proposalTypeSql.")";
 		} 
 
-		if (!empty($dataCollection)) $sql .= " AND (LOWER(COALESCE(dc.setting_value, dtc.setting_value)) LIKE '".$dataCollection."')";
+		if (!empty($dataCollection)) $sql .= " AND (LOWER(ad.data_collection) LIKE '".$dataCollection."')";
 		
 
 		if (!empty($multiCountry)) {
-			$sql .= " AND (LOWER(COALESCE(mcr.setting_value, mtcr.setting_value)) LIKE '".$multiCountry."')";
-			if ($multiCountry == 'No' && !empty($nationwide)) {
-				$sql .= " AND (LOWER(COALESCE(nwr.setting_value, ntwr.setting_value)) LIKE '".$nationwide."')";
-				if ($nationwide == 'No' && !empty($countryFields)){
+			$sql .= " AND (LOWER(ad.multi_country) LIKE '".$multiCountry."')";
+			if ($multiCountry == PROPOSAL_DETAIL_NO && !empty($nationwide)) {
+				$sql .= " AND (LOWER(ad.nationwide) LIKE '".$nationwide."')";
+				if ($nationwide == PROPOSAL_DETAIL_NO && !empty($countryFields)){
 					$countrySql = "";
 					$present = false;
 					foreach ($countryFields as $countryField){
 						if(!empty($countryField)){
 							$present = true;
-							if ($countrySql == "" || $countrySql == null) $countrySql = "LOWER(COALESCE(apc.setting_value, appc.setting_value)) LIKE '%" . $countryField . "%'";
-							else $countrySql .= " OR LOWER(COALESCE(apc.setting_value, appc.setting_value)) LIKE '%" . $countryField . "%'";
+							if ($countrySql == "" || $countrySql == null) $countrySql = "LOWER(ad.geo_areas) LIKE '%" . $countryField . "%'";
+							else $countrySql .= " OR LOWER(ad.geo_areas) LIKE '%" . $countryField . "%'";
 						}
 					} if ($present) $sql .= " AND (".$countrySql.")";				
 				}
@@ -778,22 +707,22 @@ return $returner;
 		
 		if (!empty($startDateBefore)){
 			$newDate = date("Y-m-d", strtotime($startDateBefore));
-			$sql .= " AND (STR_TO_DATE(sd.setting_value, '%d-%b-%Y') <= ".$this->datetimeToDB($newDate).")";
+			$sql .= " AND ad.start_date <= ".$this->datetimeToDB($newDate).")";
 		}
 
 		if (!empty($startDateAfter)){
 			$newDate = date("Y-m-d", strtotime($startDateAfter));
-			$sql .= " AND (STR_TO_DATE(sd.setting_value, '%d-%b-%Y') >= ".$this->datetimeToDB($newDate).")";
+			$sql .= " AND ad.start_date >= ".$this->datetimeToDB($newDate).")";
 		}
 
 		if (!empty($endDateBefore)){
 			$newDate = date("Y-m-d", strtotime($endDateBefore));
-			$sql .= " AND (STR_TO_DATE(ed.setting_value, '%d-%b-%Y') <= ".$this->datetimeToDB($newDate).")";
+			$sql .= " AND ad.end_date <= ".$this->datetimeToDB($newDate).")";
 		}
 
 		if (!empty($endDateAfter)){
 			$newDate = date("Y-m-d", strtotime($endDateAfter));
-			$sql .= " AND (STR_TO_DATE(ed.setting_value, '%d-%b-%Y') >= ".$this->datetimeToDB($newDate).")";
+			$sql .= " AND ad.end_date >= ".$this->datetimeToDB($newDate).")";
 		}
 		
 		if (!empty($submittedBefore)){
@@ -808,12 +737,12 @@ return $returner;
 
 		if (!empty($approvedBefore)){
 			$newDate = date("Y-m-d", strtotime($approvedBefore));
-			$sql .= " AND (apd.setting_value <= ".$this->datetimeToDB($newDate).")";
+			$sql .= " AND (sdec.date_decided <= ".$this->datetimeToDB($newDate).")";
 		}
 
 		if (!empty($approvedAfter)){
 			$newDate = date("Y-m-d", strtotime($approvedAfter));
-			$sql .= " AND (apd.setting_value >= ".$this->datetimeToDB($newDate).")";
+			$sql .= " AND (sdec.date_decided >= ".$this->datetimeToDB($newDate).")";
 		}
 				
 		$result =& $this->_getUnfilteredEditorSubmissions(

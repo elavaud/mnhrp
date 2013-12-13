@@ -45,14 +45,14 @@ class SubmissionsReportForm extends Form {
 		
 		$templateMgr =& TemplateManager::getManager();
 		$decisionOptions = array(
-				'editor.article.decision.approved' => 'editor.article.decision.approved',
-				'editor.article.decision.resubmit' => 'editor.article.decision.resubmit',
-				'editor.article.decision.declined' => 'editor.article.decision.declined',
-				'editor.article.decision.complete' => 'editor.article.decision.complete',
-				'editor.article.decision.incomplete' => 'editor.article.decision.incomplete',
-				'editor.article.decision.exempted' => 'editor.article.decision.exempted',
-				'editor.article.decision.fullReview' => 'editor.article.decision.fullReview',
-				'editor.article.decision.expedited' => 'editor.article.decision.expedited'
+				SUBMISSION_SECTION_DECISION_APPROVED => 'editor.article.decision.approved',
+				SUBMISSION_SECTION_DECISION_RESUBMIT => 'editor.article.decision.resubmit',
+				SUBMISSION_SECTION_DECISION_DECLINED => 'editor.article.decision.declined',
+				SUBMISSION_SECTION_DECISION_COMPLETE => 'editor.article.decision.complete',
+				SUBMISSION_SECTION_DECISION_INCOMPLETE => 'editor.article.decision.incomplete',
+				SUBMISSION_SECTION_DECISION_EXEMPTED => 'editor.article.decision.exempted',
+				SUBMISSION_SECTION_DECISION_FULL_REVIEW => 'editor.article.decision.fullReview',
+				SUBMISSION_SECTION_DECISION_EXPEDITED => 'editor.article.decision.expedited'
 		);
 		$templateMgr->assign_by_ref('decisionsOptions', $decisionOptions);
 

@@ -483,14 +483,14 @@ function monetaryUncheckAll(){
 	</tr>
 	<tr>
 		<td><input type="checkbox" name="checkProposalId" class="checkSubmission" checked="checked"/>&nbsp;Proposal ID</td>
-		<td><input type="checkbox" name="checkErc" class="checkSubmission"/>&nbsp;Ethics Review Committee</td>
+		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="checkDecision" class="checkSubmission" checked="checked"/>&nbsp;Decision</td>
+		<td><input type="checkbox" name="checkDecision" class="checkSubmission" checked="checked"/>&nbsp;Committee Decision</td>
 		<td><input type="checkbox" name="checkDateSubmitted" class="checkSubmission"/>&nbsp;Date Submitted</td>
-		<td><input type="checkbox" name="checkDateApproved" class="checkSubmission"/>&nbsp;Date Approved</td>
+		<td>&nbsp;</td>
 		<td>&nbsp;</td>
 	</tr>
 	<tr>
@@ -564,6 +564,7 @@ function monetaryUncheckAll(){
 
 	<tr><td colspan="5"><h4><a href="#proposal" onclick="hideProposalDetails()" class="action" id="hideProposalDetails">Proposal Details</a></h4></td></tr>
 	<tr valign="top">
+		<!--
 		<td>&nbsp;</td>
 		<td colspan="2"><br/>Ethics Committee</td>
 		<td colspan="2"><br/>
@@ -571,6 +572,7 @@ function monetaryUncheckAll(){
             <br/>
         	<input type="radio" name="erc" id="ercuhs" value="2"/> Ethical Committee of the University of Health Sciences
         </td>
+        -->
 	</tr>
 	
 	<tr valign="top" id="firstDecision" class="decision">
