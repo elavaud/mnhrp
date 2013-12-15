@@ -406,8 +406,7 @@ class SubmissionEditHandler extends SectionEditorHandler {
 		$approvalDate = Request::getUserVar('approvalDate'); 
 		
                 $decision = Request::getUserVar('decision');
-		$sectionDecisionDao =& DAORegistry::getDAO("SectionDecisionDAO");
-		$previousDecision =& $sectionDecisionDao->getLastSectionDecision($articleId);
+		$previousDecision =& $submission->getLastSectionDecision();
                 $pastDecisionResult = $previousDecision->getDecision();
 
 		$fileName = "finalDecisionFile";
@@ -425,8 +424,6 @@ class SubmissionEditHandler extends SectionEditorHandler {
 			$lastDecisionId = null;
 			else $lastDecisionId = $previousDecision->getId();
 		} else $lastDecisionId = null;
-
-                $round = $sectionDecisionDao->getRound($articleId, $previousDecision->getReviewType());
 		
                 $comments = null;
                 if ($pastDecisionResult == SUBMISSION_SECTION_DECISION_EXEMPTED) {
@@ -451,7 +448,7 @@ class SubmissionEditHandler extends SectionEditorHandler {
 			case SUBMISSION_SECTION_DECISION_COMPLETE:
 			case SUBMISSION_SECTION_DECISION_INCOMPLETE:
 			case SUBMISSION_SECTION_DECISION_DONE:
-                        SectionEditorAction::recordDecision($submission, $decision, $previousDecision->getReviewType(), $round, $comments, $approvalDate, $lastDecisionId);
+                        SectionEditorAction::recordDecision($submission, $decision, $previousDecision->getReviewType(), $previousDecision->getRound(), $comments, $approvalDate, $lastDecisionId);
 				break;
 		}
 		

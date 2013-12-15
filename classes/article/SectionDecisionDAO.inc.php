@@ -271,23 +271,6 @@ class SectionDecisionDAO extends DAO{
 		return $returner;
 	}
 
-	/*
-	 * Get the round to apply on a decision
-	 */
-	function getRound($articleId, $reviewType) {
-		$result =& $this->retrieve(
-			sprintf('SELECT COUNT(*) FROM section_decisions WHERE article_id = ? AND review_type = ? AND (decision = '.SUBMISSION_SECTION_DECISION_APPROVED.' OR decision = '.SUBMISSION_SECTION_DECISION_DECLINED.' or decision = '.SUBMISSION_SECTION_DECISION_EXEMPTED.' or decision = '.SUBMISSION_SECTION_DECISION_INCOMPLETE.')'),
-			array($articleId, $reviewType)
-		);
-
-		$returner = (int)isset($result->fields[0]) ? $result->fields[0] : 0;
-
-		$result->Close();
-		unset($result);
-		
-		return $returner + 1;
-	}
-
         /*
 	 * Get section decisions available for a committee meeting
 	 * @param $sectionId int
