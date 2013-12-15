@@ -78,8 +78,9 @@ class SectionEditorAction extends Action {
 			if (($decision == SUBMISSION_SECTION_DECISION_EXEMPTED && $sectionDecision->getComments())
 				|| $decision == SUBMISSION_SECTION_DECISION_APPROVED 
 				|| $decision == SUBMISSION_SECTION_DECISION_DONE 
+				|| $decision == SUBMISSION_SECTION_DECISION_INCOMPLETE
 				|| $decision == SUBMISSION_SECTION_DECISION_RESUBMIT
-			) 
+                        ) 
 				$sectionEditorSubmission->setStatus(STATUS_REVIEWED);
 			elseif ($decision == SUBMISSION_SECTION_DECISION_DECLINED) 
 				$sectionEditorSubmission->setStatus(STATUS_ARCHIVED);

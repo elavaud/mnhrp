@@ -425,8 +425,8 @@ class SubmissionEditHandler extends SectionEditorHandler {
 			$lastDecisionId = null;
 			else $lastDecisionId = $previousDecision->getId();
 		} else $lastDecisionId = null;
-				
-		$round = $sectionDecisionDao->getRound($articleId, $previousDecision->getReviewType());
+
+                $round = $sectionDecisionDao->getRound($articleId, $previousDecision->getReviewType());
 		
                 $comments = null;
                 if ($pastDecisionResult == SUBMISSION_SECTION_DECISION_EXEMPTED) {

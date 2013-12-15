@@ -48,7 +48,8 @@ class AuthorSubmission extends Article {
 	 * @param $sectionDecisions array
 	 */
 	private function usortDecisions($a, $b){
-    	return $a->getDateDecided() == $b->getDateDecided() ? 0 : ( $a->getDateDecided() > $b->getDateDecided() ) ? 1 : -1;
+            
+    	return $a->getId() == $b->getId() ? 0 : ( $a->getId() > $b->getId() ) ? 1 : -1;
    	}
         
 	function getDecisions() {

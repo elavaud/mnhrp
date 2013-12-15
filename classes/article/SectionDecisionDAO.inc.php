@@ -276,7 +276,7 @@ class SectionDecisionDAO extends DAO{
 	 */
 	function getRound($articleId, $reviewType) {
 		$result =& $this->retrieve(
-			sprintf('SELECT COUNT(*) FROM section_decisions WHERE article_id = ? AND review_type = ? AND (decision = '.SUBMISSION_SECTION_DECISION_APPROVED.' OR decision = '.SUBMISSION_SECTION_DECISION_DECLINED.' or decision = '.SUBMISSION_SECTION_DECISION_EXEMPTED.')'),
+			sprintf('SELECT COUNT(*) FROM section_decisions WHERE article_id = ? AND review_type = ? AND (decision = '.SUBMISSION_SECTION_DECISION_APPROVED.' OR decision = '.SUBMISSION_SECTION_DECISION_DECLINED.' or decision = '.SUBMISSION_SECTION_DECISION_EXEMPTED.' or decision = '.SUBMISSION_SECTION_DECISION_INCOMPLETE.')'),
 			array($articleId, $reviewType)
 		);
 

@@ -41,6 +41,7 @@ class SubmitHandler extends AuthorHandler {
         $lastDecisionValue = $lastDecision->getDecision();
 
         if ($lastDecisionValue == SUBMISSION_SECTION_DECISION_INCOMPLETE || $lastDecisionValue == SUBMISSION_SECTION_DECISION_RESUBMIT) {
+            
             $newSectionDecision =& new SectionDecision();
             $newSectionDecision->setArticleId($articleId);
             $newSectionDecision->setReviewType($lastDecision->getReviewType());
@@ -48,15 +49,14 @@ class SubmitHandler extends AuthorHandler {
             $newSectionDecision->setSectionId($lastDecision->getSectionId());
             $newSectionDecision->setDecision(0);
             $newSectionDecision->setDateDecided(date(Core::getCurrentDate()));
-            
-            $step = 2;
             $authorSubmission->addDecision($newSectionDecision);    
-            $authorSubmission->setStatus(STATUS_QUEUED);
-            $authorSubmission->setSubmissionProgress($step);
-            $authorSubmission->setDateStatusModified(date(Core::getCurrentDate()));
-            $authorSubmission->setLastModified(date(Core::getCurrentDate()));
                         
             $authorSubmissionDao->updateAuthorSubmission($authorSubmission);
+            
+            $step = 2;
+            $articleDao =& DAORegistry::getDAO('ArticleDAO');
+            $articleDao->changeArticleStatus($articleId, STATUS_QUEUED);
+            $articleDao->changeArticleProgress($articleId, $step);
             
             Request::redirect(null, null, 'submit', $step, array('articleId' => $articleId));
         }
