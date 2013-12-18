@@ -1016,7 +1016,7 @@ class SectionEditorSubmissionDAO extends DAO {
 
 		$paramArray = array($decisionId, ASSOC_TYPE_USER, 'interest', $journalId, RoleDAO::getRoleIdFromPath('reviewer'));
 
-		if ($extReviewer == true) $searchSql = ' AND er.section_id = 0 ';
+                if ($extReviewer == true) $searchSql = ' AND er.section_id = 0 ';
 		else {
 			$searchSql = ' AND er.section_id = ? ';
 			$paramArray[] = $sectionId;
@@ -1048,17 +1048,17 @@ class SectionEditorSubmissionDAO extends DAO {
 			}
 		} elseif (isset($search)) switch ($searchType) {
 			case USER_FIELD_USERID:
-				$searchSql = 'AND user_id=?';
+				$searchSql .= ' AND user_id=?';
 				$paramArray[] = $search;
 				break;
 			case USER_FIELD_INITIAL:
-				$searchSql = 'AND (LOWER(last_name) LIKE LOWER(?) OR LOWER(username) LIKE LOWER(?))';
+				$searchSql .= ' AND (LOWER(last_name) LIKE LOWER(?) OR LOWER(username) LIKE LOWER(?))';
 				$paramArray[] = $search . '%';
 				$paramArray[] = $search . '%';
 				break;
 		}
 
-		$result =& $this->retrieveRange(
+                $result =& $this->retrieveRange(
 			'SELECT DISTINCT
 				u.user_id,
 				u.last_name,
@@ -1081,7 +1081,7 @@ class SectionEditorSubmissionDAO extends DAO {
 				LEFT JOIN erc_reviewers er ON (er.user_id = u.user_id)
 			WHERE u.user_id = r.user_id AND
 				r.journal_id = ? AND
-				r.role_id = ? ' . $searchSql . 'GROUP BY u.user_id, u.last_name, ar.review_id' .
+				r.role_id = ? ' . $searchSql . ' GROUP BY u.user_id, u.last_name, ar.review_id' .
 			($sortBy?(' ORDER BY ' . $this->getSortMapping($sortBy) . ' ' . $this->getDirectionMapping($sortDirection)) : ''),
 			$paramArray, $rangeInfo
 		);
