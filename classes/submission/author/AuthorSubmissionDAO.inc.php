@@ -11,6 +11,7 @@
  * @see AuthorSubmission
  *
  * @brief Operations for retrieving and modifying AuthorSubmission objects.
+ * Hi all
  */
 
 // $Id$
