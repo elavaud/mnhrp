@@ -132,7 +132,7 @@ function checkSize(){
 				</tr>
 			</form>
 		{/if}
-		{if $decision == SUBMISSION_SECTION_DECISION_APPROVED || $decision == SUBMISSION_SECTION_DECISION_RESUBMIT || $decision == SUBMISSION_SECTION_DECISION_DECLINED || ($decision == SUBMISSION_SECTION_DECISION_DECLINED && $sectionDecision->getComments())}
+		{if $decision == SUBMISSION_SECTION_DECISION_APPROVED || $decision == SUBMISSION_SECTION_DECISION_RESUBMIT || $decision == SUBMISSION_SECTION_DECISION_DECLINED || ($decision == SUBMISSION_SECTION_DECISION_EXEMPTED && $sectionDecision->getComments())}
 			{if $decision == SUBMISSION_SECTION_DECISION_APPROVED || $decision == SUBMISSION_SECTION_DECISION_RESUBMIT || $decision == SUBMISSION_SECTION_DECISION_DECLINED}
 				{assign var="reviewAssignments" value=$sectionDecision->getReviewAssignmentsDone()}
 				<tr valign="top" id="decisionFile">
@@ -181,7 +181,7 @@ function checkSize(){
 						</td>
 					</tr>
 				{/foreach}
-			{elseif ($decision == SUBMISSION_SECTION_DECISION_DECLINED && $sectionDecision->getComments())}
+			{elseif ($decision == SUBMISSION_SECTION_DECISION_EXEMPTED && $sectionDecision->getComments())}
 			
 				{assign var="reasons" value=$sectionDecision->getProposalReasonsForExemption()}
 				{assign var="reasonsMap" value=$sectionDecision->getReasonsForExemptionMap()}
