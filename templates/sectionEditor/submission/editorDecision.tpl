@@ -186,7 +186,7 @@ function checkSize(){
 				{assign var="reasons" value=$sectionDecision->getProposalReasonsForExemption()}
 				{assign var="reasonsMap" value=$sectionDecision->getReasonsForExemptionMap()}
 				<tr style="vertical-align:middle">
-					<td class="label" align="center">[?] {translate key="editor.article.reasonsForExemption"}</td>
+					<td class="label">[?] {translate key="editor.article.reasonsForExemption"}</td>
 					<td class="value">
 						{foreach from=$reasonsMap item=reasonLocale key=reasonVal}
 							{if $reasons[$reasonVal] == 1}
