@@ -184,33 +184,34 @@
 		 	{assign var="isPresent" value="attendance"}
 		 	{assign var="reason" value="reason"}
 		 	{foreach from=$meetingAttendances  item=guest}
-		 	{assign var="guestId" value=$guest->getUserId()}
-		 	<tr>	
-				<td width="5%">
-					<input type="hidden" name="guest_attendance[{$guestId}][guestId]" id="reviewer-guestId-{$guestId}" value="{$guestId}" /> 
-					<input type="radio" class="absent" name="guest_attendance[{$guestId}][attendance]" id="reviewer-isabsent-{$guestId}" {if isset($attendance.$guestId.attendance)}{if $attendance.$guestId.attendance == "absent"} checked="checked" {/if}{elseif $guest->getIsAttending() == 2} checked="checked" {/if} value="absent"  />
-				</td>
-		 		<td width="5%">
-					<input type="radio" class="present" name="guest_attendance[{$guestId}][attendance]" id="reviewer-ispresent-{$guestId}" {if isset($attendance.$guestId.attendance)}{if $attendance.$guestId.attendance == "present"} checked="checked" {/if}{elseif $guest->getIsAttending() == 1} checked="checked" {/if} value="present" />
-		 		</td>
-				<td width="20%">
-					<label for="attendance[{$guestId}]">{$guest->getSalutation} {$guest->getFirstName()} {$guest->getLastName()}</label></td>
-				<td width="20%">{$guest->getFunctions()}</td>
-				<td width="50%" id="div_reason_of_absence_{$guestId}" class="div_reason_of_absence">
-					<table width="100%">
-						<tr>
-							<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})" id="absent-{$guestId}-duty-travel" value="Duty Travel" {if  $attendance.$guestId.reason == "Duty Travel" } checked="checked"{/if} /><label for="duty_travel_{$guest->getId()}">{translate key="editor.minutes.absent.dutyTravel"}</label></td>
-							<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})"  id="absent-{$guestId}-on-leave" value="On Leave" {if $attendance.$guestId.reason == "On Leave" } checked="checked"{/if} /><label for="on_leave_{$guest->getId()}">{translate key="editor.minutes.absent.onLeave"}</label></td>
-						</tr>
-						<tr>
-							<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})" id="absent-{$guestId}-other-commitment" value="Other Commitment" {if  $attendance.$guestId.reason == "Other Commitment" } checked="checked"{/if}/><label for="others_{$guest->getId()}">{translate key="editor.minutes.absent.otherCommitment"}</label></td>
-							<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})" id="absent-{$guestId}-unexcused" value="Unexcused" {if  $attendance.$guestId.reason == "Unexcused" } checked="checked"{/if}/><label for="unexcused_{$guest->getId()}">{translate key="editor.minutes.absent.unexcused"}</label></td>
-						</tr>
-					</table>
-				</td>
-				<input type="hidden" name="guest_attendance[{$guestId}][guestId]" value="{$guestId}">
-			</tr>
-			<tr><td colspan="5" class="separator"></td></tr>	
+		 		{assign var="guestId" value=$guest->getUserId()}
+		 		{assign var="user" value=$guest->getUser()}
+		 		<tr>	
+					<td width="5%">
+						<input type="hidden" name="guest_attendance[{$guestId}][guestId]" id="reviewer-guestId-{$guestId}" value="{$guestId}" /> 
+						<input type="radio" class="absent" name="guest_attendance[{$guestId}][attendance]" id="reviewer-isabsent-{$guestId}" {if isset($attendance.$guestId.attendance)}{if $attendance.$guestId.attendance == "absent"} checked="checked" {/if}{elseif $guest->getIsAttending() == 2} checked="checked" {/if} value="absent"  />
+					</td>
+		 			<td width="5%">
+						<input type="radio" class="present" name="guest_attendance[{$guestId}][attendance]" id="reviewer-ispresent-{$guestId}" {if isset($attendance.$guestId.attendance)}{if $attendance.$guestId.attendance == "present"} checked="checked" {/if}{elseif $guest->getIsAttending() == 1} checked="checked" {/if} value="present" />
+		 			</td>
+					<td width="20%">
+						<label for="attendance[{$guestId}]">{$user->getFullName()}</label></td>
+					<td width="20%">{$user->getFunctions()}</td>
+					<td width="50%" id="div_reason_of_absence_{$guestId}" class="div_reason_of_absence">
+						<table width="100%">
+							<tr>
+								<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})" id="absent-{$guestId}-duty-travel" value="Duty Travel" {if  $attendance.$guestId.reason == "Duty Travel" } checked="checked"{/if} /><label for="duty_travel_{$guest->getId()}">{translate key="editor.minutes.absent.dutyTravel"}</label></td>
+								<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})"  id="absent-{$guestId}-on-leave" value="On Leave" {if $attendance.$guestId.reason == "On Leave" } checked="checked"{/if} /><label for="on_leave_{$guest->getId()}">{translate key="editor.minutes.absent.onLeave"}</label></td>
+							</tr>
+							<tr>
+								<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})" id="absent-{$guestId}-other-commitment" value="Other Commitment" {if  $attendance.$guestId.reason == "Other Commitment" } checked="checked"{/if}/><label for="others_{$guest->getId()}">{translate key="editor.minutes.absent.otherCommitment"}</label></td>
+								<td width="50%"><input type="radio" name="guest_attendance[{$guestId}][reason]" onClick="reasonClicked({$guestId})" id="absent-{$guestId}-unexcused" value="Unexcused" {if  $attendance.$guestId.reason == "Unexcused" } checked="checked"{/if}/><label for="unexcused_{$guest->getId()}">{translate key="editor.minutes.absent.unexcused"}</label></td>
+							</tr>
+						</table>
+					</td>
+					<input type="hidden" name="guest_attendance[{$guestId}][guestId]" value="{$guestId}">
+				</tr>
+				<tr><td colspan="5" class="separator"></td></tr>	
 			{/foreach}	 	
 			<tr><td colspan="5" class="endseparator">&nbsp;</td></tr>	
 	</table> 
@@ -234,7 +235,7 @@
 	</div>
 	
 	<br/><br/>
-	<input type="submit" onclick="return confirm('{translate|escape:"jsparam" key="editor.minutes.confirmAttendance"}')" value="Submit"  class="button defaultButton" name="submitAttendance"/>	 
+	<input type="submit" value="Submit" class="button defaultButton" name="submitAttendance"/>	 
 	<input type="button" value={translate key="common.back"} class="button" onclick="document.location.href='{url op="generateAttendance" path=$meeting->getId() }'" />
 </div>
  </form>

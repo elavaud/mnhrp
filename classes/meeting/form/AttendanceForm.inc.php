@@ -5,7 +5,6 @@
  */
 
 
-import('classes.lib.fpdf.pdf');
 import('lib.pkp.classes.form.Form');
 
 class AttendanceForm extends Form {
@@ -126,7 +125,6 @@ class AttendanceForm extends Form {
 
 	function savePdf() {
 		$meeting =& $this->meeting;		
-		$userDao =& DAORegistry::getDAO("UserDAO");
 		$meetingAttendanceDao =& DAORegistry::getDAO("MeetingAttendanceDAO");
 		$meetingAttendances =& $meetingAttendanceDao->getMeetingAttendancesByMeetingId($meeting->getId());
 		$suppGuestNames = $this->getData("suppGuestName");
@@ -134,58 +132,120 @@ class AttendanceForm extends Form {
 		$meetingDateTime = date( "d F Y g:ia", strtotime( $meeting->getDate() ) );
 		$meetingDate = date( "d F Y", strtotime( $meeting->getDate() ) );
 		$details = Locale::translate('editor.meeting.attendanceReport.intro1').' '.$this->getData("venue").' '.Locale::translate('common.date.on').' '.$meetingDateTime.' '.Locale::translate('editor.meeting.attendanceReport.intro2').' '.$this->quorum.' '.Locale::translate('editor.meeting.attendanceReport.intro3').' '.$this->getData('adjourned') .".";
-		$pdf = new PDF();
-		$pdf->AddPage();
-		
+		$journal = Request::getJournal();
+                $user = Request::getUser();
+                
+                import('classes.lib.tcpdf.pdf');
+                
+                $pdf = new PDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+                                                
+                $pdf->SetCreator(PDF_CREATOR);
+                
+                $pdf->SetAuthor($user->getFullName());
+                
+                $pdf->SetTitle($journal->getJournalTitle());
+                
+                $pdf->SetSubject($meeting->getPublicId().' - '.Locale::translate('editor.minutes.attendance'));                
+                                
+                // set default header data
+                $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 020', PDF_HEADER_STRING);
+
+                // set header and footer fonts
+                $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+                $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+
+                // set default monospaced font
+                $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
+
+                // set margins
+                $pdf->SetMargins(PDF_MARGIN_LEFT, 58, PDF_MARGIN_RIGHT);
+                $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+                $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+                // set auto page breaks
+                $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+                // set image scale factor
+                $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+                
+                $pdf->AddPage();
+                $pdf->SetFont('dejavusans','B',13);                
+                
 		$sectionDao =& DAORegistry::getDAO("SectionDAO");
 		$erc =& $sectionDao->getSection($meeting->getUploader());
 		
-		$pdf->ChapterTitle($erc->getSectionTitle(), "I");
-		
-		$pdf->ChapterTitle(Locale::translate('editor.meeting.attendanceReport.meetingDate').' '.$meetingDate, "BU");
-		$memberCount = 0;
-		$pdf->ChapterItemKey(Locale::translate('editor.meeting.attendanceReport.membersPresent'), 'BU');
+                $pdf->SetFont('dejavusans','I',13);                
+                $pdf->MultiCell(0,6,$erc->getSectionTitle(), 0, 'C');
+                $pdf->MultiCell(0,6,Locale::translate('editor.meeting.attendanceReport.meetingDate').' '.$meetingDate, 0, 'C');
+                $pdf->ln();
+                        
+                $memberCount = 0;
+                $pdf->SetFont('dejavusans','BU',12);
+                $pdf->MultiCell(0,6,Locale::translate('editor.meeting.attendanceReport.membersPresent'), 0, 'L');
+                $pdf->ln();
+                $pdf->SetFont('dejavusans','',12);
 		foreach($meetingAttendances as $meetingAttendance) {
 			if($meetingAttendance->getWasPresent() == 1) {
-				$pdf->ChapterItemVal($meetingAttendance->getFullName());
+                                $member =& $meetingAttendance->getUser();
+                                $pdf->MultiCell(0,6,$member->getFullName(), 0, 'L');
 				$memberCount++;									
 			}
 		}
-		
-		if($memberCount == 0) $pdf->ChapterItemVal(Locale::translate('common.none'));
-		
+		if($memberCount == 0) $pdf->MultiCell(0,6,Locale::translate('common.none'), 0, 'L');
+                $pdf->ln();
+                
 		$memberCount = 0;
-		$pdf->ChapterItemKey(Locale::translate('editor.meeting.attendanceReport.membersAbsent'), 'BU');
+                $pdf->SetFont('dejavusans','BU',12);
+                $pdf->MultiCell(0,6,Locale::translate('editor.meeting.attendanceReport.membersAbsent'), 0, 'L');
+                $pdf->ln();
+                $pdf->SetFont('dejavusans','',12);
+
 		foreach($meetingAttendances as $meetingAttendance) {
 			if($meetingAttendance->getWasPresent() == 2) {
-				$pdf->ChapterItemVal($meetingAttendance->getFullName().' ('.Locale::translate('editor.meeting.attendanceReport.reasonForAbsence').' '.$meetingAttendance->getReasonForAbsence().')');
+                                $member =& $meetingAttendance->getUser();
+                                $pdf->MultiCell(0,6,$member->getFullName().' ('.Locale::translate('editor.meeting.attendanceReport.reasonForAbsence').' '.$meetingAttendance->getReasonForAbsence().')', 0, 'L');
 				$memberCount++;																	
 			}			
 		}
-		
-		if($memberCount == 0) $pdf->ChapterItemVal(Locale::translate('common.none'));
-		
+		if($memberCount == 0) $pdf->MultiCell(0,6,Locale::translate('common.none'), 0, 'L');
+                $pdf->ln();
+                
 		if(count($suppGuestNames)>0) {
 			$suppGuestCount = 0;
 			foreach($suppGuestNames as $key=>$guest) {
 				if($guest!="" && $guest!=null) {
-					if ($suppGuestCount == 0) $pdf->ChapterItemKey(Locale::translate('editor.meeting.attendanceReport.suppGuest'), 'BU');
-					$pdf->ChapterItemVal("$guest ($suppGuestAffiliations[$key])");
+                                        if ($suppGuestCount == 0) {
+                                            $pdf->SetFont('dejavusans','BU',12);
+                                            $pdf->MultiCell(0,6,Locale::translate('editor.meeting.attendanceReport.suppGuest'), 0, 'L');
+                                            $pdf->ln();
+                                            $pdf->SetFont('dejavusans','',12);
+                                        }
+                                        $pdf->MultiCell(0,6,$guest.' ('.$suppGuestAffiliations[$key].')', 0, 'L');
 					$suppGuestCount++;
 				}
 			}
+                        $pdf->ln();
 		}
 			 
-		$pdf->Ln(10);
-		$pdf->ChapterItemVal($details);
-		if($this->getData("announcements")) $pdf->ChapterItemKeyVal(Locale::translate('editor.meeting.attendanceReport.announcements'), $this->getData("announcements"), "BU");
+                $pdf->MultiCell(0,6,$details, 0, 'L');
+                $pdf->ln();
+                
+                if($this->getData("announcements")) {
+                    $pdf->SetFont('dejavusans','BU',12);
+                    $pdf->MultiCell(0,6,Locale::translate('editor.meeting.attendanceReport.announcements'), 0, 'L');
+                    $pdf->ln();
+                    $pdf->SetFont('dejavusans','',12);
+                    $pdf->MultiCell(0,6,$this->getData("announcements"), 0, 'L');
+                    $pdf->ln();
+                }
 		
-		$user =& Request::getUser();
-		$pdf->ChapterItemKeyVal(Locale::translate('editor.meeting.attendanceReport.submittedBy'), $user->getFullName(), "B");
-			
-		$journal =& Request::getJournal();
-		$journalId = $journal->getId();
-		
+                $pdf->SetFont('dejavusans','BU',12);
+                $pdf->MultiCell(0,6,Locale::translate('editor.meeting.attendanceReport.submittedBy'), 0, 'L');
+                $pdf->ln();
+                $pdf->SetFont('dejavusans','',12);
+                $pdf->MultiCell(0,6,$user->getFullName(), 0, 'L');
+                $pdf->ln();
+					
 		import('classes.file.MinutesFileManager');
 		$minutesFileManager = new MinutesFileManager($meeting->getId());
 		$minutesFileManager->handleWrite($pdf, MINUTES_FILE_ATTENDANCE);
