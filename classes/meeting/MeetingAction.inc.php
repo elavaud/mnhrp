@@ -583,7 +583,8 @@ class MeetingAction extends Action {
 					$dateLocation .= Locale::translate('editor.meeting.location').': '.$meeting->getLocation()."\n";
 				}
 				$dateLocation .= Locale::translate('editor.meeting.numberOfProposalsToReview').': '.count($mSectionDecisions)."\n";
-				
+                                
+                                $meetingAttendanceDao =& DAORegistry::getDAO('MeetingAttendanceDAO');
 				$type = $meetingAttendanceDao->getTypeOfUser($meeting->getId(), $addressee->getId());
 				
 				$replyUrl = (string)'';
