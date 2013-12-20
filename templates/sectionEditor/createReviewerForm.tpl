@@ -179,10 +179,9 @@
 		<td class="value">
 			<select name="ercStatus" size="1" class="selectMenu">
 				<option value=""></option>
-				<option value="Chair">{$erc->getLocalizedAbbrev()} Chair</option>
-				<option value="Vice-Chair">{$erc->getLocalizedAbbrev()} Vice-Chair</option>
-				<option value="Secretary">{$erc->getLocalizedAbbrev()} Secretary</option>
-				<option value="Member">{$erc->getLocalizedAbbrev()} Member</option>	
+				<option value="Chair">{$erc->getLocalizedAbbrev()} {translate key="user.ercrole.chair"}</option>
+				<option value="Vice-Chair">{$erc->getLocalizedAbbrev()} {translate key="user.ercrole.viceChair"}</option>
+				<option value="Member">{$erc->getLocalizedAbbrev()} {translate key="user.ercrole.ercMember"}</option>	
 			</select>
 		</td>
 	</tr>
