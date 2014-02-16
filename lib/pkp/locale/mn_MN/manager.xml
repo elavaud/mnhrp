@@ -2,17 +2,17 @@
 <!DOCTYPE locale SYSTEM "../../dtd/locale.dtd">
 
 <!--
-  * locale/en_US/manager.xml
+  * locale/mn_MN/manager.xml
   *
   * Copyright (c) 2000-2011 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
-  * Localization strings for the en_US (English) locale.
+  * Localization strings for the mn_MN (Mongolian) locale.
   *
   * $Id$
   -->
 
-<locale name="en_US" full_name = "English">
+<locale name="mn_MN" full_name = "Mongolian">
 	<message key="manager.announcements">Зарлалууд</message>
 	<message key="manager.announcements.confirmDelete">Та энэхүү зарлалыг бүрмөсөн устгахдаа итгэлтэй байна уу?</message>
 	<message key="manager.announcements.create">Шинэ зарлал үүсгэх</message>
@@ -174,47 +174,47 @@
 	<p>Бүртгэлийн е-мэйл зайлшгүй шаардлагатай биш боловч хэрэв та холболтын асуудалтай бол шаардлагатай байж болно. Дэлгэрэнгүй мэдээллийг авахын тулд Entrez баримтын <a href="http://www.be-md.ncbi.nlm.nih.gov/bookshelf/br.fcgi?book=helpeutils&part=chapter2#chapter2.Usage_Guidelines_and_Requiremen" target="_blank">Хэрэглээний гарын авлага ба шаардлагууд</a> хэсгээс харна уу.</p>]]></message>
 	<message key="manager.setup.filter.lookup.grid.description.worldCat"><![CDATA[<p>Энэ шүүлтүүр нь <a href="http://www.worldcat.org/" target="_blank">Worldcat</a> (сонголттой) ба OCLC үйлчилгээнүүд <a href="http://www.worldcat.org/affiliate/webservices/xisbn/app.jsp" target="_blank">xISBN</a> -д холбогддог.</p>
 	<p>Хэрэв танд Worldcat <a href="http://www.worldcat.org/devnet/wiki/SearchAPIWhoCanUse" target="_blank">API түлхүүр</a> байгаа бол та доорх түлхүүрээр  you can connect to Worldcat by entering the key below.</p>]]></message>
-	<message key="manager.setup.filter.lookup.grid.loadMessage">Please wait until the citation database configuration grid has been loaded...</message>
-	<message key="manager.setup.filter.lookup.grid.title">Citation Database Connectors</message>
-	<message key="manager.setup.filter.noMoreTemplates">All available transformations have already been added. Please click 'Cancel' to return to the setup page.</message>
-	<message key="manager.setup.filter.parser.grid.descriptionConfirm">You have chosen to add the {$filterDisplayName} parser. Please click on 'OK' to confirm.</message>
-	<message key="manager.setup.filter.parser.grid.descriptionTemplate">Please select a citation parser.</message>
-	<message key="manager.setup.filter.parser.grid.description.freeCite"><![CDATA[<p>This extraction filter connects to the <a href="http://freecite.library.brown.edu/" target="_blank">FreeCite</a> web service.</p>]]></message>
-	<message key="manager.setup.filter.parser.grid.description.paraCite"><![CDATA[<p>This extraction filter uses the <a href="http://paracite.eprints.org/developers/" target="_blank">ParaTools</a> Perl modules to provide <a href="http://paracite.eprints.org" target="_blank">ParaCite</a> citation parsing functionality. In order for this to work properly, you must have Perl installed, along with the <a href="http://search.cpan.org/~mjewell/Biblio-Citation-Parser-1.10/" target="_blank">Biblio::Citation::Parser</a> and <a href="http://search.cpan.org/~sburke/Text-Unidecode-0.04/" target="_blank">Text::Unidecode</a> CPAN modules. You must also configure the <tt>perl</tt> directive in your configuration file. This directive can be found in the External Commands section of <tt>config.inc.php</tt>.</p>
-	<p>You can also choose which parser module ParaTools should use. You can choose between the standard, <a href="http://search.cpan.org/~mjewell/Biblio-Citation-Parser-1.10/lib/Biblio/Citation/Parser/Jiao.pm" target="_blank">Jiao</a>, and <a href="http://search.cpan.org/~mjewell/Biblio-Citation-Parser-1.10/lib/Biblio/Citation/Parser/Citebase.pm" target="_blank">Citebase</a> parser modules.</p>]]></message>
-	<message key="manager.setup.filter.parser.grid.description.parsCit"><![CDATA[<p>This extraction filter connects to the <a href="http://aye.comp.nus.edu.sg/parsCit/" target="_blank">ParsCit</a> web service.</p>]]></message>
-	<message key="manager.setup.filter.parser.grid.description.regEx">The RegEx extraction filter uses a series of regular expressions to parse citations.</message>
-	<message key="manager.setup.filter.parser.grid.loadMessage">Please wait until the citation parser configuration grid has been loaded...</message>
-	<message key="manager.setup.filter.parser.grid.title">Citation Extraction Services</message>
-	<message key="manager.setup.filter.pleaseSelect">Please select...</message>
-	<message key="manager.setup.homeHeaderImageInvalid">Invalid homepage header logo image format or upload failed. Accepted formats are .gif, .jpg, or .png.</message>
-	<message key="manager.setup.homepageImageInvalid">Invalid homepage image format or upload failed. Accepted formats are .gif, .jpg, or .png.</message>
-	<message key="manager.setup.homeTitleImageInvalid">Invalid homepage header title image format or upload failed. Accepted formats are .gif, .jpg, or .png.</message>
-	<message key="manager.setup.layout.leftSidebar">Left Sidebar</message>
-	<message key="manager.setup.layout.rightSidebar">Right Sidebar</message>
-	<message key="manager.setup.layout.unselected">Unselected</message>
-	<message key="manager.setup.loggingAndAuditing">Logging and Auditing</message>
-	<message key="manager.setup.metaCitationsDescription">Activate the following checkbox to enable citation and reference editing. This will allow authors to include raw citations with submissions. Editors will also have access to a citation markup assistant which can check raw citations against external databases, such as WorldCat, ISBNdb, PubMed and others, for accuracy. Approved citations can be exported into final galley files.</message>
-	<message key="manager.setup.pageHeaderLogoImageInvalid">Invalid page header logo image format or upload failed. Accepted formats are .gif, .jpg, or .png.</message>
-	<message key="manager.setup.pageHeaderTitleImageInvalid">Invalid page header title image format or upload failed. Accepted formats are .gif, .jpg, or .png.</message>
-	<message key="manager.setup.selectOne">Select one</message>
+	<message key="manager.setup.filter.lookup.grid.loadMessage">Ишлэл өгөгдлийн сангийн тохиргоо ачаалагдаж дуусах хүртэл түр хүлээнэ үү...</message>
+	<message key="manager.setup.filter.lookup.grid.title">Ишлэл өгөгдлийн сангийн холбогчууд</message>
+	<message key="manager.setup.filter.noMoreTemplates">Бүх боломжит өөрчлөлт нэмэгдсэн байна. Тохиргоо хуудасруу буцах бол "Болих" дээр товшино уу.</message>
+	<message key="manager.setup.filter.parser.grid.descriptionConfirm">Та {$ filterDisplayName} ялгагчийг нэмж сонгосон байна. Баталгаажуулахын тулд "Тийм" дээр товшино уу.</message>
+	<message key="manager.setup.filter.parser.grid.descriptionTemplate">Та ишлэл ялгагчаа сонгоно уу.</message>
+	<message key="manager.setup.filter.parser.grid.description.freeCite"><![CDATA[<p>Энэ задлах шүүлтүүр <a href="http://freecite.library.brown.edu/" target="_blank">FreeCite</a> вэб үйлчилгээнд холбогдоно.</p>]]></message>
+	<message key="manager.setup.filter.parser.grid.description.paraCite"><![CDATA[<p>Энэ задлах шүүлтүүр гүйцэтгэлүүдийг магадлагч <a href="http://paracite.eprints.org" target="_blank">ParaCite</a> ишлэлд агуулагдах <a href="http://paracite.eprints.org/developers/" target="_blank">ParaTools</a> Perl модулийг ашиглана.	Энэ зөв амжилттай ажиллахын тулд, танд <a href="http://search.cpan.org/~mjewell/Biblio-Citation-Parser-1.10/" target="_blank">Biblio::Citation::Parser</a> ба <a href="http://search.cpan.org/~sburke/Text-Unidecode-0.04/" target="_blank">Text::Unidecode</a> CPAN модулийн хамт Perl суусан байх ёстой. Мөн та өөрийн тохиргооны файлдаа <tt> Perl </ TT> заалтад тохируулах хэрэгтэй. Энэ заалтыг та <tt>config.inc.php</tt> гадаад командын хэсгээс олж болно.</p>
+	<p>Та мөн ParaTools модулийн parser -ийг сонгож болно. Та <a href="http://search.cpan.org/~mjewell/Biblio-Citation-Parser-1.10/lib/Biblio/Citation/Parser/Jiao.pm" target="_blank">Jiao</a> ба <a href="http://search.cpan.org/~mjewell/Biblio-Citation-Parser-1.10/lib/Biblio/Citation/Parser/Citebase.pm" target="_blank">Citebase</a> модулийн алийг ч сонгож болно.</p>]]></message>
+	<message key="manager.setup.filter.parser.grid.description.parsCit"><![CDATA[<p>Энэ задлах шүүлтүүр <a href="http://aye.comp.nus.edu.sg/parsCit/" target="_blank">ParsCit</a> вэб үйлчилгээнд холбогдоно.</p>]]></message>
+	<message key="manager.setup.filter.parser.grid.description.regEx">RegEx задлагч шүүлтүүр нь ишлэл задлан ялгал хийх тогтмол илэрхийллүүдийн цуврал ашигладаг.</message>
+	<message key="manager.setup.filter.parser.grid.loadMessage">Ишлэл задлагч тохиргоо ачаалагдаж дуусах хүртэл түр хүлээнэ үү......</message>
+	<message key="manager.setup.filter.parser.grid.title">Ишлэл задлах үйлчилгээнүүд</message>
+	<message key="manager.setup.filter.pleaseSelect">Сонгоно уу...</message>
+	<message key="manager.setup.homeHeaderImageInvalid">Нүүр хуудасны толгой хэсгийн логоны зургийн формат нь буруу байна. Зөвшөөрөгдсөн хэлбэрүүд .gif, .jpg, or .png.</message>
+	<message key="manager.setup.homepageImageInvalid">Нүүр хуудасны зургийн формат нь буруу байна. Зөвшөөрөгдсөн хэлбэрүүд .gif, .jpg, or .png..</message>
+	<message key="manager.setup.homeTitleImageInvalid">Нүүр хуудасны гарчиг хэсгийн зургийн формат нь буруу байна. Зөвшөөрөгдсөн хэлбэрүүд .gif, .jpg, or .png.</message>
+	<message key="manager.setup.layout.leftSidebar">Зүүн sidebar</message>
+	<message key="manager.setup.layout.rightSidebar">Баруун sidebar</message>
+	<message key="manager.setup.layout.unselected">Сонгоогүй</message>
+	<message key="manager.setup.loggingAndAuditing">Нэвтрэх ба Аудит</message>
+	<message key="manager.setup.metaCitationsDescription">Ишлэл болон лавлах засварлалтыг идэвхжүүлэхийн тулд дараах хирээст талбарыг идэвхжүүл. Энэ нь зохиогчид ирүүлсэн материалаас бохир ишлэл оруулах боломжтой болгоно. Редакторууд нь үнэн зөв болгохын тулд WorldCat, ISBNdb, PubMed болон бусад гадаад өгөгдлийн сангуудын эсрэг бохир ишлэл шалгаж болдог ишлэл тэмдэглэх туслах авах эрхтэй болно. Батлагдсан ишлэл эцсийн файлуудруу экспортлогдоно.</message>
+	<message key="manager.setup.pageHeaderLogoImageInvalid">Хуудасны толгой хэсгийн логоны зургийн формат нь буруу байна. Зөвшөөрөгдсөн хэлбэрүүд .gif, .jpg, or .png.</message>
+	<message key="manager.setup.pageHeaderTitleImageInvalid">Хуудасны гарчиг хэсгийн зургийн формат нь буруу байна. Зөвшөөрөгдсөн хэлбэрүүд .gif, .jpg, or .png.</message>
+	<message key="manager.setup.selectOne">Нэгийг сонго</message>
 	<message key="manager.statistics"><![CDATA[Stats &amp; Reports]]></message>
 	<message key="manager.statistics.statistics.count.value">{$count} ({$percentage}%)</message>
 	<message key="manager.statistics.statistics.totalNewValue">{$numTotal} ({$numNew} new)</message>
-	<message key="manager.users">Users</message>
-	<message key="plugins.categories.auth">Authorization Plugins</message>
-	<message key="plugins.categories.blocks">Block Plugins</message>
-	<message key="plugins.categories.blocks.description">Block Plugins are pluggable UI components, such as the various sidebar tools.</message>
-	<message key="plugins.categories.citationFormats">Citation Format Plugins</message>
-	<message key="plugins.categories.gateways.description">Gateway Plugins provide live data to external systems.</message>
-	<message key="plugins.categories.gateways">Gateway Plugins</message>
-	<message key="plugins.categories.generic">Generic Plugins</message>
-	<message key="plugins.categories.importexport.description">Import/Export Plugins can be used to transfer content to and from other systems.</message>
-	<message key="plugins.categories.importexport">Import/Export Plugins</message>
-	<message key="plugins.categories.paymethod.description">Payment Method plugins implement support for various ways of processing payments online.</message>
-	<message key="plugins.categories.paymethod">Payment Plugins</message>
-	<message key="plugins.categories.reports.description">Report Plugins are used to implement various types of reports and data extracts.</message>
-	<message key="plugins.categories.reports">Report Plugins</message>
-	<message key="plugins.categories.themes.description">Theme Plugins can be used to change the system's appearance.</message>
-	<message key="plugins.categories.themes">Theme Plugins</message>
+	<message key="manager.users">Хэрэглэгчид</message>
+	<message key="plugins.categories.auth">Зөвшөөрлийн нэмэлтүүд</message>
+	<message key="plugins.categories.blocks">Нэмэлтүүдийг хаах</message>
+	<message key="plugins.categories.blocks.description">Хаагдсан нэмэлтүүд нь бүх төрлийн sidebar хэрэгсэл гэх мэт UI компонентэд залгагдана.</message>
+	<message key="plugins.categories.citationFormats">Ишлэлийн форматын нэмэлтүүд</message>
+	<message key="plugins.categories.gateways.description">Гарцын нэмэлтүүд нь гадаад системийн бодит өгөгдлийг хангана.</message>
+	<message key="plugins.categories.gateways">Гарцын нэмэлтүүд</message>
+	<message key="plugins.categories.generic">Нийтлэг нэмэлтүүд</message>
+	<message key="plugins.categories.importexport.description">Импорт/экспорт нэмэлтүүдийг бусад системээс агуулга дамжуулахад ашиглана.</message>
+	<message key="plugins.categories.importexport">Импорт/экспорт нэмэлтүүд</message>
+	<message key="plugins.categories.paymethod.description">Төлбөрийн аргын нэмэлтүүд нь онлайн төлбөр төлөлтийн төрөл бүрийн аргуудад зориулсан дэмжлэгийг хэрэгжүүлнэ.</message>
+	<message key="plugins.categories.paymethod">Төлбөрийн нэмэлтүүд</message>
+	<message key="plugins.categories.reports.description">Тайлан нэмэлтүүдийг тайлан болон өгөгдөл задлах бүх төрлийг хэрэгжүүлэхэд ашиглана.</message>
+	<message key="plugins.categories.reports">Тайлан нэмэлтүүд</message>
+	<message key="plugins.categories.themes.description">Theme нэмэлтүүд нь системийн харагдах байдлыг өөрчилнө.</message>
+	<message key="plugins.categories.themes">Theme нэмэлтүүд</message>
 </locale>
