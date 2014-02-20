@@ -39,12 +39,16 @@ class Submission extends DataObject {
 	var $proposalDetails;
 
         var $abstracts;
+        
+	var $sources;
 			
 	/** @var array IDs of Authors removed from this submission */
 	var $removedAuthors;
 	
         var $removedAbstracts;
-        
+
+        var $removedSources;
+
 	/** @var DAO for article */
 	var $proposalDetailsDAO;
 		
@@ -55,7 +59,9 @@ class Submission extends DataObject {
 		parent::DataObject();
 		$this->authors = array();
 		$this->removedAuthors = array();
-		$this->abstracts = array();
+		$this->sources = array();
+		$this->removedSources = array();
+                $this->abstracts = array();
 		$this->removedAbstracts = array();
                 $this->proposalDetailsDAO =& DAORegistry::getDAO('ProposalDetailsDAO');        
 	}
@@ -109,6 +115,14 @@ class Submission extends DataObject {
 	}
 
         /**
+	 * Add a source of monetary and material support.
+	 * @param $source ProposalSource object
+	 */
+	function addSource($source) {
+		array_push($this->sources, $source);
+	}
+        
+        /**
 	 * Add an abstract.
 	 * @param $abstract Abstract
 	 */
@@ -140,6 +154,30 @@ class Submission extends DataObject {
 		return $found;
 	}
 
+        /**
+	 * Remove a source of monetary and material suport.
+	 * @param $sourceId ID of the source to remove
+	 * @return boolean source was removed
+	 */
+	function removeSource($sourceId) {
+		$found = false;
+
+		if ($sourceId != 0) {
+			// FIXME maintain a hash of ID to author for quicker get/remove
+			$sources = array();
+			for ($i=0, $count=count($this->sources); $i < $count; $i++) {
+				if ($this->sources[$i]->getId() == $sourceId) {
+					array_push($this->removedSources, $sourceId);
+					$found = true;
+				} else {
+					array_push($sources, $this->sources[$i]);
+				}
+			}
+			$this->sources = $sources;
+		}
+		return $found;
+	}
+        
         /**
 	 * Remove an abstract.
 	 * @param $abstractId ID of the abstract to remove
@@ -215,6 +253,14 @@ class Submission extends DataObject {
 		return $this->authors;
 	}
 
+        /**
+	 * Get all sources of this submission.
+	 * @return array Sources
+	 */
+	function &getSources() {
+		return $this->sources;
+	}
+        
 	/**
 	 * Get all abstracts for this submission.
 	 * @return array Authors
@@ -255,6 +301,24 @@ class Submission extends DataObject {
 			}
 		}
 		return $author;
+	}
+
+        /**
+	 * Get a specific source of monetary and material support of this submission.
+	 * @param $sourceId int
+	 * @return object ProposalSource
+	 */
+	function &getSource($sourceId) {
+		$source = null;
+
+		if ($sourceId != 0) {
+			for ($i=0, $count=count($this->sources); $i < $count && $source == null; $i++) {
+				if ($this->sources[$i]->getId() == $sourceId) {
+					$source =& $this->sources[$i];
+				}
+			}
+		}
+		return $source;
 	}
         
         /**
@@ -302,6 +366,14 @@ class Submission extends DataObject {
 	}
 
         /**
+	 * Get the IDs of all sources of monetary removed from this submission.
+	 * @return array int
+	 */
+	function &getRemovedSources() {
+		return $this->removedSources;
+	}
+        
+        /**
 	 * Get the IDs of all abstracts removed from this submission.
 	 * @return array int
 	 */
@@ -317,6 +389,14 @@ class Submission extends DataObject {
 		return $this->authors = $authors;
 	}
 
+        /**
+	 * Set sources of monetary for this submission.
+	 * @param $sources array ProposalSource object
+	 */
+	function setSources($sources) {
+		return $this->sources = $sources;
+	}
+        
         /**
 	 * Set abstracts of this submission.
 	 * @param $abstracts array Abstracts
@@ -1242,325 +1322,6 @@ class Submission extends DataObject {
 		return $this->getData("authorEmail");
 	}
 	
- 	/**
-	 * Get "localized" industryGrant (if applicable).
-	 * @return string
-	 */
-	function getLocalizedIndustryGrant() {
-		return $this->getLocalizedData('industryGrant');
-	}
-
-	/**
-	 * Get industryGrant.
-	 * @param $locale
-	 * @return string
-	 */
-	function getIndustryGrant($locale) {
-		return $this->getData('industryGrant', $locale);
-	}
-
-	/**
-	 * Set industryGrant (yes/no).
-	 * @param $industryGrant string
-	 * @param $locale
-	 */
-	function setIndustryGrant($industryGrant, $locale) {
-		return $this->setData('industryGrant', $industryGrant, $locale);
-	}
-	
- 	/**
-	 * Get "localized" nameOfIndustry (if applicable).
-	 * @return string
-	 */
-	function getLocalizedNameOfIndustry() {
-		return $this->getLocalizedData('nameOfIndustry');
-	}
-
-	/**
-	 * Get nameOfIndustry.
-	 * @param $locale
-	 * @return string
-	 */
-	function getNameOfIndustry($locale) {
-		return $this->getData('nameOfIndustry', $locale);
-	}
-
-	/**
-	 * Set nameOfIndustry.
-	 * @param $nameOfIndustry string
-	 * @param $locale
-	 */
-	function setNameOfIndustry($nameOfIndustry, $locale) {
-		return $this->setData('nameOfIndustry', $nameOfIndustry, $locale);
-	}
-	
-	/**
-	 * Get "localized" internationalGrant (if applicable).
-	 * @return string
-	 */
-	function getLocalizedInternationalGrant() {
-		return $this->getLocalizedData('internationalGrant');
-	}
-	
-    /**
-	 * Get "localized" internationalGrant full text.
-	 * @return string
-	 */	
-	function getInternationalGrantNameText(){
-		return $this->proposalDetailsDAO->getAgency($this->getInternationalGrantName('en_US'));
-	}
-
-	/**
-	 * Get internationalGrant.
-	 * @param $locale
-	 * @return string
-	 */
-	function getInternationalGrant($locale) {
-		return $this->getData('internationalGrant', $locale);
-	}
-
-	/**
-	 * Set reviewedByOtherErc (yes/no).
-	 * @param $reviewedByOtherErc string
-	 * @param $locale
-	 */
-	function setInternationalGrant($internationalGrant, $locale) {
-		return $this->setData('internationalGrant', $internationalGrant, $locale);
-	}
-	
- 	/**
-	 * Get "localized" internationalGrantName (if applicable).
-	 * @return string
-	 */
-	function getLocalizedInternationalGrantName() {
-		return $this->getLocalizedData('internationalGrantName');
-	}
-
-	/**
-	 * Get internationalGrantName.
-	 * @param $locale
-	 * @return string
-	 */
-	function getInternationalGrantName($locale) {
-		return $this->getData('internationalGrantName', $locale);
-	}
-
-	/**
-	 * Set internationalGrantName.
-	 * @param $internationalGrantName string
-	 * @param $locale
-	 */
-	function setInternationalGrantName($internationalGrantName, $locale) {
-		return $this->setData('internationalGrantName', $internationalGrantName, $locale);
-	}
-
-	/**
-	 * Get "localized" otherInternationalGrantName (if applicable).
-	 * @return string
-	 */
-	function getLocalizedOtherInternationalGrantName() {
-		return $this->getLocalizedData('otherInternationalGrantName');
-	}
-
-	/**
-	 * Get otherInternationalGrantName.
-	 * @param $locale
-	 * @return string
-	 */
-	function getOtherInternationalGrantName($locale) {
-		return $this->getData('otherInternationalGrantName', $locale);
-	}
-
-	/**
-	 * Set otherInternationalGrantName (yes/no).
-	 * @param $otherInternationalGrantName string
-	 * @param $locale
-	 */
-	function setOtherInternationalGrantName($otherInternationalGrantName, $locale) {
-		return $this->setData('otherInternationalGrantName', $otherInternationalGrantName, $locale);
-	}	
- 	/**
-	 * Get "localized" mohGrant (if applicable).
-	 * @return string
-	 */
-	function getLocalizedMohGrant() {
-		return $this->getLocalizedData('mohGrant');
-	}
-
-	/**
-	 * Get reviewedByOtherErc.
-	 * @param $locale
-	 * @return string
-	 */
-	function getMohGrant($locale) {
-		return $this->getData('mohGrant', $locale);
-	}
-
-	/**
-	 * Set mohGrant (yes/no).
-	 * @param $mohGrant string
-	 * @param $locale
-	 */
-	function setMohGrant($mohGrant, $locale) {
-		return $this->setData('mohGrant', $mohGrant, $locale);
-	}
-	
- 	/**
-	 * Get "localized" governmentGrant (if applicable).
-	 * @return string
-	 */
-	function getLocalizedGovernmentGrant() {
-		return $this->getLocalizedData('governmentGrant');
-	}
-
-	/**
-	 * Get governmentGrant.
-	 * @param $locale
-	 * @return string
-	 */
-	function getGovernmentGrant($locale) {
-		return $this->getData('governmentGrant', $locale);
-	}
-
-	/**
-	 * Set governmentGrant (yes/no).
-	 * @param $governmentGrant string
-	 * @param $locale
-	 */
-	function setGovernmentGrant($governmentGrant, $locale) {
-		return $this->setData('governmentGrant', $governmentGrant, $locale);
-	}
-
- 	/**
-	 * Get "localized" governmentGrantName (if applicable).
-	 * @return string
-	 */
-	function getLocalizedGovernmentGrantName() {
-		return $this->getLocalizedData('governmentGrantName');
-	}
-
-	/**
-	 * Get governmentGrantName.
-	 * @param $locale
-	 * @return string
-	 */
-	function getGovernmentGrantName($locale) {
-		return $this->getData('governmentGrantName', $locale);
-	}
-
-	/**
-	 * Set governmentGrantName (yes/no).
-	 * @param $governmentGrantName string
-	 * @param $locale
-	 */
-	function setGovernmentGrantName($governmentGrantName, $locale) {
-		return $this->setData('governmentGrantName', $governmentGrantName, $locale);
-	}
-		
- 	/**
-	 * Get "localized" universityGrant (if applicable).
-	 * @return string
-	 */
-	function getLocalizedUniversityGrant() {
-		return $this->getLocalizedData('universityGrant');
-	}
-
-	/**
-	 * Get reviewedByOtherErc.
-	 * @param $locale
-	 * @return string
-	 */
-	function getUniversityGrant($locale) {
-		return $this->getData('universityGrant', $locale);
-	}
-
-	/**
-	 * Set universityGrant (yes/no).
-	 * @param $universityGrant string
-	 * @param $locale
-	 */
-	function setUniversityGrant($universityGrant, $locale) {
-		return $this->setData('universityGrant', $universityGrant, $locale);
-	}
-	
- 	/**
-	 * Get "localized" selfFunding (if applicable).
-	 * @return string
-	 */
-	function getLocalizedSelfFunding() {
-		return $this->getLocalizedData('selfFunding');
-	}
-
-	/**
-	 * Get selfFunding.
-	 * @param $locale
-	 * @return string
-	 */
-	function getSelfFunding($locale) {
-		return $this->getData('selfFunding', $locale);
-	}
-
-	/**
-	 * Set selfFunding (yes/no).
-	 * @param $selfFunding string
-	 * @param $locale
-	 */
-	function setSelfFunding($selfFunding, $locale) {
-		return $this->setData('selfFunding', $selfFunding, $locale);
-	}
-	
- 	/**
-	 * Get "localized" otherGrant (if applicable).
-	 * @return string
-	 */
-	function getLocalizedOtherGrant() {
-		return $this->getLocalizedData('otherGrant');
-	}
-
-	/**
-	 * Get otherGrant.
-	 * @param $locale
-	 * @return string
-	 */
-	function getOtherGrant($locale) {
-		return $this->getData('otherGrant', $locale);
-	}
-
-	/**
-	 * Set otherGrant (yes or no).
-	 * @param $otherGrant string
-	 * @param $locale
-	 */
-	function setOtherGrant($otherGrant, $locale) {
-		return $this->setData('otherGrant', $otherGrant, $locale);
-	}
-	
- 	/**
-	 * Get "localized" specifyOtherGrant (if applicable).
-	 * @return string
-	 */
-	function getLocalizedSpecifyOtherGrant() {
-		return $this->getLocalizedData('specifyOtherGrant');
-	}
-
-	/**
-	 * Get specifyOtherGrant.
-	 * @param $locale
-	 * @return string
-	 */
-	function getSpecifyOtherGrant($locale) {
-		return $this->getData('specifyOtherGrant', $locale);
-	}
-
-	/**
-	 * Set specifyOtherGrant (yes/no).
-	 * @param $specifyOtherGrantField string
-	 * @param $locale
-	 */
-	function setSpecifyOtherGrant($specifyOtherGrant, $locale) {
-		return $this->setData('specifyOtherGrant', $specifyOtherGrant, $locale);
-	}
-
 	function getInvestigatorAffiliation(){
 		return $this->getData('investigatorAffiliation');
 	}

@@ -13,16 +13,44 @@
   -->
 
 <locale name="mn_MN" full_name = "Mongolian">
-	<message key="about.aboutSite">Энэ сайтын тухай</message>
+    
+    
+        <!-- ADDED -->
+        
+        <!-- February 6th 2014 -->
+                
+	<message key="common.outside">Outside</message>
+        
+        <!-- Old -->
+
+        <message key="common.archivedProposals">АРХИВЛАГДСАН ТӨСӨЛ</message>
+        <message key="common.activeProposals">ХЭРЭГЖИЖ БУЙ ТӨСЛҮҮД (Шийдвэр хүлээж буй/Хяналт хийх/Дахин өргөн барих)</message>
+        <message key="common.reviewerActiveProposals">ХЭРЭГЖИЖ БУЙ ТӨСЛҮҮД</message>
+        <message key="common.approvedProposals">ЗӨВШӨӨРӨГДСӨН ТӨСЛҮҮД(Одоо хийгдэж буй)</message>
+        <message key="common.approvalDate">Зөвшөөрөл олгосон огноо</message>
+        <message key="common.disableEnable">Идэвхгүй/Идэвхтэй</message>
+        <message key="common.proposalId">Төслийн ID</message>
+
+        <!-- /ADDED -->
+        
+        
+        <!-- CHANGED -->
+        
+        <!-- Old -->
+        
 	<message key="about.contact">Эрүүл мэндийн судалгааны Ёс зүйн үндэсний хороо</message>        
+        <message key="about.contact.principalContact">Нарийн бичгийн дарга</message>
+        <message key="about.contact.subPrincipalContact">Нарийн бичгийн даргын удирдлагын туслах</message>
+        <message key="about.people">Институцийн хянах самбарууд</message>
+
+        <!-- /CHANGED -->
+        
+	<message key="about.aboutSite">Энэ сайтын тухай</message>
 	<message key="about.contact.email">И-мэйл</message>
 	<message key="about.contact.fax">Факс</message>
 	<message key="about.contact.phone">Утас</message>
-    <message key="about.contact.principalContact">Нарийн бичгийн дарга</message>
-    <message key="about.contact.subPrincipalContact">Нарийн бичгийн даргын удирдлагын туслах</message>
 	<message key="about.contact.supportContact">Харилцагчийг дэмжих</message>
 	<message key="about.other">Бусад</message>
-    <message key="about.people">Институцийн хянах самбарууд</message>
 	<message key="about.policies">Бодлогууд</message>
 	<message key="about.siteMap">Сайтын газрын зураг</message>
 	<message key="about.templates">Тайлангийн загвар (ууд)</message>
@@ -34,17 +62,9 @@
 	<message key="announcement.posted">Бичигдсэн</message>
 	<message key="announcement.viewLink">Дэлгэрэнгүй...</message>
 	<message key="announcement.view">Зарлалыг харах</message>
-	<message key="common.action">Үйл ажиллагаа</message>
-    
-    <message key="common.disableEnable">Идэвхгүй/Идэвхтэй</message>
-        
+	<message key="common.action">Үйл ажиллагаа</message>        
 	<message key="common.activate">Идэвхжүүлэх</message>
 	<message key="common.active">Идэвхитэй</message>
-    <message key="common.archivedProposals">АРХИВЛАГДСАН ТӨСӨЛ</message>
-    <message key="common.activeProposals">ХЭРЭГЖИЖ БУЙ ТӨСЛҮҮД (Шийдвэр хүлээж буй/Хяналт хийх/Дахин өргөн барих)</message>
-    <message key="common.reviewerActiveProposals">ХЭРЭГЖИЖ БУЙ ТӨСЛҮҮД</message>
-    <message key="common.approvedProposals">ЗӨВШӨӨРӨГДСӨН ТӨСЛҮҮД(Одоо хийгдэж буй)</message>
-    <message key="common.approvalDate">Зөвшөөрөл олгосон огноо</message>
 	<message key="common.add">Нэмэх</message>
 	<message key="common.addSelf">Анхны хяналтыг эхлэх</message>
 	<message key="common.all">Бүгд</message>
@@ -70,32 +90,32 @@
 	<message key="common.chooseOne">Нэгийг нь сонго.</message>
 	<message key="common.close">Хаах</message>
 	<message key="common.closeWindow">Цонхыг хаах</message>
-    <message key="common.comments">Саналууд</message>
+        <message key="common.comments">Саналууд</message>
 	<message key="common.complete">Гүйцээх</message>
 	<message key="common.completed">Гүйцээсэн. </message>
 	<message key="common.confirmed">Баталгаажуулсан</message>    
 	<message key="common.continue">Үргэлжлүүлэх</message>
 	<message key="common.copy">Хуулах</message>
 	<message key="common.country">Улс</message>
-    <message key="common.area">Газарзүйн бүс</message>
-    <message key="common.picountry">Оршин суугаа улс</message>
+        <message key="common.area">Газарзүйн бүс</message>
+        <message key="common.picountry">Оршин суугаа улс</message>
 	<message key="common.create">Үүсгэх</message>
 	<message key="common.dataNotProvided">Өгөгдөл агуулагдаагүй</message>
 	<message key="common.date">Огноо</message>
-    <message key="common.dateDecided">Шийдвэрлэгдсэн огноо</message>
+        <message key="common.dateDecided">Шийдвэрлэгдсэн огноо</message>
 	<message key="common.dateCompleted">Дууссан огноо</message>
-    <message key="common.date.on">-ны өдөр</message>
+        <message key="common.date.on">-ны өдөр</message>
 	<message key="common.dateModified">Үүсгэсэн огноо</message>
 	<message key="common.dateRequested">Хандсан огноо</message>
 	<message key="common.dateSubmitted">Өргөн барьсан огноо</message>
-    <message key="common.dateSubmittedInstruct">Төслийг Ёсзүйн хороонд өргөн барьсан огноо.</message>
+        <message key="common.dateSubmittedInstruct">Төслийг Ёсзүйн хороонд өргөн барьсан огноо.</message>
 	<message key="common.dateUploaded">Татагдсан огноо</message>
 	<message key="common.day">Өдөр</message>
 	<message key="common.deactivate">Идэвхгүй болгох</message>
 	<message key="common.default">Үндсэн тохиргоо</message>
 	<message key="common.delete">Устгах</message>
-    <message key="common.withdraw">Сугалж авах</message>
-    <message key="common.sendtoarchive">Архивт илгээх</message>
+        <message key="common.withdraw">Сугалж авах</message>
+        <message key="common.sendtoarchive">Архивт илгээх</message>
 	<message key="common.deleteSelection">Сонгогдсон хэсгийг устгах</message>
 	<message key="common.description">Тодорхойлолт</message>
 	<message key="common.disable">Идэвхгүй</message>
@@ -106,8 +126,8 @@
 	<message key="common.edit">Засварлах</message>
 	<message key="common.enable">Идэвхтэй</message>
 	<message key="common.enabled">Идэвхтэй болсон</message>
-    <message key="common.enroll">Хэрэглэгчээр бүртгэх:</message>
-    <message key="common.enrollment.info1">* Гишүүнчлэлийн төлөв шаардлагатай.<![CDATA[<br/>&nbsp;&nbsp;]]>Хороо бүрт 20 хүртэл гишүүнтэй байхыг зөвшөөрдөг ба энд 1 дарга, 1 орлогч дарга, 1 нарийн бичгийн даргатай байна.<![CDATA[<br/>&nbsp;&nbsp;]]>Хэрвээ хэрэглэгч нь энэ порталд бүргүүлсэн бөгөөд дээрх жагсаалтад байхгүй бол ... </message>
+        <message key="common.enroll">Хэрэглэгчээр бүртгэх:</message>
+        <message key="common.enrollment.info1">* Гишүүнчлэлийн төлөв шаардлагатай.<![CDATA[<br/>&nbsp;&nbsp;]]>Хороо бүрт 20 хүртэл гишүүнтэй байхыг зөвшөөрдөг ба энд 1 дарга, 1 орлогч дарга, 1 нарийн бичгийн даргатай байна.<![CDATA[<br/>&nbsp;&nbsp;]]>Хэрвээ хэрэглэгч нь энэ порталд бүргүүлсэн бөгөөд дээрх жагсаалтад байхгүй бол ... </message>
 	<message key="common.error.databaseError">Өгөгдлийн санд алдаа гарсан: {$error}</message>
 	<message key="common.error.databaseErrorUnknown">Өгөгдлийн сангийн холболтод тодорхойгүй алдаа гарсан.</message>
 	<message key="common.error.framesRequired"><![CDATA[Энэ хуудсанд хүрээ шаардлагатай. Хүрээгүй хувилбар бол <a href="{$url}">ЭНД ДАР</a>]]></message>
@@ -117,7 +137,7 @@
 	<message key="common.fullscreenOff">Том дэлгэцийг хаах</message>
 	<message key="common.false">Худал</message>
 	<message key="common.file">Файл</message>
-    <message key="common.file.s">Файл(ууд)</message>
+        <message key="common.file.s">Файл(ууд)</message>
 	<message key="common.file.policy">Бодлогын файл(ууд)</message>
 	<message key="common.file.usermanuals">Хэрэглэгчийн гарын авлага(ууд)</message>
 	<message key="common.file.templates">Загвар(ууд)</message>
@@ -125,17 +145,14 @@
 	<message key="common.fileName">Файлын нэр</message>
 	<message key="common.fileSize">Файлын хэмжээ</message>
 	<message key="common.fileType">Файлын төрөл</message>
-    <message key="common.fileTooBig1">Энэ файл хэтэрхий том байна (</message>
-    <message key="common.fileTooBig2"> Kb). энэхүү хэмжээнээс ихгүй байх ёстой. </message>
-    <message key="common.fullName">Бүтэн нэр</message>
+        <message key="common.fileTooBig1">Энэ файл хэтэрхий том байна (</message>
+        <message key="common.fileTooBig2"> Kb). энэхүү хэмжээнээс ихгүй байх ёстой. </message>
+        <message key="common.fullName">Бүтэн нэр</message>
 	<message key="common.height">өндөр</message>
 	<message key="common.homePageHeaderLogo.altText">Нүүр хуудасны толгойн лого</message>
 	<message key="common.hour">Цаг</message>
 	<message key="common.id">ID</message>
-    <message key="common.idInstruct">Судалгааны төслийн дугаар.</message>
-        <!-- EL on April 2nd 2013 -->
-        <message key="common.proposalId">Төслийн ID</message>
-        <!-- end -->
+        <message key="common.idInstruct">Судалгааны төслийн дугаар.</message>
 	<message key="common.import">Оруулах</message>
 	<message key="common.initiate">Санаачлах</message>
 	<message key="common.inProgress">Үргэлжилж байгаа</message>
@@ -155,14 +172,14 @@
 	<message key="common.notApplicable">Ашиглах боломжгүй</message>
 	<message key="common.notApplicableShort">А/Бгүй</message>
 	<message key="common.notAvailable">Байхгүй байна</message>
-    <message key="common.notSure">Итгэлгүй байна</message>
+        <message key="common.notSure">Итгэлгүй байна</message>
 	<message key="common.note">Тэмдэглэл</message>
 	<message key="common.notes">Тэмдэглэлүүд</message>
 	<message key="common.notify">Тэмдэглэх</message>
 	<message key="common.off">Хаах</message>
 	<message key="common.on">Нээх</message>
-    <message key="common.ongoing">Үргэлжилж байгаа</message>
-    <message key="common.ok">Болсон</message>
+        <message key="common.ongoing">Үргэлжилж байгаа</message>
+        <message key="common.ok">Болсон</message>
 	<message key="common.options">Сонголтууд</message>
 	<message key="common.order">Дараалал</message>
 	<message key="common.originalFileName">Эх файлын нэр</message>
@@ -183,7 +200,7 @@
 	<message key="common.replaced">Солигдсон</message>
 	<message key="common.replaceFile">Файлыг солих</message>
 	<message key="common.requiredField">* Шаардлагатай талбарыг харуулах</message>
-    <message key="common.mouseOver">[?] Хулгана очиход гарах тайлбар.</message>
+        <message key="common.mouseOver">[?] Хулгана очиход гарах тайлбар.</message>
 	<message key="common.required">Шаардлагатай</message>
 	<message key="common.saveAndContinue">Хадгалаад үргэлжлүүлэх</message>
 	<message key="common.saveAndEmail">Хадгалаад е-мэйлдэх</message>
@@ -199,12 +216,12 @@
 	<message key="common.subject">Сэдэв</message>
 	<message key="common.suggest">Санал болгох</message>
 	<message key="common.title">Гарчиг</message>
-    <message key="common.time.minutes">минут</message>
-    <message key="common.time.hours">цаг</message>
+        <message key="common.time.minutes">минут</message>
+        <message key="common.time.hours">цаг</message>
 	<message key="common.top">дээд</message>
 	<message key="common.true">Үнэн</message>
 	<message key="common.type">Төрөл</message>
-    <message key="common.undecided">Шийдэгдээгүй</message>
+        <message key="common.undecided">Шийдэгдээгүй</message>
 	<message key="common.uninitiated">Санаачлагдаагүй</message>
 	<message key="common.untitled">Гарчиггүй</message>
 	<message key="common.updated">Шинэчлэгдсэн</message>
@@ -323,27 +340,27 @@
 	<message key="search.date">Огноо</message>
 	<message key="search.dateFrom">-аас/ээс</message>
 	<message key="search.dateTo">хүртэл</message>
-    <message key="search.exportSearchResults">Хайлтын үр дүнг гаргах</message>
-    <message key="search.hideExportOptions">Гаргалтын сонголтыг далдлах</message>
-    <message key="search.exportIntruct">Гаргаж авахыг хүсч буй талбаруудаа тэмдэглэнэ үү.</message>
-    <message key="search.studentExport">Хэрэв оюутан-судлаач бол Хүрээлэнгийн &amp; Шинжлэх ухааны зэрэгтэй</message>
-    <message key="search.nonStudent">Оюутан биш судлаач</message>
-    <message key="search.researchDates">Судалгааны огноо</message>
-    <message key="search.inclusive">Оролцуулсан</message>
+        <message key="search.exportSearchResults">Хайлтын үр дүнг гаргах</message>
+        <message key="search.hideExportOptions">Гаргалтын сонголтыг далдлах</message>
+        <message key="search.exportIntruct">Гаргаж авахыг хүсч буй талбаруудаа тэмдэглэнэ үү.</message>
+        <message key="search.studentExport">Хэрэв оюутан-судлаач бол Хүрээлэнгийн &amp; Шинжлэх ухааны зэрэгтэй</message>
+        <message key="search.nonStudent">Оюутан биш судлаач</message>
+        <message key="search.researchDates">Судалгааны огноо</message>
+        <message key="search.inclusive">Оролцуулсан</message>
 	<message key="search.discipline">Мэдлэгийн салбар(ууд)</message>
-    <message key="search.exportSearchResults">Хайлтын үр дүнг гаргаж авах</message>
-    <message key="search.exportIntruct">Гаргаж авахыг хүссэн талбараа тэмдэглэнэ үү.</message>
-    <message key="search.hideExportOptions">Гаргалтын сонголтыг далдлах</message>
+        <message key="search.exportSearchResults">Хайлтын үр дүнг гаргаж авах</message>
+        <message key="search.exportIntruct">Гаргаж авахыг хүссэн талбараа тэмдэглэнэ үү.</message>
+        <message key="search.hideExportOptions">Гаргалтын сонголтыг далдлах</message>
 	<message key="search.fullText">Бүрэн эх</message>
-    <message key="search.fromTitle">Гарчиг эсвэл түлхүүр үгээр хайх</message>
-    <message key="search.startDate">Судалгаа эхэлсэн огноо</message>
-    <message key="search.startDateAbr">Эхэлсэн огноо</message>
-    <message key="search.endDateAbr">Дууссан огноо</message>
+        <message key="search.fromTitle">Гарчиг эсвэл түлхүүр үгээр хайх</message>
+        <message key="search.startDate">Судалгаа эхэлсэн огноо</message>
+        <message key="search.startDateAbr">Эхэлсэн огноо</message>
+        <message key="search.endDateAbr">Дууссан огноо</message>
 	<message key="search.indexTerms">Нэр томъёсны индекс</message>
 	<message key="search.matchAll">Бүх категорийг тааруулах</message>
 	<message key="search.noKeywordError">Та дор хаяад нэг түлхүүр үгийг оруулна уу.</message>
 	<message key="search.noResults">Илэрцгүй</message>
-    <message key="search.results">Илэрц(үүд)</message>
+        <message key="search.results">Илэрц(үүд)</message>
 	<message key="search.operator.and">ба / бөгөөд</message>
 	<message key="search.operator.not">үгүй</message>
 	<message key="search.operator.or">эсвэл</message>
@@ -352,16 +369,16 @@
 	<message key="search.searchAllCategories">Бүх категориор хайх</message>
 	<message key="search.searchCategories">Категориудаар хайх</message>
 	<message key="search.searchResults">Хайлтын илэрц</message>
-    <message key="search.studentExport">Хэрэв оюутан-судлаач бол, Хүрээлэнгийн &amp; Шинжлэх ухааны зэрэгтэй.</message>
+        <message key="search.studentExport">Хэрэв оюутан-судлаач бол, Хүрээлэнгийн &amp; Шинжлэх ухааны зэрэгтэй.</message>
 	<message key="search.subject">Түлхүүр үг(с)</message>
-    <message key="search.takingPlaceIn">-эндээс авсан</message>
+        <message key="search.takingPlaceIn">-эндээс авсан</message>
 	<message key="search.titleIndex">Гарчгийн индексээр хайх</message>
 	<message key="search.title">Гарчиг</message>
 	<message key="search.titlesAndAbstract">Гарчиг(ууд) ба хураангуй</message>
 	<message key="search.typeMethodApproach">Төрөл (арга/хандлага)</message>
-    <message key="search.investigator">Судлаач</message>
-    <message key="search.investigatorAffiliation">Судлаачийн ажлын газар</message>
-    <message key="search.investigatorEmail">Судлаачийн Е-мэйл</message>
-    <message key="common.update">Шинэчлэх</message>
+        <message key="search.investigator">Судлаач</message>
+        <message key="search.investigatorAffiliation">Судлаачийн ажлын газар</message>
+        <message key="search.investigatorEmail">Судлаачийн Е-мэйл</message>
+        <message key="common.update">Шинэчлэх</message>
 	<message key="common.setFinal">Эцэслэх</message>		
 </locale>

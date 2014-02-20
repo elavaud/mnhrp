@@ -123,77 +123,19 @@ class ProposalDetails extends DataObject {
 
 
         /**
-	 * Set primary sponsor.
-	 * @param $primarySponsor string
+	 * Set key implementing institution.
+	 * @param $keyImplInstitution int
 	 */
-	function setPrimarySponsor($primarySponsor) {
-		return $this->setData('primarySponsor', $primarySponsor);
+	function setKeyImplInstitution($keyImplInstitution) {
+		return $this->setData('keyImplInstitution', $keyImplInstitution);
 	}
 	/**
-	 * Get primary sponsor.
-	 * @return string
+	 * Get key implementing institution.
+	 * @return int
 	 */
-	function getPrimarySponsor() {
-		return $this->getData('primarySponsor');
+	function getKeyImplInstitution() {
+		return $this->getData('keyImplInstitution');
 	}  
-	/**
-	 * Set other primary sponsor.
-	 * @param $otherPrimarySponsor string
-	 */
-	function setOtherPrimarySponsor($otherPrimarySponsor) {
-		return $this->setData('otherPrimarySponsor', $otherPrimarySponsor);
-	}
-	/**
-	 * Get other primary sponsor.
-	 * @return string
-	 */
-	function getOtherPrimarySponsor() {
-		return $this->getData('otherPrimarySponsor');
-	}
-        /**
-	 * Get "localized" primary sponsor full text.
-	 * @return string
-	 */	
-	function getLocalizedPrimarySponsorText(){
-		return $this->proposalDetailsDAO->getAgency($this->getPrimarySponsor());
-	}    
-        
-        
-	/**
-	 * Set secondary sponsor(s).
-	 * @param $secondarySponsors string
-	 */
-	function setSecondarySponsors($secondarySponsors) {
-		return $this->setData('secondarySponsors', $secondarySponsors);
-	}   
-	/**
-	 * Get secondary sponsor(s).
-	 * @return string
-	 */
-	function getSecondarySponsors() {
-		return $this->getData('secondarySponsors');
-	}
-	/**
-	 * Set other Secondary sponsor.
-	 * @param $otherPrimarySponsor string
-	 */
-	function setOtherSecondarySponsor($otherSecondarySponsor) {
-		return $this->setData('otherSecondarySponsor', $otherSecondarySponsor);
-	}
-        /**
-	 * Get other Secondary sponsor.
-	 * @return string
-	 */
-	function getOtherSecondarySponsor() {
-		return $this->getData('otherSecondarySponsor');
-	}
-        /**
-	 * Get "localized" secondary sponsor full text.
-	 * @return string
-	 */	
-	function getLocalizedSecondarySponsorText(){
-		return $this->proposalDetailsDAO->getAgency($this->getSecondarySponsors());
-	}
         
         
 	/**

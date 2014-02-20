@@ -52,15 +52,14 @@ class ProposalDetailsDAO extends DAO{
 		$this->update(
                         sprintf(
 			'INSERT INTO article_details
-				(article_id, student, start_date, end_date, primary_sponsor, secondary_sponsors, multi_country, countries, nationwide, geo_areas, research_fields, human_subjects, proposal_types, data_collection, committee_reviewed)
+				(article_id, student, start_date, end_date, key_implementing_institution, multi_country, countries, nationwide, geo_areas, research_fields, human_subjects, proposal_types, data_collection, committee_reviewed)
 				VALUES			
-                                (?, ?, %s, %s, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+                                (?, ?, %s, %s, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                         $this->dateToDB(strtotime($proposalDetails->getStartDate())), $this->dateToDB(strtotime($proposalDetails->getEndDate()))),
 			array(
 				(int) $proposalDetails->getArticleId(),
 				(int) $proposalDetails->getStudentResearch(),
-				(string) $proposalDetails->getPrimarySponsor(),
-				(string) $proposalDetails->getSecondarySponsors(),
+				(int) $proposalDetails->getKeyImplInstitution(),
 				(int) $proposalDetails->getMultiCountryResearch(),
 				(string) $proposalDetails->getCountries(),
 				(int) $proposalDetails->getNationwide(),
@@ -96,8 +95,7 @@ class ProposalDetailsDAO extends DAO{
 				student = ?,
 				start_date = %s,
 				end_date = %s,
-				primary_sponsor = ?, 
-				secondary_sponsors = ?,
+				key_implementing_institution = ?, 
 				multi_country = ?,
 				countries = ?,
 				nationwide = ?,
@@ -112,8 +110,7 @@ class ProposalDetailsDAO extends DAO{
                         $this->datetimeToDB(strtotime($proposalDetails->getEndDate()))),
 			array(
 				(int) $proposalDetails->getStudentResearch(),
-				(string) $proposalDetails->getPrimarySponsor(),
-				(string) $proposalDetails->getSecondarySponsors(),
+				(int) $proposalDetails->getKeyImplInstitution(),
 				(int) $proposalDetails->getMultiCountryResearch(),
 				(string) $proposalDetails->getCountries(),
 				(int) $proposalDetails->getNationwide(),
@@ -177,8 +174,7 @@ class ProposalDetailsDAO extends DAO{
 		$proposalDetails->setStudentResearch($row['student']);
 		if(isset($row['start_date']))$proposalDetails->setStartDate(date("d-M-Y", strtotime($this->dateFromDB($row['start_date']))));
 		if(isset($row['end_date']))$proposalDetails->setEndDate(date("d-M-Y", strtotime($this->dateFromDB($row['end_date']))));
-                $proposalDetails->setPrimarySponsor($row['primary_sponsor']);
-		$proposalDetails->setSecondarySponsors($row['secondary_sponsors']);
+                $proposalDetails->setKeyImplInstitution($row['key_implementing_institution']);
 		$proposalDetails->setMultiCountryResearch($row['multi_country']);
 		$proposalDetails->setCountries($row['countries']);
 		$proposalDetails->setNationwide($row['nationwide']);
@@ -210,18 +206,13 @@ class ProposalDetailsDAO extends DAO{
 
 		$proposalTypes = array();
 		if (isset($data['proposaltypes'])) {
-			$i=0;
-			foreach ($data['proposaltype'] as $proposalTypeData) {
-				$proposalType['code'] = $proposalTypeData['attributes']['code'];
-				$proposalType['name'] = $proposalTypeData['attributes']['name'];
-				array_push($proposalTypes, $proposalType);
-			}
-			$i++;
+                    $i=0;
+                    foreach ($data['proposaltype'] as $proposalTypeData) {
+                        $proposalTypes = $proposalTypes + array($proposalTypeData['attributes']['code'] => $proposalTypeData['attributes']['name']);
+                    }
+                    $i++;
 		}
-
-
 		return $proposalTypes;
-
 	}
 	
 	/**
@@ -268,13 +259,11 @@ class ProposalDetailsDAO extends DAO{
 
 		$researchFields = array();
 		if (isset($data['researchFields'])) {
-			$i=0;
-			foreach ($data['researchField'] as $researchFieldData) {
-				$researchField['code'] = $researchFieldData['attributes']['code'];
-				$researchField['name'] = $researchFieldData['attributes']['name'];
-				array_push($researchFields, $researchField);
-			}
-			$i++;
+                    $i=0;
+                    foreach ($data['researchField'] as $researchFieldData) {
+                        $researchFields = $researchFields + array($researchFieldData['attributes']['code'] => $researchFieldData['attributes']['name']);
+                    }
+                    $i++;
 		}
 
 
@@ -312,66 +301,35 @@ class ProposalDetailsDAO extends DAO{
             return $code;
         }
         
-
-	/**
-	 * Get all agencies.
-	 * @param none
-	 * @return array agencies
-	 */
-	function getAgencies() {
-		$locale = Locale::getLocale();
-		$filename = "lib/pkp/locale/".$locale."/agencies.xml";
-
-		$xmlDao = new XMLDAO();
-		$data = $xmlDao->parseStruct($filename, array('agencies', 'agency'));
-
-		$agencies = array();
-		if (isset($data['agencies'])) {
-			$i=0;
-			foreach ($data['agency'] as $agencyData) {
-				$agency['code'] = $agencyData['attributes']['code'];
-				$agency['name'] = $agencyData['attributes']['name'];
-				array_push($agencies, $agency);
-			}
-			$i++;
-		}
-
-
-		return $agencies;
-
-	}
-	
-        
-	/**
-	 * Get agency by code
-	 */
-	function getAgency($code) {
-                $agencyCodeArray = explode("+", $code);
-                $agencyTextArray = array();
-                foreach($agencyCodeArray as $agencyCode) {
-                    $aText = $this->getAgencySingle($agencyCode);
-                    array_push($agencyTextArray, $aText);
-                }
-                
-                $agencyText = "";
-                foreach($agencyTextArray as $i => $agency) {
-                    $agencyText = $agencyText . $agency;
-                    if($i < count($agencyTextArray)-1) $agencyText = $agencyText . ", ";
-                }
-
-                return $agencyText;
-	}
-        
-        function getAgencySingle($code) {
-            $agencies = $this->getAgencies();
-            foreach($agencies as $a) {
-                if ($a['code'] == $code) {
-                    return $a['name'];
-                }
-            }
-            return $code;
+        function getYesNoArray() {
+            return array(
+                PROPOSAL_DETAIL_YES => Locale::translate("common.yes"),
+                PROPOSAL_DETAIL_NO => Locale::translate("common.no")
+            );
         }
-
+        
+        function getNationwideRadioButtons() {
+            return array(
+                PROPOSAL_DETAIL_YES => Locale::translate("common.yes"),
+                PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS => Locale::translate("proposal.randomlySelectedProvince"),
+                PROPOSAL_DETAIL_NO => Locale::translate("common.no")
+            );
+        }
+        
+        function getDataCollectionArray() {
+            return array(
+                PROPOSAL_DETAIL_PRIMARY_DATA_COLLECTION => Locale::translate("proposal.primaryDataCollection"),
+                PROPOSAL_DETAIL_SECONDARY_DATA_COLLECTION => Locale::translate("proposal.secondaryDataCollection"),
+                PROPOSAL_DETAIL_BOTH_DATA_COLLECTION => Locale::translate("proposal.bothDataCollection")
+            );
+        }
+        
+        function getOtherErcDecisionArray() {
+            return array(
+                PROPOSAL_DETAIL_UNDER_REVIEW => Locale::translate("proposal.otherErcDecisionUnderReview"),
+                PROPOSAL_DETAIL_REVIEW_AVAILABLE => Locale::translate("proposal.otherErcDecisionFinalAvailable")
+            );
+        }
 }
 
 ?>

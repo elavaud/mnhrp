@@ -228,6 +228,29 @@ class RiskAssessmentDAO extends DAO{
 
 		return $riskAssessment;
 	}
+        
+        function getYesNoArray() {
+            return array(
+                RISK_ASSESSMENT_YES => Locale::translate("common.yes"),
+                RISK_ASSESSMENT_NO => Locale::translate("common.no")
+            );
+        }
+        
+        function getLevelOfRiskArray() {
+            return array(
+                RISK_ASSESSMENT_NO_MORE_THAN_MINIMAL => Locale::translate("proposal.riskLevelNoMore"),
+                RISK_ASSESSMENT_MINORE_THAN_MINIMAL => Locale::translate("proposal.riskLevelMinore"),
+                RISK_ASSESSMENT_MORE_THAN_MINIMAL => Locale::translate("proposal.riskLevelMore")
+            );
+        }
+        
+        function getConflictOfInterestArray() {
+            return array(
+                RISK_ASSESSMENT_CONFLICT_OF_INTEREST_YES => Locale::translate("common.yes"),
+                RISK_ASSESSMENT_CONFLICT_OF_INTEREST_NO => Locale::translate("common.no"),
+                RISK_ASSESSMENT_CONFLICT_OF_INTEREST_NOT_SURE => Locale::translate("common.notSure")
+            );
+        }
 }
 
 ?>

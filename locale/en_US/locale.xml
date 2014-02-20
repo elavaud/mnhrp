@@ -25,17 +25,35 @@
 	 *  MISC - Entries that don't belong elsewhere.
 	 *  DEFAULT - Default settings for configuration items.
 	-->
+                
+        <!-- Added modified February 9th 2013 -->
+        <message key="institution.acronym">Acronym</message>
+	<message key="institution.institution">Institution</message>
+	<message key="institution.institutions">Institutions</message>
+	<message key="institution.location">Location</message>
+	<message key="institution.name">Name</message>
+	<message key="institution.type">Type</message>
+	<message key="institution.type.public">Public</message>
+	<message key="institution.type.privateProfit">Private for profit</message>
+	<message key="institution.type.privateNonProfit">Private for non-profit</message>
+	<message key="institution.type.privateIndividual">Private Individual</message>
+        <message key="proposal.source">Source</message>
+        <message key="proposal.source.add">Add source of monetary or material support</message>
+        <message key="proposal.source.amount">Amount</message>
+        <message key="proposal.source.amount.instruct">Please enter whole numbers without any comma or other separator.</message>
 
-	<!-- review froms start -->
+        <message key="proposal.keyImplInstitution">Key Implementing Institution</message>
+        <message key="proposal.keyImplInstitution.instruct">The key implementing institution for the research. Please write any individual, organization, group or other legal entity responsible for overall management and implementation of research.</message>
+        <message key="proposal.otherKeyImplInstitution.instruct">If your key implementing institution is not listed in the above list, please provide the following information:</message>
+
+        <message key="proposal.otherSource.instruct"><![CDATA[If your source of monetary is not included in the above list, please provide the following information.<br/><i><font color="red">Please note that if this one has already been provided as an other institution for your key implementing institution, just select "Key Implementing Institution" in the list.</font></i>]]></message>
+
+
+        <!-- review froms start -->
 
 	<!-- common -->
 
 	<!-- Management -->
-
-
-
-
-
 
 	<!--  peer review -->
 	<message key="submission.reviewForm">Review Form</message>
@@ -54,9 +72,9 @@
 	-->
 
 	<!-- Common Messages -->
-    <message key="common.openJournalSystems">The Health Research Portal</message>
+        <message key="common.openJournalSystems">The Health Research Portal</message>
 	<message key="common.confirmComplete">Are you sure you wish to mark this task as completed? You may not be able to make changes afterwards.</message>
-    <message key="common.homePageText"><![CDATA[<p>Mongolia Health Research Portal is an <i>integrated online health research management system</i> that offers substantial benefits for all stakeholders in health research. The Portal aims to improve accountability, efficiency and quality of health research conducted in Mongolia by providing information on all ongoing research and hence increasing transparency and by streamlining the ethics review process.<br/><br/>The Portal can be used to:<br/><br/><b>Submit research proposals</b> for review to Mongolia MOH Ethics Review Committee 24x7 from anywhere. Researchers need to register on the Portal. Once registered, you will have a permanent account and be able to submit research proposal in a paper-less way and to track the review status of your proposals.<br/><br/><b>Search ongoing and completed health research</b> from January 2014 onwards through a publically accessible research registry. No registration or log-in is required to search the ongoing research.<br/><br/><b>Access complete research reports</b> for the researches  started since 2014 once the research is completed. [Since the system has been launched only in January 2014, there are no research reports in the system at present, but will be added as and when a research is completed or over time]<br/><br/><b>Access information on all the applicable guidelines, rules, and regulations</b> related to health research (being added…).<br/><br/><b>Access a “Researchers' Directory”</b> containing information on the national and international researchers doing research in Mongolia (will be added soon...).</p>]]></message>
+        <message key="common.homePageText"><![CDATA[<p>Mongolia Health Research Portal is an <i>integrated online health research management system</i> that offers substantial benefits for all stakeholders in health research. The Portal aims to improve accountability, efficiency and quality of health research conducted in Mongolia by providing information on all ongoing research and hence increasing transparency and by streamlining the ethics review process.<br/><br/>The Portal can be used to:<br/><br/><b>Submit research proposals</b> for review to Mongolia MOH Ethics Review Committee 24x7 from anywhere. Researchers need to register on the Portal. Once registered, you will have a permanent account and be able to submit research proposal in a paper-less way and to track the review status of your proposals.<br/><br/><b>Search ongoing and completed health research</b> from January 2014 onwards through a publically accessible research registry. No registration or log-in is required to search the ongoing research.<br/><br/><b>Access complete research reports</b> for the researches  started since 2014 once the research is completed. [Since the system has been launched only in January 2014, there are no research reports in the system at present, but will be added as and when a research is completed or over time]<br/><br/><b>Access information on all the applicable guidelines, rules, and regulations</b> related to health research (being added…).<br/><br/><b>Access a “Researchers' Directory”</b> containing information on the national and international researchers doing research in Mongolia (will be added soon...).</p>]]></message>
 	<message key="common.payment">Payment</message>
 	<message key="common.payments">Payments</message>
 	<message key="common.pageHeader.altText">Page Header</message>
@@ -89,40 +107,40 @@
 	<!-- Article Queues -->
 	<message key="common.queue.long.submissionsUnassigned">Unassigned Proposals</message>
 	<message key="common.queue.short.submissionsUnassigned">Unassigned</message>
-    <message key="common.queue.long.proposalsToSubmit">Draft proposals</message>
+        <message key="common.queue.long.proposalsToSubmit">Draft proposals</message>
 	<message key="common.queue.short.proposalsToSubmit">Drafts</message>
-    <message key="common.queue.long.ongoingResearches">Ongoing researches</message>
+        <message key="common.queue.long.ongoingResearches">Ongoing researches</message>
 	<message key="common.queue.short.ongoingResearches">Ongoing</message>
-    <message key="common.queue.long.completedResearches">Completed researches</message>
+        <message key="common.queue.long.completedResearches">Completed researches</message>
 	<message key="common.queue.short.completedResearches">Completed</message>
 	<message key="common.queue.long.submissionsInEditing">Proposals in Editing</message>
 	<message key="common.queue.short.submissionsInEditing">In Editing</message>
 	<message key="common.queue.long.submissionsInReview">Proposals under Review</message>
 	<message key="common.queue.short.submissionsInReview">In Review</message>
-    <message key="common.queue.long.submissionsSubmitted">Proposals Submitted</message>
+        <message key="common.queue.long.submissionsSubmitted">Proposals Submitted</message>
 	<message key="common.queue.short.submissionsSubmitted">Submitted</message>
-    <message key="common.queue.long.submissionsCompleted">Completed Researches</message>
+        <message key="common.queue.long.submissionsCompleted">Completed Researches</message>
 	<message key="common.queue.short.submissionsCompleted">Completed</message>
-    <message key="common.queue.long.proposalsInReview">Proposals under Review</message>
+        <message key="common.queue.long.proposalsInReview">Proposals under Review</message>
 	<message key="common.queue.short.proposalsInReview">In Review</message>
-    <message key="common.queue.short.submissionsApproved">Ongoing</message>
-    <message key="common.queue.short.submissionsNotApproved">Not Approved</message>
-    <message key="common.queue.long.submissionsNotApproved">Not Approved Proposals</message>
-    <message key="common.queue.short.waitingForResubmissions">For Re-Submission</message>
-    <message key="common.queue.long.waitingForResubmissions">Waiting for Re-Submission</message>
+        <message key="common.queue.short.submissionsApproved">Ongoing</message>
+        <message key="common.queue.short.submissionsNotApproved">Not Approved</message>
+        <message key="common.queue.long.submissionsNotApproved">Not Approved Proposals</message>
+        <message key="common.queue.short.waitingForResubmissions">For Re-Submission</message>
+        <message key="common.queue.long.waitingForResubmissions">Waiting for Re-Submission</message>
 	<message key="common.queue.long.submissionsArchives">Archived Proposals</message>
 	<message key="common.queue.short.submissionsArchives">Archives</message>
 	<message key="common.queue.long.active">Active Proposals</message>
 	<message key="common.queue.short.active">Active</message>
 	<message key="common.queue.long.completed">Archived Proposals</message>
-    <message key="common.queue.long.submissionsApproved">Ongoing Researches</message>
+        <message key="common.queue.long.submissionsApproved">Ongoing Researches</message>
 	<message key="common.queue.short.completed">Archive</message>
-    <message key="common.queue.short.meetingProposals">Proposals</message>
-    <message key="common.queue.short.reviewAssignments">Review Assignments</message>
-    <message key="common.queue.long.meetingProposals">Proposals from meetings</message>
-    <message key="common.queue.short.meetingList">Meetings</message>
-    <message key="common.queue.long.meetingList">List of meetings</message>
-    <message key="common.queue.long.viewMeeting">View Meeting</message>
+        <message key="common.queue.short.meetingProposals">Proposals</message>
+        <message key="common.queue.short.reviewAssignments">Review Assignments</message>
+        <message key="common.queue.long.meetingProposals">Proposals from meetings</message>
+        <message key="common.queue.short.meetingList">Meetings</message>
+        <message key="common.queue.long.meetingList">List of meetings</message>
+        <message key="common.queue.long.viewMeeting">View Meeting</message>
 
 	
 	<!--
@@ -132,22 +150,14 @@
 	 *
 	-->
 
-	<!-- Common Institution Terms -->
-	<message key="institution.government">Government</message>
-	<message key="institution.institution">Institution</message>
-	<message key="institution.institutions">Institutions</message>
-	<message key="institution.location">Location</message>
-	<message key="institution.private">Private</message>
-	<message key="institution.type">Type</message>
-
 	<!-- Common Section Terms -->
 	<message key="section.section">Ethics Review Committee</message>
-    <message key="section.sectionAbbrev">Committee</message>
+        <message key="section.sectionAbbrev">Committee</message>
 	<message key="section.sections">Ethics Review Committees</message>
 
 	<message key="section.title">Ethics Committee title</message>
 	<message key="section.abbreviation">Abbreviation</message>
-    <message key="section.region">Region</message>
+        <message key="section.region">Region</message>
 	<message key="section.abbreviation.example">(For example, Proposals=PRO)</message>
 
 	<!-- Common Article Terms -->
@@ -155,23 +165,23 @@
 	<message key="article.articles">Proposals</message>
         <!-- Added by EL on March 19th 2013 -->
         <message key="article.article.s">Proposal(s)</message>
-    <message key="article.authorInstruct">Main investigator in the research</message>
+        <message key="article.authorInstruct">Main investigator in the research</message>
 	<message key="article.submissionId">Proposal ID</message>
 	<message key="article.title">Title</message>
-    <message key="article.scientificTitle">Scientific title</message>
-    <message key="article.proposalType">Proposal Type</message>
-    <message key="article.publicTitle">Public title</message>
+        <message key="article.scientificTitle">Scientific title</message>
+        <message key="article.proposalType">Proposal Type</message>
+        <message key="article.publicTitle">Public title</message>
 	<message key="article.authors">Investigator(s)</message> /*Replaced "Authors" with "Investigator"*/
 	<message key="article.indexingInformation">Indexing Information</message>
 	<message key="article.metadata">Metadata</message>
 	<message key="article.journalSection">Ethics Review Committee</message>
 
 	<message key="article.file">File</message>
-    <message key="article.files">Files</message>
+        <message key="article.files">Files</message>
 	<message key="article.suppFile">Supplementary File</message>
 	<message key="article.suppFiles">Supplementary File(s)</message>
 	<message key="article.suppFilesAbbrev">Supp. Files</message>
-    <message key="article.suppFilesAbbrevInstruct">Supplementary files submitted by the Investigator. Please click on a title (blue link) for downloading the concerned proposal.</message>
+        <message key="article.suppFilesAbbrevInstruct">Supplementary files submitted by the Investigator. Please click on a title (blue link) for downloading the concerned proposal.</message>
 	<message key="article.discipline">Academic discipline and sub-disciplines</message>
 	<message key="article.subjectClassification">Subject classification</message>
 	<message key="article.subject">Keywords</message>
@@ -186,16 +196,16 @@
         <message key="article.sectionEditor">Secretary Administrative Assistant</message> /*replace section editor with Secretary */
         
 	<message key="article.commentsToEditor">Investigator comments</message>
-    <message key="article.commentsToEditorInstruct">Here is a comment of the submitter about this research proposal.</message>
+        <message key="article.commentsToEditorInstruct">Here is a comment of the submitter about this research proposal.</message>
 	<message key="article.submission">Proposal</message>
 	<message key="article.submissions">Proposals</message>
 	<message key="article.details">Details</message>
 	<message key="article.abstract">Abstract</message>
-    <message key="article.studentInstitution">Student Institution</message>
-    <message key="article.academicDegree">Academic Degree</message>
-    <message key="article.primarySponsor">Primary Sponsor</message>
-    <message key="article.fundsRequired">Funds Required</message>
-    <message key="article.coverPage.altText">Cover Image</message>
+        <message key="article.studentInstitution">Student Institution</message>
+        <message key="article.academicDegree">Academic Degree</message>
+        <message key="article.primarySponsor">Primary Sponsor</message>
+        <message key="article.fundsRequired">Funds Required</message>
+        <message key="article.coverPage.altText">Cover Image</message>
 	<message key="article.accessLogoOpen.altText">Open Access</message>
 	<message key="article.accessLogoRestricted.altText">Restricted Access</message>
 	<message key="article.comments.sectionDefault">Default</message>
@@ -224,7 +234,6 @@
     <message key="proposal.keywordsInstruct">Significant or descriptive words.</message>
     <message key="proposal.startDateInstruct">Start date of the research.</message>
     <message key="proposal.endDateInstruct">End date of the research.</message>
-    <message key="proposal.fundsRequiredInstruct">Please enter a whole number without any comma or other separator.</message>
     <message key="proposal.primarySponsorInstruct">The individual, organization, group or other legal entity which takes responsibility for initiating, managing and/or financing a study. The Primary Sponsor is responsible for ensuring that the research is properly registered. The Primary Sponsor may or may not be the main funder.</message>
     <message key="proposal.otherPrimarySponsorInstruct">If your primary sponsor is not included in the above list, please specify it here.</message>
     <message key="proposal.secondarySponsorsInstruct">Additional individuals, organizations or other legal persons, if any, that have agreed with the primary sponsor to take on responsibilities of sponsorship. A secondary sponsor may have agreed: 
@@ -257,7 +266,7 @@
     <message key="proposal.bothDataCollection">Primary and secondary data</message>
     <message key="proposal.otherErcDecisionUnderReview">Under Review</message>
     <message key="proposal.otherErcDecisionFinalAvailable">Final decision available</message>
-                
+
         <message key="proposal.startDate">Start Date</message>
         <message key="proposal.endDate">End Date</message>
         <message key="proposal.fundsRequired">Estimated Budget</message>
@@ -288,24 +297,12 @@
         <message key="proposal.ethicalClearanceEnclosed">Ethical Clearance Enclosed?</message>
         <message key="proposal.reviewedByOtherErc">Proposal reviewed by other Committee</message>
             <!-- Added by EL on April 17, 2012-->
-            <message key="proposal.rtoOffice">Office</message>
         <message key="proposal.otherErcDecision">If yes, other Committee Decision </message>
-        <message key="proposal.nameOfIndustry">If yes, please specify:</message>
         <message key="proposal.proofOfRegistration">Proof Of Registration Included? </message>
         <message key="proposal.dataCollection">Data Collection</message>
         <message key="proposal.sourceOfMonetary">Source(s) of Monetary or Material Support</message>
-        <message key="proposal.industryGrant">Industry grant</message>
-        <message key="proposal.mohGrant">Ministry of Health grant</message>
-        <message key="proposal.internationalGrant">Agency grant</message>
-        <message key="proposal.internationalGrantName">If yes, please specify:</message>
         <message key="proposal.submittedAsPi">Submitting as Primary Investigator?</message>
         <message key="proposal.nationalApprovalEnclosed">National Approval Enclosed?</message>
-        <message key="proposal.governmentGrant">Government grant (non MoH)</message>
-        <message key="proposal.governmentGrantName">Please specify</message>
-        <message key="proposal.universityGrant">University research grant</message>
-        <message key="proposal.selfFunding">Self funding</message>
-        <message key="proposal.otherGrant">Other</message>
-        <message key="proposal.specifyOtherGrantField">If yes, please specify:</message>
 
         <!-- Risk Assesment -->
         <!-- EL on March 9th 2013-->

@@ -13,6 +13,21 @@
   -->
 
 <locale name="en_US" full_name ="U.S. English">
+    
+        <!-- ***** -->
+        <!-- ADDED -->
+        <!-- ***** -->
+        
+        <!-- February 6th 2014 -->
+        
+        <message key="author.submit.form.proposalDetails">One or multiple required data seem to be missing in the "Proposal Details" section. Please ensure to provide all required information (denoted with a star "*" ).</message>
+        <message key="author.submit.form.studentResearch">One or multiple required data seem to be missing in the "Student Research" section. Please ensure to provide all required information (denoted with a star "*" ).</message>
+        <message key="author.submit.form.riskAssessment">One or multiple required data seem to be missing in the "Risk Assessment" section. Please ensure to provide all required information (denoted with a star "*" ).</message>
+        <message key="author.submit.form.sourceRequired">At least one source of monetary and material support is required.</message>
+	<message key="author.submit.form.sourceRequiredFields">The type, name and amount of each source of monetary and material support is required.</message>
+
+        <!---->
+        
 	<message key="author.article.decision">Committee Decision</message>
 	<message key="author.submit">New Proposal</message>
 	<message key="author.track">Active Proposals</message>
@@ -98,10 +113,10 @@
 	<message key="author.submit.subjectClassInstructions">Use the hyperlinked classification system to select classification terms and, if appropriate, numbers.</message>
 	<message key="author.submit.languageInstructions"><![CDATA[English=en; French=fr; Spanish=es. <a href="http://www.loc.gov/standards/iso639-2/php/code_list.php" target="_blank">Additional codes</a>.]]></message>
     
-    <message key="author.submit.form.abstractRequiredFields">The scientific title, public title, background, objectives, study methods, expected outcomes and keywords are required, if multiple languages in each language.</message>    
+        <message key="author.submit.form.abstractRequiredFields">The scientific title, public title, background, objectives, study methods, expected outcomes and keywords are required, if multiple languages in each language.</message>    
 	<message key="author.submit.form.authorRequired">At least one investigator is required.</message>
 	<message key="author.submit.form.authorRequiredFields">The first name, last name, affiliation, phone number, and email address of each investigator is required.</message>
-    <message key="author.submit.uploadWithdrawReport">Upload withdraw report</message>
+        <message key="author.submit.uploadWithdrawReport">Upload withdraw report</message>
         <message key="author.submit.form.scientificTitleRequired">Please enter the scientific title of your research proposal.</message>
         <message key="author.submit.form.publicTitleRequired">Please enter the public title of your research proposal.</message>
         <message key="author.submit.form.studentInitiatedResearch">Please select Yes or No (Student Initiated Research).</message>
@@ -109,7 +124,7 @@
         <message key="author.submit.form.academicDegree">Please specify the academic degree of the student.</message>
         <message key="author.submit.form.ethicsCommittee">Please select an Ethics Committee.</message>
         <message key="author.submit.form.dataCollection">Please select the Data Collection.</message>
-	    <message key="author.submit.form.abstractRequired">Please enter the abstract of your research proposal.</message>
+	<message key="author.submit.form.abstractRequired">Please enter the abstract of your research proposal.</message>
         <message key="author.submit.form.backgroundRequired">Please enter the background of your research proposal. Background: Key issues under investigation, importance, what is known already, and why this study.</message>
         <message key="author.submit.form.objectivesRequired">Please enter the objectives of your research proposal. Objectives: Key research questions, hypothesis, objectives in bullet points if feasible.</message>
         <message key="author.submit.form.studyMethodsRequired">Please enter the study methods of your research proposal. Study Methods: Relevant features of study design (qualitative/quantitative, cross-sectional survey/case-control...), estimated sample size, manner of data collection, etc. [e.g. study involves key informant interviews with policy-makers in Philippines, involving 6-8 people at national or provincial level...]</message>
@@ -118,28 +133,12 @@
         <message key="author.submit.form.startDateRequired">Please enter the start date of your research proposal.</message>
         <message key="author.submit.form.otherPrimarySponsor">Please specify the primary sponsor.</message>
         <message key="author.submit.form.endDateRequired">Please enter the end date of your research proposal.</message>
-        <message key="author.submit.form.fundsRequiredRequired">Please enter the funds required for your research.</message>
-        <message key="author.submit.form.selectedCurrency">Please select the currency.</message>
         <message key="author.submit.form.geoAreaRquired">Please select at least one geographical area for this proposal.</message>
         <message key="author.submit.form.withHumanSubjectsRequired">Please indicate if the research involves human subjects.</message>
         <message key="author.submit.form.proposalTypeRequired">Please enter the research proposal type.</message>
         <message key="author.submit.form.otherProposalTypeRequired">Please specify the other proposal type.</message>
         <message key="author.submit.form.submittedAsPiRequired">Please select Yes or No (Submitting as Primary Investigator?).</message>
         <message key="author.submit.form.reviewedByOtherErcRequired">Please select Yes or No (Reviewed By Other Committee?).</message>
-        <message key="author.submit.form.industryGrant">Please select Yes or No (Industry Grant?).</message>
-        <message key="author.submit.form.nameOfIndustry">Please specify the industry (industry grant).</message>
-        <message key="author.submit.form.internationalGrant">Please select Yes or No (Agency Grant?).</message>
-        <message key="author.submit.form.internationalGrantName">Please select the agency grant.</message>
-        <message key="author.submit.form.mohGrant">Please select Yes or No (Ministry of Health Grant?).</message>
-        <message key="author.submit.form.governmentGrant">Please select Yes or No (Governmant Grant?).</message>
-        <message key="author.submit.form.governmentGrantName">Please specify the government grant.</message>
-        <message key="author.submit.form.universityGrant">Please select Yes or No (University Grant?).</message>
-        <message key="author.submit.form.selfFunding">Please select Yes or No (Self Funding?).</message>
-        <message key="author.submit.form.otherGrant">Please select Yes or No (Other Grant?).</message>
-        <message key="author.submit.form.specifyOtherGrantField">Please specify other grants.</message>
-            
-            <!-- Added by: EL on April 17, 2012-->
-            <message key="author.submit.form.rtoOfficeRequired">Please select your Office.</message>
             
             <!-- Risk Assessment -->
             <!-- EL on March 9th 2013 -->

@@ -12,12 +12,11 @@
 -->
 
 <proposaltypes>
-    <proposaltype name="Clinical Trial with Human Subjects" code="CWHS" />
-    <proposaltype name="Health System and Policy Research" code="HSPR" />
-    <proposaltype name="Population-Based Survey" code="PBS" />
-    <proposaltype name="Proposal without Human Subjects" code="PNHS" />
-    <proposaltype name="Qualitative Study" code="QS" />
-    <proposaltype name="Intervention Evaluation Research" code="IER" />
-    <proposaltype name="Operational Research" code="OR" />
-    <proposaltype name="Other(s)" code="OTHER" />
+    <proposaltype name="Хүнийг оролцуулсан эмнэлзүйн туршилт" code="CWHS" />
+    <proposaltype name="Эрүүл мэндийн тогтолцоо ба бодлогын судалгаа" code="HSPR" />
+    <proposaltype name="Хүн амд суурилсан судалгаа" code="PBS" />
+    <proposaltype name="Хүнийг оролцуулаагүй төсөл" code="PNHS" />
+    <proposaltype name="Чанарын судалгаа" code="QS" />
+    <proposaltype name="Интервенцийн үнэлгээний судалгаа" code="IER" />
+    <proposaltype name="Үйл ажиллагааны судалгаа" code="OR" />
 </proposaltypes>

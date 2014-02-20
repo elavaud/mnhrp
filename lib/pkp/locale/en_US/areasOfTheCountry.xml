@@ -6,6 +6,9 @@
     Author     : Edouard Lavaud
     Description:
         For use in country where proposal is submitted.
+        
+        
+        !!!! Do not use "EXT" as code. This one refers to external countries.
 -->
 
 <countries>

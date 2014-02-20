@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 /**
  * @file classes/form/validation/FormValidatorArray.inc.php
@@ -60,15 +60,24 @@ class FormValidatorArray extends FormValidator {
 	function isValid() {
 		if ($this->getType() == FORM_VALIDATOR_OPTIONAL_VALUE) return true;
 
-		$data = $this->getFieldValue();
+                $data = $this->getFieldValue();
 		if (!is_array($data)) return false;
-
-		$isValid = true;
+                $isValid = true;
 		foreach ($data as $key => $value) {
-
 			if (count($this->_fields) == 0) {
 				// We expect all fields to contain values.
-				if (is_null($value) || trim((string)$value) == '') {
+                                if (is_array($value)) {
+                                        foreach($value as $subkey => $subvalue ) {
+                                            if( empty( $subvalue ) )
+                                            {
+                                               unset( $value[$subkey] );
+                                            }
+                                        }
+                                        if (empty($value)){
+                                            $isValid = false;
+                                            array_push($this->_errorFields, $this->getField()."[{$key}]");
+                                        }
+                                } elseif (is_null($value) || trim((string)$value) == '') {
 					$isValid = false;
 					array_push($this->_errorFields, $this->getField()."[{$key}]");
 				}

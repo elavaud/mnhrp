@@ -15,8 +15,11 @@
 
 // $Id$
 
-define('INSTITUTION_TYPE_GOVERNMENT', 1);
-define('INSTITUTION_TYPE_PRIVATE', 2);
+define('INSTITUTION_TYPE_OTHER', 0);
+define('INSTITUTION_TYPE_PUBLIC', 1);
+define('INSTITUTION_TYPE_PRIVATE_PROFIT', 2);
+define('INSTITUTION_TYPE_PRIVATE_NON_PROFIT', 3);
+define('INSTITUTION_TYPE_PRIVATE_INDIVIDUAL', 4);
 
 class Institution extends DataObject {
 
@@ -27,51 +30,134 @@ class Institution extends DataObject {
 		parent::DataObject();
 	}
 
-	/**
-	 * Get localized institution name by ID.
-	 * @return string
-	 */
+        //
+	// Get/set methods
+	//
 
 	/**
-	 * Get localized institution name.
-	 * @return string
+	 * Get institution id.
+	 * @return int
 	 */
-	function getInstitution() {
-		return $this->getData('institution');
-	}
+	function getInstitutionId() {
+		return $this->getData('institutionId');
+	} 
+
 	/**
-	 * Get localized region.
-	 * @return string
+	 * Set institution id.
+	 * @param $institutionId int
 	 */
-	function getRegion() {
-		return $this->getData('region');
+	function setInstitutionId($institutionId) {
+		return $this->setData('institutionId', $institutionId);
 	}
-	
+
+	/**
+	 * Get institution type.
+	 * @return int
+	 */
 	function getInstitutionType() {
-		return $this->getData('institutionType');
-	}
+		return $this->getData('type');
+	} 
 
-	function getRegionText() {
-		$regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-		return $regionDAO->getAreaOfTheCountry($this->getRegion());
-	}
-	
-	/**
-	 * Set institution.
-	 * @param $institution string
-	 * @param $locale string
+        /**
+	 * Get institution type translation key.
+	 * @return int
 	 */
-	function setInstitution($institution) {
-		return $this->setData('institution', $institution);
+	function getInstitutionTypeKey() {
+		$institutionTypeMap =& $this->getInstitutionTypeMap();
+		return $institutionTypeMap[$this->getInstitutionType()];
 	}
 
-	function setRegion($region) {
-		return $this->setData('region', $region);
+        /**
+	 * Get a map for yes/no/not provided constant to locale key.
+	 * @return array
+	 */
+	function &getInstitutionTypeMap() {
+		static $institutionTypeMap;
+		if (!isset($institutionTypeMap)) {
+			$institutionTypeMap = array(
+                                INSTITUTION_TYPE_PUBLIC => 'institution.type.public',
+				INSTITUTION_TYPE_PRIVATE_PROFIT => 'institution.type.privateProfit',
+				INSTITUTION_TYPE_PRIVATE_NON_PROFIT => 'institution.type.privateNonProfit',
+				INSTITUTION_TYPE_PRIVATE_INDIVIDUAL => 'institution.type.privateIndividual'
+                        );
+		}
+		return $institutionTypeMap;
 	}
-	
-	function setInstitutionType($institutionType) {
-		return $this->setData('institutionType', $institutionType);
-	}	
+        
+        
+	/**
+	 * Set institution type.
+	 * @param $type int
+	 */
+	function setInstitutionType($type) {
+		return $this->setData('type', $type);
+	}
+        
+        /**
+	 * Get institution location.
+	 * @return string
+	 */
+	function getInstitutionLocation() {
+		return $this->getData('location');
+	} 
+        
+        /**
+	 * Get institution location full text.
+	 * @return string
+	 */
+	function getInstitutionLocationText() {
+                $location = $this->getData('location');
+                if ($location == 'EXT') {
+                    $journal =& Request::getJournal();
+                    $coveredArea = $journal->getLocalizedSetting('location');               
+                    return Locale::translate('common.outside').' '.$coveredArea;
+                } else {
+                    $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+                    return $regionDAO->getAreaOfTheCountry($location);
+                }
+
+	}
+        
+	/**
+	 * Set institution location.
+	 * @param $location string
+	 */
+	function setInstitutionLocation($location) {
+		return $this->setData('location', $location);
+	}
+
+        /**
+	 * Get institution name.
+	 * @return string
+	 */
+	function getInstitutionName() {
+		return $this->getData('name');
+	} 
+
+	/**
+	 * Set institution name.
+	 * @param $name string
+	 */
+	function setInstitutionName($name) {
+		return $this->setData('name', $name);
+	}
+
+        /**
+	 * Get institution acronym.
+	 * @return string
+	 */
+	function getInstitutionAcronym() {
+		return $this->getData('acronym');
+	} 
+
+	/**
+	 * Set institution acronym.
+	 * @param $acronym string
+	 */
+	function setInstitutionAcronym($acronym) {
+		return $this->setData('acronym', $acronym);
+	}
+        
 }
 
 ?>

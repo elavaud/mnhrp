@@ -35,7 +35,7 @@ class InstitutionHandler extends ManagerHandler {
 		$sortDirection = Request::getUserVar('sortDirection');
 		$sortDirection = (isset($sortDirection) && ($sortDirection == SORT_DIRECTION_ASC || $sortDirection == SORT_DIRECTION_DESC)) ? $sortDirection : SORT_DIRECTION_ASC;
 		
-		$institutions =& $institutionDAO->getAllInstitutions($rangeInfo, $sort, $sortDirection);
+		$institutions =& $institutionDAO->getAllInstitutions($sort, $sortDirection, $rangeInfo);
 		
 		$templateMgr =& TemplateManager::getManager();
 		$templateMgr->addJavaScript('lib/pkp/js/jquery.tablednd_0_5.js');
@@ -66,7 +66,7 @@ class InstitutionHandler extends ManagerHandler {
 	function updateInstitution($args = array()) {
 		$this->validate();
 		$this->setupTemplate(true);
-		import('classes.manager.form.institutionForm');
+		import('classes.manager.form.InstitutionForm');                
 		$institutionForm = new InstitutionForm(!isset($args) || empty($args) ? null : ((int) $args[0]));
 
 		$institutionForm->readInputData();

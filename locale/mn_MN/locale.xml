@@ -26,6 +26,27 @@
 	 *  DEFAULT - Default settings for configuration items.
 	-->
 
+        <!-- Common Source and Institution Terms -->
+	<message key="institution.acronym">Acronym</message>
+	<message key="institution.institution">Institution</message>
+	<message key="institution.institutions">Institutions</message>
+	<message key="institution.location">Location</message>
+	<message key="institution.name">Name</message>
+	<message key="institution.type">Type</message>
+	<message key="institution.type.public">Public</message>
+	<message key="institution.type.privateProfit">Private for profit</message>
+	<message key="institution.type.privateNonProfit">Private for non-profit</message>
+	<message key="institution.type.privateIndividual">Private Individual</message>
+        <message key="proposal.source.add">Add source of monetary or material support</message>
+        <message key="proposal.source.amount">Amount</message>
+        <message key="proposal.source.amount.instruct">Please enter whole numbers without any comma or other separator.</message>
+        
+        <message key="proposal.keyImplInstitution">Key Implementing Institution</message>
+        <message key="proposal.keyImplInstitution.instruct">The key implementing institution for the research. Please write any individual, organization, group or other legal entity responsible for overall management and implementation of research.</message>
+        <message key="proposal.otherKeyImplInstitution.instruct">If your key implementing institution is not listed in the above list, please provide the following information:</message>
+
+        <message key="proposal.otherSource.instruct"><![CDATA[If your source of monetary is not included in the above list, please provide the following information.<br/><i><font color="red">Please note that if this one has already been provided as an other institution for your key implementing institution, just select "Key Implementing Institution" in the list.</font></i>]]></message>
+
 	<!-- review froms start -->
 
 	<!-- common -->
@@ -120,42 +141,36 @@
 	 *
 	-->
 
-	<!-- Common Institution Terms -->
-	<message key="institution.government">Government</message>
-	<message key="institution.institution">Institution</message>
-	<message key="institution.institutions">Institutions</message>
-	<message key="institution.location">Location</message>
-	<message key="institution.private">Private</message>
-	<message key="institution.type">Type</message>
 
-	<!-- Common Section Terms -->
+
+        <!-- Common Section Terms -->
 	<message key="section.section">Ethics Review Committee</message>
-    <message key="section.sectionAbbrev">Committee</message>
+        <message key="section.sectionAbbrev">Committee</message>
 	<message key="section.sections">Ethics Review Committees</message>
 	<message key="section.title">Ethics Committee title</message>
 	<message key="section.abbreviation">Abbreviation</message>
-    <message key="section.region">Region</message>
+        <message key="section.region">Region</message>
 	<message key="section.abbreviation.example">(For example, Proposals=PRO)</message>
 
 	<!-- Common Article Terms -->
 	<message key="article.article">Proposal</message>
 	<message key="article.articles">Proposals</message>
-    <message key="article.article.s">Proposal(s)</message>
-    <message key="article.authorInstruct">Main investigator in the research</message>
+        <message key="article.article.s">Proposal(s)</message>
+        <message key="article.authorInstruct">Main investigator in the research</message>
 	<message key="article.submissionId">Proposal ID</message>
 	<message key="article.title">Title</message>
-    <message key="article.scientificTitle">Scientific title</message>
-    <message key="article.proposalType">Proposal Type</message>
-    <message key="article.publicTitle">Public title</message>
+        <message key="article.scientificTitle">Scientific title</message>
+        <message key="article.proposalType">Proposal Type</message>
+        <message key="article.publicTitle">Public title</message>
 	<message key="article.authors">Investigator(s)</message>
 	<message key="article.metadata">Metadata</message>
 	<message key="article.journalSection">Ethics Review Committee</message>
 	<message key="article.file">File</message>
-    <message key="article.files">Files</message>
+        <message key="article.files">Files</message>
 	<message key="article.suppFile">Supplementary File</message>
 	<message key="article.suppFiles">Supplementary File(s)</message>
 	<message key="article.suppFilesAbbrev">Supp. Files</message>
-    <message key="article.suppFilesAbbrevInstruct">Supplementary files submitted by the Investigator. Please click on a title (blue link) for downloading the concerned proposal.</message>
+        <message key="article.suppFilesAbbrevInstruct">Supplementary files submitted by the Investigator. Please click on a title (blue link) for downloading the concerned proposal.</message>
 	<message key="article.subject">Keywords</message>
 	<message key="article.type">Type, method or approach</message>
 	<message key="article.language">Language</message>
@@ -195,7 +210,7 @@
     <message key="proposal.keywordsInstruct">Significant or descriptive words.</message>
     <message key="proposal.startDateInstruct">Start date of the research.</message>
     <message key="proposal.endDateInstruct">End date of the research.</message>
-    <message key="proposal.fundsRequiredInstruct">Please enter a whole number without any comma or other separator.</message>
+    <message key="proposal.fundsRequiredInstruct">Please enter whole numbers without any comma or other separator.</message>
     <message key="proposal.primarySponsorInstruct">The individual, organization, group or other legal entity which takes responsibility for initiating, managing and/or financing a study. The Primary Sponsor is responsible for ensuring that the research is properly registered. The Primary Sponsor may or may not be the main funder.</message>
     <message key="proposal.otherPrimarySponsorInstruct">If your primary sponsor is not included in the above list, please specify it here.</message>
     <message key="proposal.secondarySponsorsInstruct">Additional individuals, organizations or other legal persons, if any, that have agreed with the primary sponsor to take on responsibilities of sponsorship. A secondary sponsor may have agreed: 
@@ -244,6 +259,7 @@
     <message key="proposal.studentInstitution">Institution</message>
     <message key="proposal.studentSupervisor">Supervisor of the student(s)</message>        
     <message key="proposal.studentSupervisorName">Full Name and title</message>
+    
     <message key="proposal.academicDegree">Academic degree</message>
     <message key="proposal.proposalType">Proposal Type</message>
     <message key="proposal.geoArea">Geographical Area(s)</message>

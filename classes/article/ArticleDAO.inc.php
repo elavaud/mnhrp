@@ -25,6 +25,8 @@ class ArticleDAO extends DAO {
 		
 	var $proposalDetailsDao;
 
+        var $proposalSourceDao;
+
         var $cache;
 
 	function _cacheMiss(&$cache, $id) {
@@ -50,6 +52,7 @@ class ArticleDAO extends DAO {
 		$this->riskAssessmentDao =& DAORegistry::getDAO('RiskAssessmentDAO');
 		$this->proposalAbstractDao =& DAORegistry::getDAO('ProposalAbstractDAO');
 		$this->proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
+		$this->proposalSourceDao =& DAORegistry::getDAO('ProposalSourceDAO');
         }
 
 	/**
@@ -74,22 +77,9 @@ class ArticleDAO extends DAO {
                     'coverageSample', 
                     'type', 
                     'sponsor', 
-                    'fundsRequired', 
-                    'selectedCurrency', 
                     'proposalId', 
                     'withdrawReason', 
-                    'withdrawComments', 
-                    'industryGrant', 
-                    'nameOfIndustry', 
-                    'internationalGrant', 
-                    'internationalGrantName', 
-                    'mohGrant', 
-                    'governmentGrant', 
-                    'governmentGrantName', 
-                    'universityGrant', 
-                    'selfFunding', 
-                    'otherGrant', 
-                    'specifyOtherGrant'
+                    'withdrawComments' 
                );
 	}
 
@@ -205,7 +195,9 @@ class ArticleDAO extends DAO {
 		
 		$article->setAuthors($this->authorDao->getAuthorsByArticle($row['article_id']));
 
-		$article->setRiskAssessment($this->riskAssessmentDao->getRiskAssessmentByArticleId($row['article_id']));
+		$article->setSources($this->proposalSourceDao->getProposalSourcesByArticleId($row['article_id']));
+
+                $article->setRiskAssessment($this->riskAssessmentDao->getRiskAssessmentByArticleId($row['article_id']));
 		
 		$article->setAbstracts($this->proposalAbstractDao->getAbstractsByArticle($row['article_id']));
 		
@@ -328,6 +320,16 @@ class ArticleDAO extends DAO {
 			}
 		}
 
+                // update sources of monetary and material support for this article
+		$sources =& $article->getSources();
+		for ($i=0, $count=count($sources); $i < $count; $i++) {
+			if ($sources[$i]->getId() > 0) {
+				$this->proposalSourceDao->updateProposalSource($sources[$i]);
+			} else {
+				$this->proposalSourceDao->insertProposalSource($authors[$i]);
+			}
+		}
+                
 		// update abstracts for this article
 		$abstracts =& $article->getAbstracts();
 		foreach ($abstracts as $abstract) {
@@ -360,6 +362,12 @@ class ArticleDAO extends DAO {
 			$this->authorDao->deleteAuthorById($removedAuthors[$i], $article->getId());
 		}
 
+                // Remove deleted sources of monetary
+		$removedSources = $article->getRemovedSources();
+		for ($i=0, $count=count($removedSources); $i < $count; $i++) {
+			$this->proposalSourceDao->deleteProposalSourceById($removedSources[$i]);
+		}
+                
 		// Remove deleted abstracts
 		$removedAbstracts = $article->getRemovedAbstracts();
 		foreach ($removedAbstracts as $removedAbstract) {
@@ -387,6 +395,8 @@ class ArticleDAO extends DAO {
 	 */
 	function deleteArticleById($articleId) {
 		$this->authorDao->deleteAuthorsByArticle($articleId);
+
+                $this->proposalSourceDao->deleteSourcesByArticle($articleId);
 
 		$publishedArticleDao =& DAORegistry::getDAO('PublishedArticleDAO');
 		$publishedArticleDao->deletePublishedArticleByArticleId($articleId);

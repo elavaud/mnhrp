@@ -12,13 +12,12 @@
  */
 
 // For degrees
-define ('STUDENT_DEGREE_NOT_PROVIDED', 0);
 define ('STUDENT_DEGREE_UNDERGRADUATE', 1);
 define ('STUDENT_DEGREE_MASTER', 2);
 define ('STUDENT_DEGREE_POST_DOC', 3);
 define ('STUDENT_DEGREE_PHD', 4);
 define ('STUDENT_DEGREE_OTHER', 5);
-
+define ('STUDENT_DEGREE_NOT_PROVIDED', 9);
 
 class StudentResearch extends DataObject {
 	

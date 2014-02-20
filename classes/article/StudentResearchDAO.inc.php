@@ -130,6 +130,16 @@ class StudentResearchDAO extends DAO{
 
 		return $studentResearch;
 	}
+        
+        function getAcademicDegreesArray(){
+            return array(
+                STUDENT_DEGREE_UNDERGRADUATE => Locale::translate('proposal.undergraduate'),
+                STUDENT_DEGREE_MASTER => Locale::translate('proposal.master'),
+                STUDENT_DEGREE_POST_DOC => Locale::translate('proposal.postDoc'),
+                STUDENT_DEGREE_PHD => Locale::translate('proposal.phd'),
+                STUDENT_DEGREE_OTHER => Locale::translate('common.other')
+            );
+        }
 
 }
 

@@ -10,43 +10,46 @@
  * $Id$
  *}
 {strip}
-{assign var="pageTitle" value="institution.institution"}
-{assign var="pageCrumbTitle" value="institution.institution"}
-{include file="common/header.tpl"}
+    {assign var="pageTitle" value="institution.institution"}
+    {assign var="pageCrumbTitle" value="institution.institution"}
+    {include file="common/header.tpl"}
 {/strip}
 
 <form name="institution" method="post" action="{url op="updateInstitution" path="$institutionId}">
-<input type="hidden" name="editorAction" value="" />
-<input type="hidden" name="userId" value="" />
+    <input type="hidden" name="editorAction" value="" />
+    <input type="hidden" name="userId" value="" />
 
-{include file="common/formErrors.tpl"}
-<div id="institutionForm">
-<table class="data" width="100%">
-
-<tr valign="top">
-	<td width="20%" class="label">{fieldLabel name="title" required="true" key="institution.institution"}</td>
-	<td width="80%" class="value"><input type="text" name="title" value="{$institution}" id="title" size="40" maxlength="120" class="textField" /></td>
-</tr>
-<tr valign="top">
-	<td width="20%" class="label">{fieldLabel name="institution_type" required="true" key="institution.type"}</td>
-    <td width="80%" class="value">
-		<select name="institution_type" id="institution_type" class="selectMenu">
-        	<option value=""></option>
-				{html_options_translate options=$institutionTypes selected=$institutionType}
-        </select>
-    </td>
-</tr>
-<tr valign="top">
-	<td width="20%" class="label">{fieldLabel name="region" required="true" key="institution.location"}</td>
-    <td width="80%" class="value">
-		<select name="region" id="region" class="selectMenu">
-        	<option value=""></option>
-				{html_options options=$regions selected=$region}
-        </select>
-    </td>
-</tr>
-</table>
-</div>
+    {include file="common/formErrors.tpl"}
+    <div id="institutionForm">
+        <table class="data" width="100%">
+            <tr valign="top">
+                    <td width="20%" class="label">{fieldLabel name="name" required="true" key="institution.name"}</td>
+                    <td width="80%" class="value"><input type="text" name="name" value="{$name}" id="name" size="40" maxlength="120" class="textField" /></td>
+            </tr>
+            <tr valign="top">
+                    <td width="20%" class="label">{fieldLabel name="acronym" required="true" key="institution.acronym"}</td>
+                    <td width="80%" class="value"><input type="text" name="acronym" value="{$acronym}" id="acronym" size="20" maxlength="60" class="textField" /></td>
+            </tr>
+            <tr valign="top">
+                    <td width="20%" class="label">{fieldLabel name="type" required="true" key="institution.type"}</td>
+                    <td width="80%" class="value">
+                        <select name="type" id="type" class="selectMenu">
+                            <option value=""></option>
+                            {html_options options=$institutionTypes selected=$type}
+                        </select>
+                    </td>
+            </tr>
+            <tr valign="top">
+                    <td width="20%" class="label">{fieldLabel name="location" required="true" key="institution.location"}</td>
+                    <td width="80%" class="value">
+                        <select name="location" id="location" class="selectMenu">
+                            <option value=""></option>
+                            {html_options options=$regions selected=$location}
+                        </select>
+                    </td>
+            </tr>
+        </table>
+    </div>
 
 <p><input type="submit" value="{translate key="common.save"}" class="button defaultButton" /> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="document.location.href='{url op="institutions" escape=false}'" /></p>
 

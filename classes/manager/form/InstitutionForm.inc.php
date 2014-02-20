@@ -43,9 +43,13 @@ class InstitutionForm extends Form {
 		$this->institutionId = $institutionId;
 
 		// Validation checks for this form
-		$this->addCheck(new FormValidator($this, 'title', 'required', 'manager.institutions.form.nameRequired'));
-		$this->addCheck(new FormValidator($this, 'region', 'required', 'manager.institutions.form.regionRequired'));
-		$this->addCheck(new FormValidator($this, 'institution_type', 'required', 'manager.institutions.form.typeRequired'));
+
+		$this->addCheck(new FormValidator($this, 'name', 'required', 'manager.institutions.form.nameRequired'));
+                $this->addCheck(new FormValidatorCustom($this, 'name', 'required', 'manager.institutions.form.nameExists', array(DAORegistry::getDAO('InstitutionDAO'), 'institutionExistsByName'), array($this->institutionId), true));
+		$this->addCheck(new FormValidator($this, 'acronym', 'required', 'manager.institutions.form.acronymRequired'));
+                $this->addCheck(new FormValidatorCustom($this, 'acronym', 'required', 'manager.institutions.form.acronymExists', array(DAORegistry::getDAO('InstitutionDAO'), 'institutionExistsByAcronym'), array($this->institutionId), true));
+		$this->addCheck(new FormValidator($this, 'location', 'required', 'manager.institutions.form.regionRequired'));
+		$this->addCheck(new FormValidator($this, 'type', 'required', 'manager.institutions.form.typeRequired'));
 	}
 
 
@@ -58,15 +62,15 @@ class InstitutionForm extends Form {
 		
 		$templateMgr->assign('institutionId', $this->institutionId);
 
-       	$regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-        $regions =& $regionDAO->getAreasOfTheCountry();
-        $templateMgr->assign_by_ref('regions', $regions);
-        
-        $templateMgr->assign('institutionTypes', array(
-        	'' => 'common.chooseOne',
-        	INSTITUTION_TYPE_GOVERNMENT => 'institution.government',
-        	INSTITUTION_TYPE_PRIVATE => 'institution.private'
-        ));
+                $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+                $coveredArea = $journal->getLocalizedSetting('location');               
+                $regions = array('EXT' => Locale::translate('common.outside').' '.$coveredArea) + $regionDAO->getAreasOfTheCountry();
+                $templateMgr->assign_by_ref('regions', $regions);
+                
+                $institutionDAO =& DAORegistry::getDAO('InstitutionDAO');
+                $institutionTypes = $institutionDAO->getInstitutionTypes();
+                
+                $templateMgr->assign('institutionTypes', $institutionTypes);
 		parent::display(); 
 	}
 
@@ -79,9 +83,10 @@ class InstitutionForm extends Form {
 			$institution =& $institutionDao->getInstitutionById($this->institutionId);
 			
 			$this->_data = array(
-				'title' => $institution->getInstitution(), // Localized
-				'region' => $institution->getRegion(), // Localized
-				'institutionType' => $institution->getInstitutionType()
+				'name' => $institution->getInstitutionName(),
+				'acronym' => $institution->getInstitutionAcronym(),
+				'location' => $institution->getInstitutionLocation(),
+				'type' => $institution->getInstitutionType()
 			);
 		}
 	}
@@ -93,7 +98,7 @@ class InstitutionForm extends Form {
 	*/
 	function readInputData() {
 	
-		$this->readUserVars(array('title', 'region', 'institution_type'));
+		$this->readUserVars(array('name', 'acronym', 'location', 'type'));
 	}
 
 	/**
@@ -107,17 +112,20 @@ class InstitutionForm extends Form {
 			$institution =& $institutionDao->getInstitutionById($this->institutionId);
 		}
 		
-		if (!isset($institution))
+		if (!isset($institution)) {
 			$institution = new Institution();
-		
-		$institution->setInstitution($this->getData('title'));
-		$institution->setRegion($this->getData('region'));
-		$institution->setInstitutionType($this->getData('institution_type'));
+                }
+                
+		$institution->setInstitutionName($this->getData('name'));
+		$institution->setInstitutionAcronym($this->getData('acronym'));
+		$institution->setInstitutionLocation($this->getData('location'));
+		$institution->setInstitutionType($this->getData('type'));
 
-		if ($institution->getId() != null)
+		if ($institution->getInstitutionId() != null) {
 			$institutionDao->updateInstitution($institution);
-		else
+                } else {
 			$institutionDao->insertInstitution($institution);
+                }
 	}
 }
 
