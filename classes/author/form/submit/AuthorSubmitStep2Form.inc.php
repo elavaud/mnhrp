@@ -20,27 +20,89 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
 	function AuthorSubmitStep2Form(&$article, &$journal) {
 		parent::AuthorSubmitForm($article, 2, $journal);
 		
-		$this->addCheck(new FormValidatorCustom($this, 'authors', 'required', 'author.submit.form.authorRequired', create_function('$authors', 'return count($authors) > 0;')));
+                
+                $this->addCheck(new FormValidatorCustom($this, 'authors', 'required', 'author.submit.form.authorRequired', 
+                        function($authors) {
+                            return count($authors) > 0; 
+                        }));
+                        
 		$this->addCheck(new FormValidatorArray($this, 'authors', 'required', 'author.submit.form.authorRequiredFields', array('firstName', 'lastName', 'affiliation', 'phone')));				
 		$this->addCheck(new FormValidatorArray($this, 'abstracts', 'required', 'author.submit.form.abstractRequiredFields', array('scientificTitle', 'publicTitle', 'background', 'objectives', 'studyMethods', 'expectedOutcomes', 'keywords')));
 		$this->addCheck(new FormValidatorArrayRadios($this, 'proposalDetails', 'required', 'author.submit.form.proposalDetails', array('studentInitiatedResearch', 'multiCountryResearch', 'nationwide', 'withHumanSubjects', 'reviewedByOtherErc')));
+                
+                $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIINameAlreadyUsed', 
+                        function($proposalDetails) {
+                            $institutionDao = DAORegistry::getDAO("InstitutionDAO");
+                            echo $proposalDetails["otherInstitutionName"];
+                            if($institutionDao->institutionExistsByName($proposalDetails["otherInstitutionName"])) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }));
+
+               $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIIAcronymAlreadyUsed', 
+                        function($proposalDetails) {
+                            $institutionDao = DAORegistry::getDAO("InstitutionDAO"); 
+                            if ($institutionDao->institutionExistsByAcronym($proposalDetails["otherInstitutionAcronym"])) {
+                                return false;
+                            } else {
+                                return true;
+                            }
+                        }));
+                        
                 $this->addCheck(new FormValidatorArray($this, 'studentResearch', 'required', 'author.submit.form.studentResearch'));
 		$this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('institution', 'amount', 'otherInstitutionName', 'otherInstitutionAcronym', 'otherInstitutionType', 'otherInstitutionLocation')));                
                 
-                $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceNameAlreadyUsed', create_function('$otherInstitutionName', '$institutionDao = DAORegistry::getDAO("InstitutionDAO"); if($institutionDao->institutionExistsByName($otherInstitutionName)) return false; else return true;'), array(), false, array('otherInstitutionName')));                
-                
-                //$this->addCheck(new FormValidatorCustom($this, 'name', 'required', 'manager.institutions.form.nameExists', array(DAORegistry::getDAO('InstitutionDAO'), 'institutionExistsByName'), array($this->institutionId), true));
-		//$this->addCheck(new FormValidatorArrayCustom($this, 'authors', 'required', 'user.profile.form.emailRequired', create_function('$email, $regExp', 'return String::regexp_match($regExp, $email);'), array(ValidatorEmail::getRegexp()), false, array('email')));
-		//$this->addCheck(new FormValidatorArrayCustom($this, 'authors', 'required', 'user.profile.form.urlInvalid', create_function('$url, $regExp', 'return empty($url) ? true : String::regexp_match($regExp, $url);'), array(ValidatorUrl::getRegexp()), false, array('url')));
-                
-                
-                
-                
+                $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceNameAlreadyUsed', 
+                        function($otherInstitutionName) {
+                            $institutionDao = DAORegistry::getDAO("InstitutionDAO"); 
+                            if($institutionDao->institutionExistsByName($otherInstitutionName)) {
+                                return false; 
+                            } else {
+                                return true;
+                            }
+                        }, array(), false, array('otherInstitutionName')));
+                        
+                $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceAccronymAlreadyUsed', 
+                        function($otherInstitutionAcronym) {
+                            $institutionDao = DAORegistry::getDAO("InstitutionDAO"); 
+                            if($institutionDao->institutionExistsByAcronym($otherInstitutionAcronym)) {
+                                return false; 
+                            } else {
+                                return true;
+                            }
+                         }, array(), false, array('otherInstitutionAcronym'))); 
+                         
+                $this->addCheck(new FormValidatorCustom($this, 'sources', 'required', 'author.submit.form.sameInstitutionEntries', 
+                        function($sources, $KIIOtherInstitutionName, $KIIOtherInstitutionAcronym) {
+                            $institutionNameArray = array(); 
+                            $institutionAcronymArray = array(); 
+                            foreach($sources as $source){
+                                if($source["otherInstitutionName"] != "NA") {
+                                    array_push($institutionNameArray, $source["otherInstitutionName"]);
+                                }
+                                if($source["otherInstitutionAcronym"] != "NA") {
+                                    array_push($institutionAcronymArray, $source["otherInstitutionAcronym"]);
+                                }
+                            }
+                            if($KIIOtherInstitutionName != "NA") {
+                                array_push($institutionNameArray, $KIIOtherInstitutionName);
+                            }
+                            if($KIIOtherInstitutionAcronym != "NA") {
+                                array_push($institutionAcronymArray, $KIIOtherInstitutionAcronym);
+                            }
+                            if(count($institutionNameArray) != count(array_intersect_key($institutionNameArray,array_unique(array_map('strtolower',$institutionNameArray))))) {
+                                return false;
+                            } elseif (count($institutionAcronymArray) != count(array_intersect_key($institutionAcronymArray,array_unique(array_map('strtolower',$institutionAcronymArray))))) {
+                                return false;
+                            }
+                            else {
+                                return true;
+                            }
+                         }, array($_POST["proposalDetails"]["otherInstitutionName"], $_POST["proposalDetails"]["otherInstitutionAcronym"])));
+                         
                 $this->addCheck(new FormValidatorArrayRadios($this, "riskAssessment", 'required', 'author.submit.form.riskAssessment', array('identityRevealed', 'unableToConsent', 'under18', 'dependentRelationship', 'ethnicMinority', 'impairment', 'pregnant', 'newTreatment', 'bioSamples', 'radiation', 'distress', 'inducements', 'sensitiveInfo', 'deception', 'reproTechnology', 'genetic', 'stemCell', 'biosafety', 'multiInstitutions', 'conflictOfInterest')));
-		
-                
-                
-                
         }
 
 	/**

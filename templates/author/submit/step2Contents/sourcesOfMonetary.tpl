@@ -25,7 +25,7 @@
         {if $source.sourceId}<input type="hidden" name="sources[{$sourceIndex|escape}][sourceId]" value="{$source.sourceId|escape}" />{/if}
         <table width="100%" style="border-top: dotted 1px #C0C0C0 !important; padding-bottom:10px; padding-top: 10px;" {if $sourceIndex == 0} id="firstSource"{else} class="sourceSuppClass" {/if}> 
             <tr>
-                <td title="{translate key="proposal.source.instruct"}" width="10%" class="label">[?] {fieldLabel required="true" key="proposal.source"}</td>
+                <td title='{translate key="proposal.source.instruct"}' width="10%" class="label">[?] {fieldLabel required="true" key="proposal.source"}</td>
                 <td width="45%" class="value">
                     <select name="sources[{$sourceIndex|escape}][institution]" class="selectMenu" id="sources-{$sourceIndex|escape}-institution">
                         <option value=""></option>
