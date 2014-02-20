@@ -25,11 +25,23 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
 		$this->addCheck(new FormValidatorArray($this, 'abstracts', 'required', 'author.submit.form.abstractRequiredFields', array('scientificTitle', 'publicTitle', 'background', 'objectives', 'studyMethods', 'expectedOutcomes', 'keywords')));
 		$this->addCheck(new FormValidatorArrayRadios($this, 'proposalDetails', 'required', 'author.submit.form.proposalDetails', array('studentInitiatedResearch', 'multiCountryResearch', 'nationwide', 'withHumanSubjects', 'reviewedByOtherErc')));
                 $this->addCheck(new FormValidatorArray($this, 'studentResearch', 'required', 'author.submit.form.studentResearch'));
-		//$this->addCheck(new FormValidatorCustom($this, 'sources', 'required', 'author.submit.form.sourceRequired', create_function('$sources', 'return count($sources) > 0;')));
-		//$this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('type', 'name', 'amount')));                
+		$this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('institution', 'amount', 'otherInstitutionName', 'otherInstitutionAcronym', 'otherInstitutionType', 'otherInstitutionLocation')));                
+                
+                $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceNameAlreadyUsed', create_function('$otherInstitutionName', '$institutionDao = DAORegistry::getDAO("InstitutionDAO"); if($institutionDao->institutionExistsByName($otherInstitutionName)) return false; else return true;'), array(), false, array('otherInstitutionName')));                
+                
+                //$this->addCheck(new FormValidatorCustom($this, 'name', 'required', 'manager.institutions.form.nameExists', array(DAORegistry::getDAO('InstitutionDAO'), 'institutionExistsByName'), array($this->institutionId), true));
+		//$this->addCheck(new FormValidatorArrayCustom($this, 'authors', 'required', 'user.profile.form.emailRequired', create_function('$email, $regExp', 'return String::regexp_match($regExp, $email);'), array(ValidatorEmail::getRegexp()), false, array('email')));
+		//$this->addCheck(new FormValidatorArrayCustom($this, 'authors', 'required', 'user.profile.form.urlInvalid', create_function('$url, $regExp', 'return empty($url) ? true : String::regexp_match($regExp, $url);'), array(ValidatorUrl::getRegexp()), false, array('url')));
+                
+                
+                
+                
                 $this->addCheck(new FormValidatorArrayRadios($this, "riskAssessment", 'required', 'author.submit.form.riskAssessment', array('identityRevealed', 'unableToConsent', 'under18', 'dependentRelationship', 'ethnicMinority', 'impairment', 'pregnant', 'newTreatment', 'bioSamples', 'radiation', 'distress', 'inducements', 'sensitiveInfo', 'deception', 'reproTechnology', 'genetic', 'stemCell', 'biosafety', 'multiInstitutions', 'conflictOfInterest')));
-
-	}
+		
+                
+                
+                
+        }
 
 	/**
 	 * Initialize form data from current article.
@@ -233,7 +245,6 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                                 'proposalDetails',                            
 				'studentResearch',                            
 				'sources',
-				'deletedSources',
                                 'riskAssessment'
 			)
 		);
@@ -519,13 +530,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
 				}
 			}
 			unset($source);
-		}
-
-                // Remove deleted sources
-		$deletedSources = explode(':', $this->getData('deletedSources'));
-		for ($i=0, $count=count($deletedSources); $i < $count; $i++) {
-			$article->removeSource($deletedSources[$i]);
-		}    
+		} 
 
 
                 ///////////////////////////////////////////

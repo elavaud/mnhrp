@@ -171,7 +171,6 @@ class InstitutionDAO extends DAO {
 
 		$result->Close();
 		unset($result);
-
 		return $returner;
 	}
         

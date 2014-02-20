@@ -23,8 +23,8 @@
         <message key="author.submit.form.proposalDetails">One or multiple required data seem to be missing in the "Proposal Details" section. Please ensure to provide all required information (denoted with a star "*" ).</message>
         <message key="author.submit.form.studentResearch">One or multiple required data seem to be missing in the "Student Research" section. Please ensure to provide all required information (denoted with a star "*" ).</message>
         <message key="author.submit.form.riskAssessment">One or multiple required data seem to be missing in the "Risk Assessment" section. Please ensure to provide all required information (denoted with a star "*" ).</message>
-        <message key="author.submit.form.sourceRequired">At least one source of monetary and material support is required.</message>
-	<message key="author.submit.form.sourceRequiredFields">The type, name and amount of each source of monetary and material support is required.</message>
+	<message key="author.submit.form.sourceRequiredFields">One or multiple required data seem to be missing in the "Source of Monetary and Material Support" section. Please ensure to provide all required information (denoted with a star "*" ).</message>
+	<message key="author.submit.form.sourceNameAlreadyUsed">One of your source of monetary and material support was not in the database and you provided its information. However the name provided is already in use by an institution. Please ensure that your source is not included in the list and if not, complete its name.</message>
 
         <!---->
         

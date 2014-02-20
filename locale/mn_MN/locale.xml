@@ -27,7 +27,7 @@
 	-->
 
         <!-- Common Source and Institution Terms -->
-	<message key="institution.acronym">Acronym</message>
+        <message key="institution.acronym">Acronym</message>
 	<message key="institution.institution">Institution</message>
 	<message key="institution.institutions">Institutions</message>
 	<message key="institution.location">Location</message>
@@ -37,17 +37,20 @@
 	<message key="institution.type.privateProfit">Private for profit</message>
 	<message key="institution.type.privateNonProfit">Private for non-profit</message>
 	<message key="institution.type.privateIndividual">Private Individual</message>
+        <message key="proposal.source">Source</message>
+        <message key="proposal.source.instruct">Please select in this list your source of monetary and material support. If this one is not listed, please select "Other" at the bottom of this list.</message>
         <message key="proposal.source.add">Add source of monetary or material support</message>
         <message key="proposal.source.amount">Amount</message>
         <message key="proposal.source.amount.instruct">Please enter whole numbers without any comma or other separator.</message>
-        
+
         <message key="proposal.keyImplInstitution">Key Implementing Institution</message>
         <message key="proposal.keyImplInstitution.instruct">The key implementing institution for the research. Please write any individual, organization, group or other legal entity responsible for overall management and implementation of research.</message>
         <message key="proposal.otherKeyImplInstitution.instruct">If your key implementing institution is not listed in the above list, please provide the following information:</message>
 
-        <message key="proposal.otherSource.instruct"><![CDATA[If your source of monetary is not included in the above list, please provide the following information.<br/><i><font color="red">Please note that if this one has already been provided as an other institution for your key implementing institution, just select "Key Implementing Institution" in the list.</font></i>]]></message>
+        <message key="proposal.otherSource.instruct"><![CDATA[If your source of monetary is not included in the above list, please provide the following information.<br/><i><font color="red">Please note that if this one has already been provided as an other institution for your key implementing institution, just select "Key Implementing Institution" in the bottom of the above list.</font></i>]]></message>
 
-	<!-- review froms start -->
+
+        <!-- review froms start -->
 
 	<!-- common -->
 
@@ -57,6 +60,7 @@
 	<message key="submission.reviewForm">Review Form</message>
 	<message key="submission.reviewFormResponse">Review Form Response</message>
 	<message key="submission.reviewFormResponseInstruct">Please click on the "speach bubble" icon to access the response of this reviewer to the review form.</message>
+
 	<message key="reviewer.article.enterReviewForm">Click on icon to fill in the review form.</message>	
 	<message key="reviewer.article.reviewFormResponse.form.responseRequired">Please fill in required fields.</message>	
 	

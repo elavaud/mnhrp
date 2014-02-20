@@ -274,7 +274,7 @@
                 
         function isNumeric(){
             var numericExpression = /^([\s]*[0-9]+[\s]*)+$/;
-            $('#SourceOfMonetary input.sourceAmount').each(function() {
+            $('#sources input.sourceAmount').each(function() {
                 if ($(this).val().match(numericExpression)){
                     displayTotalBudget();
                     return true;
@@ -288,14 +288,14 @@
 
         function displayTotalBudget(){
             var totalBudget = Number(0);
-            $('#SourceOfMonetary input.sourceAmount').each(function() {
+            $('#sources input.sourceAmount').each(function() {
                 totalBudget += Number($(this).val());
             });            
             $("#totalBudgetVar").html(totalBudget);
         }
         
         function showOrHideOtherSource() {
-            $("#SourceOfMonetary select[id^=sources-]").each(function () {
+            $("#sources select[id^=sources-]").each(function () {
                 var iterator = $(this).attr('id');
                 iterator = iterator.replace('sources-', '');
                 iterator = iterator.replace('-institution', '');
@@ -320,11 +320,11 @@
                     $('#' + idTr).hide();
                     $('#sources-'+iterator+'-otherInstitutionName').val('NA');
                     $('#sources-'+iterator+'-otherInstitutionAcronym').val('NA');
-                    if ($('#sources-'+iterator+'-otherInstitutionType option[value="NA"]').length > 0){
+                    if (!$('#sources-'+iterator+'-otherInstitutionType option[value="NA"]').length > 0){
                         $('#sources-'+iterator+'-otherInstitutionType').append('<option value="NA"></option>');
                     }
                     $('#sources-'+iterator+'-otherInstitutionType').val('NA');
-                    if ($('#sources-'+iterator+'-otherInstitutionLocation option[value="NA"]').length > 0){
+                    if (!$('#sources-'+iterator+'-otherInstitutionLocation option[value="NA"]').length > 0){
                         $('#sources-'+iterator+'-otherInstitutionLocation').append('<option value="NA"></option>');
                     }
                     $('#sources-'+iterator+'-otherInstitutionLocation').val('NA');
@@ -336,15 +336,15 @@
             
             var sourceHtml = '<table width="100%" valign="top" class="sourceSuppClass" style="border-top: dotted 1px #C0C0C0 !important; padding-bottom:10px; padding-top: 10px;">' + $('#firstSource').html() + '</table>';
             
-            if ($("#SourceOfMonetary table.sourceSuppClass")[0]){
-                $('#SourceOfMonetary table.sourceSuppClass:last').after(sourceHtml);
-                var lastElement = $('#SourceOfMonetary table.sourceSuppClass:last');
+            if ($("#sources table.sourceSuppClass")[0]){
+                $('#sources table.sourceSuppClass:last').after(sourceHtml);
+                var lastElement = $('#sources table.sourceSuppClass:last');
             } else {
                 $('#firstSource').after(sourceHtml);
                 var lastElement = $('#firstSource').next();
             }
             
-            var numItems = $('#SourceOfMonetary table.sourceSuppClass').length;
+            var numItems = $('#sources table.sourceSuppClass').length;
             
             lastElement.find("select[id$=-institution]").attr("id", "sources-"+numItems+"-institution")
                                                         .attr("name", "sources["+numItems+"][institution]")
@@ -411,14 +411,20 @@
         $("[name='proposalDetails[multiCountryResearch]']").change(showOrHideMultiCountryResearch);
         
         $("#addAnotherCountryClick").click(addCountry);
-
+        
+        $('#proposalDetails a.removeMultiCountry').each(function() {$(this).click(function(){$(this).closest('tr').remove();});});
+        
         $("[name='proposalDetails[nationwide]']").change(showOrHideGeoAreas);
         
         $("#addAnotherAreaClick").click(addGeoArea);
         
+        $('#proposalDetails a.removeProposalProvince').each(function() {$(this).click(function(){$(this).closest('tr').remove();});});        
+        
         $('[name^=proposalDetails[researchFields]]').each(function() {$(this).change(showOrHideOtherResearchField);});
         
         $("#addAnotherFieldClick").click(addResearchField);
+        
+        $('#proposalDetails a.removeResearchField').each(function() {$(this).click(function(){$(this).closest('tr').remove();});});        
         
         $("[name='proposalDetails[withHumanSubjects]']").change(showOrHideProposalTypes);
         
@@ -426,14 +432,20 @@
         
         $("#addAnotherTypeClick").click(addProposalType);
         
+        $('#proposalDetails a.removeProposalType').each(function() {$(this).click(function(){$(this).closest('tr').remove();});});        
+        
         $("[name='proposalDetails[reviewedByOtherErc]']").change(showOrHideOtherErcDecision);
+                
+        $("#sources select[id$=-institution]").each(function() {$(this).change(showOrHideOtherSource);});
+        
+        $("#sources input[id$=-amount]").each(function() {$(this).keyup(isNumeric);});
+        
+        $("#addAnotherSource").click(addSource);
+        
+        $('#sources a.removeSource').each(function() {$(this).click(function(){$(this).closest('table').remove();});});                
         
         $("#riskLevel").change(showOrHideOtherLevelOfRisk);
-        
-        $("#SourceOfMonetary select[id$=-institution]").each(function() {$(this).change(showOrHideOtherSource);});
-        
-        $("#SourceOfMonetary input[id$=-amount]").each(function() {$(this).keyup(isNumeric);});
-        
+       
         $(document).ready(
             function() {
                 
