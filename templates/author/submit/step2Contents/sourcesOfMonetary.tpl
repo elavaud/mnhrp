@@ -22,8 +22,10 @@
     </table>
 
     {foreach name=sources from=$sources key=sourceIndex item=source}
-        {if $source.sourceId}<input type="hidden" name="sources[{$sourceIndex|escape}][sourceId]" value="{$source.sourceId|escape}" />{/if}
         <table width="100%" style="border-top: dotted 1px #C0C0C0 !important; padding-bottom:10px; padding-top: 10px;" {if $sourceIndex == 0} id="firstSource"{else} class="sourceSuppClass" {/if}> 
+            {if $source.sourceId}
+                <tr><td colspan="5"><input type="hidden" name="sources[{$sourceIndex|escape}][sourceId]" value="{$source.sourceId|escape}" /></td></tr>
+            {/if}
             <tr>
                 <td title='{translate key="proposal.source.instruct"}' width="10%" class="label">[?] {fieldLabel required="true" key="proposal.source"}</td>
                 <td width="45%" class="value">
@@ -40,7 +42,7 @@
                     US$
                 </td>
                 <td rowspan="2" width="10%" valign="middle">
-                        <a class="removeSource" style="cursor: pointer;{if $sourceIndex == 0} display: none;{/if}">&nbsp;&nbsp;{translate key="common.remove"}</a>
+                    <a class="removeSource" style="cursor: pointer;{if $sourceIndex == 0} display: none;{/if}">&nbsp;&nbsp;{translate key="common.remove"}</a>
                 </td>
             </tr>
             <tr id="sources-{$sourceIndex|escape}-otherInstitution">

@@ -378,7 +378,7 @@
                                                                      .val('NA');
 
             lastElement.find('.removeSource').show();
-            lastElement.find('.removeSource').click(function(){$(this).closest('table').remove();});
+            lastElement.find('.removeSource').click(function(){$(this).closest('table').remove();displayTotalBudget();});
 
         }       
          
@@ -442,7 +442,7 @@
         
         $("#addAnotherSource").click(addSource);
         
-        $('#sources a.removeSource').each(function() {$(this).click(function(){$(this).closest('table').remove();});});                
+        $('#sources a.removeSource').each(function() {$(this).click(function(){$(this).closest('table').remove();displayTotalBudget();});});                
         
         $("#riskLevel").change(showOrHideOtherLevelOfRisk);
        

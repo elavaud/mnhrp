@@ -94,8 +94,9 @@ class InstitutionDAO extends DAO {
 				$institution->getInstitutionAcronym()
                         )
 		);
-
-	}
+		$institution->setId($this->getInsertInstitutionId());
+		return $institution->getId();
+        }
 	
 	function deleteInstitutionById($institutionId) {
 		return $this->update('DELETE FROM institutions WHERE institution_id = ?', array($institutionId));
@@ -193,6 +194,15 @@ class InstitutionDAO extends DAO {
 
 		return $returner;
 	}
+        
+        
+        /**
+	 * Get the ID of the last inserted institution.
+	 * @return int
+	 */
+	function getInsertInstitutionId() {
+		return $this->getInsertId('institutions', 'institution_id');
+	}        
 }
 
 ?>

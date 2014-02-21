@@ -74,7 +74,7 @@ class ProposalSourceDAO extends DAO{
 			'INSERT INTO article_source
 				(article_id, institution_id, amount)
 				VALUES			
-                                (?, ?, ?, ?)',
+                                (?, ?, ?)',
 			array(
 				(int) $proposalSource->getArticleId(),
 				(int) $proposalSource->getInstitutionId(),
@@ -82,8 +82,8 @@ class ProposalSourceDAO extends DAO{
 			)
 		);
 
-		$proposalSource->setId($this->getInsertSourceId());
-		return $proposalSource->getId();
+		$proposalSource->setSourceId($this->getInsertSourceId());
+		return $proposalSource->getSourceId();
 	}
 
 	/**

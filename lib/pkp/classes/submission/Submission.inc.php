@@ -163,10 +163,10 @@ class Submission extends DataObject {
 		$found = false;
 
 		if ($sourceId != 0) {
-			// FIXME maintain a hash of ID to author for quicker get/remove
+			// FIXME maintain a hash of ID to source for quicker get/remove
 			$sources = array();
 			for ($i=0, $count=count($this->sources); $i < $count; $i++) {
-				if ($this->sources[$i]->getId() == $sourceId) {
+				if ($this->sources[$i]->getSourceId() == $sourceId) {
 					array_push($this->removedSources, $sourceId);
 					$found = true;
 				} else {
@@ -313,7 +313,7 @@ class Submission extends DataObject {
 
 		if ($sourceId != 0) {
 			for ($i=0, $count=count($this->sources); $i < $count && $source == null; $i++) {
-				if ($this->sources[$i]->getId() == $sourceId) {
+				if ($this->sources[$i]->getSourceId() == $sourceId) {
 					$source =& $this->sources[$i];
 				}
 			}

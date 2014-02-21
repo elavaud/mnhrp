@@ -195,13 +195,13 @@ class ArticleDAO extends DAO {
 		
 		$article->setAuthors($this->authorDao->getAuthorsByArticle($row['article_id']));
 
-		$article->setSources($this->proposalSourceDao->getProposalSourcesByArticleId($row['article_id']));
-
-                $article->setRiskAssessment($this->riskAssessmentDao->getRiskAssessmentByArticleId($row['article_id']));
-		
 		$article->setAbstracts($this->proposalAbstractDao->getAbstractsByArticle($row['article_id']));
 		
 		$article->setProposalDetails($this->proposalDetailsDao->getProposalDetailsByArticleId($row['article_id']));
+                
+		$article->setSources($this->proposalSourceDao->getProposalSourcesByArticleId($row['article_id']));
+                
+                $article->setRiskAssessment($this->riskAssessmentDao->getRiskAssessmentByArticleId($row['article_id']));
 
                 $sectionDecisionDao =& DAORegistry::getDAO('SectionDecisionDAO');
 		$article->setProposalStatus($sectionDecisionDao->getProposalStatus($article->getId()));
@@ -323,10 +323,10 @@ class ArticleDAO extends DAO {
                 // update sources of monetary and material support for this article
 		$sources =& $article->getSources();
 		for ($i=0, $count=count($sources); $i < $count; $i++) {
-			if ($sources[$i]->getId() > 0) {
+			if ($sources[$i]->getSourceId() > 0) {
 				$this->proposalSourceDao->updateProposalSource($sources[$i]);
 			} else {
-				$this->proposalSourceDao->insertProposalSource($authors[$i]);
+				$this->proposalSourceDao->insertProposalSource($sources[$i]);
 			}
 		}
                 
@@ -359,7 +359,6 @@ class ArticleDAO extends DAO {
 		// Remove deleted authors
 		$removedAuthors = $article->getRemovedAuthors();
 		for ($i=0, $count=count($removedAuthors); $i < $count; $i++) {
-			$this->authorDao->deleteAuthorById($removedAuthors[$i], $article->getId());
 		}
 
                 // Remove deleted sources of monetary
