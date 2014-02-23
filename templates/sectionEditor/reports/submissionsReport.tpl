@@ -127,51 +127,6 @@ $(document).ready(function() {
         	}
         );
         
-        //Start code for multiple primary sponsor
-        $('#addAnotherPrimarySponsor').click(
-        	function(){
-       			var primarySponsorHtml = '<tr valign="top" class="primarySponsorField">' + $('#firstPrimarySponsor').html() + '</tr>';
-            	$('#firstPrimarySponsor').after(primarySponsorHtml);
-        		$('#firstPrimarySponsor').next().find('select').attr('selectedIndex', 0);
-        		$('.primarySponsorField').find('.removePrimarySponsor').show();
-        		$('.primarySponsorField').find('.primarySponsorTitle').hide();
-        		$('.primarySponsorField').find('.noPrimarySponsorTitle').show();
-        		$('#firstPrimarySponsor').find('.removePrimarySponsor').hide();
-        		$('#firstPrimarySponsor').find('.primarySponsorTitle').show();
-        		$('#firstPrimarySponsor').find('.noPrimarySponsorTitle').hide();
-            	return false;
-        	}
-    	);
-
-        $('.removePrimarySponsor').live(
-        	'click', function(){
-        		$(this).closest('tr').remove();
-        		return false;
-        	}
-        );
-        
-        //Start code for multiple primary sponsor
-        $('#addAnotherSecondarySponsor').click(
-        	function(){
-       			var secondarySponsorHtml = '<tr valign="top" class="secondarySponsorField">' + $('#firstSecondarySponsor').html() + '</tr>';
-            	$('#firstSecondarySponsor').after(secondarySponsorHtml);
-        		$('#firstSecondarySponsor').next().find('select').attr('selectedIndex', 0);
-        		$('.secondarySponsorField').find('.removeSecondarySponsor').show();
-        		$('.secondarySponsorField').find('.secondarySponsorTitle').hide();
-        		$('.secondarySponsorField').find('.noSecondarySponsorTitle').show();
-        		$('#firstSecondarySponsor').find('.removeSecondarySponsor').hide();
-        		$('#firstSecondarySponsor').find('.secondarySponsorTitle').show();
-        		$('#firstSecondarySponsor').find('.noSecondarySponsorTitle').hide();
-            	return false;
-        	}
-    	);
-
-        $('.removeSecondarySponsor').live(
-        	'click', function(){
-        		$(this).closest('tr').remove();
-        		return false;
-        	}
-        );
         
         //Start code for multiple research Field
         $('#addAnotherResearchField').click(
@@ -246,8 +201,6 @@ $(document).ready(function() {
 
 function hideProposalDetails(){
 	$('.decisionField').remove();
-	$('.primarySponsorField').remove();
-	$('.secondarySponsorField').remove();
 	$('.researchFieldField').remove();
 	$('.proposalTypeField').remove();
 	
@@ -262,8 +215,6 @@ function hideProposalDetails(){
 	
 	$('#decisions').val("");
 	$('#academicDegree').val("");
-	$('#primarySponsors').val("");
-	$('#secondarySponsors').val("");
 	$('#researchFields').val("");
 	$('#proposalTypes').val("");
 	$('#dataCollection').val("");
@@ -515,10 +466,9 @@ function monetaryUncheckAll(){
 		<td><input type="checkbox" name="checkScientificTitle" class="checkDetails" checked="checked"/>&nbsp;Scientific Title</td>
 		<td><input type="checkbox" name="checkPublicTitle" class="checkDetails"/>&nbsp;Public Title</td>
 		<td><input type="checkbox" name="checkStudentResearch" class="checkDetails"/>&nbsp;Student Research</td>
-		<td><input type="checkbox" name="checkPrimarySponsor" class="checkDetails" checked="checked"/>&nbsp;Primary Sponsor</td>
+		<td><input type="checkbox" name="checkKii" class="checkDetails" checked="checked"/>&nbsp;KII</td>
 	</tr>
 	<tr>
-		<td><input type="checkbox" name="checkSecondarSponsor" class="checkDetails" checked="checked"/>&nbsp;Secondary Sponsor(s)</td>
 		<td><input type="checkbox" name="checkResearchFields" class="checkDetails" checked="checked"/>&nbsp;Research Field(s)</td>
 		<td><input type="checkbox" name="checkProposalTypes" class="checkDetails" checked="checked"/>&nbsp;Proposal Type(s)</td>
 		<td><input type="checkbox" name="checkDuration" class="checkDetails" checked="checked"/>&nbsp;Dates of Research</td>
@@ -530,24 +480,11 @@ function monetaryUncheckAll(){
 		<td><input type="checkbox" name="checkErcReview" class="checkDetails" checked="checked"/>&nbsp;Other ERC Review</td>
 	</tr>
 	
-	</td>
 	<tr>
 		<td colspan="4"><strong><br/>Source(s) of Monetary or Material Support</strong></td>
 	</tr>
 	<tr>
 		<td colspan="4" align="right"><a href="javascript:void(0)" onclick="monetaryCheckAll()" id="monetaryCheckAll">Check All</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:void(0)" onclick="monetaryUncheckAll()" id="monetaryUncheckAll">Uncheck All</a></td>
-	</tr>
-	<tr>
-		<td><input type="checkbox" name="checkIndustryGrant" class="checkMonetary"/>&nbsp;Industry Grant</td>
-		<td><input type="checkbox" name="checkAgencyGrant" class="checkMonetary"/>&nbsp;Agency Grant</td>
-		<td><input type="checkbox" name="checkMohGrant" class="checkMonetary"/>&nbsp;MoH Grant</td>
-		<td><input type="checkbox" name="checkGovernmentGrant" class="checkMonetary"/>&nbsp;Government Grant</td>
-	</tr>
-	<tr>
-		<td><input type="checkbox" name="checkUniversityGrant" class="checkMonetary"/>&nbsp;University Research Grant</td>
-		<td><input type="checkbox" name="checkSelfFunding" class="checkMonetary"/>&nbsp;Self Funding</td>
-		<td><input type="checkbox" name="checkOtherGrant" class="checkMonetary"/>&nbsp;Other Grant(s)</td>
-		<td>&nbsp;</td>
 	</tr>
 </table>
 <br/>
@@ -617,49 +554,7 @@ function monetaryUncheckAll(){
 			</select>
         </td>
 	</tr>
-	<tr valign="top" id="firstPrimarySponsor" class="primarySponsor">
-		<td>&nbsp;</td>
-		<td colspan="2" class="primarySponsorTitle">Primary Sponsor(s)</td>
-		<td colspan="2" class="noPrimarySponsorTitle" style="display: none;" align="right">OR &nbsp;&nbsp;&nbsp;&nbsp;</td>
-		<td colspan="2">			
-        	<select name="primarySponsors[]" id="primarySponsors" class="selectMenu">
-                <option value=""></option>
-                {foreach from=$agencies key=id item=sponsor}
-                	{if $sponsor.code != "NA"}
-                        <option value="{$sponsor.code}">{$sponsor.name}</option>
-                    {/if}
-                {/foreach}
-            </select>
-            <a href="" class="removePrimarySponsor" style="display:none">Remove</a>
-		</td>
-	</tr>
-    <tr id="addAnotherPrimarySponsor">
-    	<td>&nbsp;</td>
-        <td colspan="2">&nbsp;</td>
-        <td colspan="2"><a href="#" id="addAnotherPrimarySponsor">Add another primary sponsor</a></td>
-    </tr>
-    
-	<tr valign="top" id="firstSecondarySponsor" class="secondarySponsor">
-		<td>&nbsp;</td>
-		<td colspan="2" class="secondarySponsorTitle">Secondary Sponsor(s)</td>
-		<td colspan="2" class="noSecondarySponsorTitle" style="display: none;" align="right">OR &nbsp;&nbsp;&nbsp;&nbsp;</td>
-		<td colspan="2">			
-        	<select name="secondarySponsors[]" id="secondarySponsors" class="selectMenu">
-                <option value=""></option>
-                {foreach from=$agencies key=id item=sponsor}
-                	{if $sponsor.code != "NA"}
-                        <option value="{$sponsor.code}">{$sponsor.name}</option>
-                    {/if}
-                {/foreach}
-            </select>
-            <a href="" class="removeSecondarySponsor" style="display:none">Remove</a>
-		</td>
-	</tr>
-	<tr id="addAnotherSecondarySponsor">
-    	<td>&nbsp;</td>
-        <td colspan="2">&nbsp;</td>
-        <td colspan="2"><a href="#" id="addAnotherSecondarySponsor">Add another secondary sponsor</a></td>
-    </tr>
+
     
 	<tr valign="top" id="firstResearchField" class="researchField">
 		<td>&nbsp;</td>

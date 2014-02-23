@@ -13,6 +13,15 @@
   -->
 
 <locale name="mn_MN" full_name = "Mongolian">
+    
+        <!-- New keys, February 2014 -->
+        
+        <message key="editor.reports.keyImplInstitution">Key Implementing Institution</message>
+        
+        <!--  -->
+        
+        
+        
 	<message key="editor.article.activeReviewers">Идэвхитэй хянагч(ууд)</message>
     <message key="editor.article.addReviewer">Шинжээч нэмэх</message>
 	<message key="editor.article.authorComments">Зохиогчийн саналууд</message>

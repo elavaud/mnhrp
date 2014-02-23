@@ -140,22 +140,16 @@
         	<td class="label" width="20%">{translate key="proposal.endDate"}</td>
         	<td class="value">{$proposalDetails->getEndDate()}</td>
     	</tr>
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.primarySponsor"}</td>
-        	<td class="value">{$proposalDetails->getLocalizedPrimarySponsorText()}</td>
-    	</tr>
-    	{if $proposalDetails->getSecondarySponsors()}
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.secondarySponsors"}</td>
-        	<td class="value">{$proposalDetails->getLocalizedSecondarySponsorText()}</td>
-    	</tr>
-    	{/if}
+        <tr valign="top">
+            <td class="label" width="20%">{translate key="proposal.keyImplInstitution"}</td>
+            <td class="value">{$proposalDetails->getKeyImplInstitutionName()}</td>
+        </tr>
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.multiCountryResearch"}</td>
         	<td class="value">{translate key=$proposalDetails->getYesNoKey($proposalDetails->getMultiCountryResearch())}</td>
     	</tr>
-		{if ($proposalDetails->getMultiCountryResearch()) == PROPOSAL_DETAIL_YES}
-			<tr valign="top">
+	{if ($proposalDetails->getMultiCountryResearch()) == PROPOSAL_DETAIL_YES}
+		<tr valign="top">
         		<td class="label" width="20%">&nbsp;</td>
         		<td class="value">{$proposalDetails->getLocalizedMultiCountryText()}</td>
     		</tr>

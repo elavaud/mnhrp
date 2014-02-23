@@ -12,12 +12,14 @@
 
 
 class ProposalSource extends DataObject {
-    
-	/**
+        
+        var $institutionDao;
+	
+        /**
 	 * Constructor.
 	 */
 	function ProposalSource() {
-            
+                $this->institutionDao =& DAORegistry::getDAO('InstitutionDAO');
 	}
 
 	//
@@ -89,6 +91,31 @@ class ProposalSource extends DataObject {
 	function setSourceAmount($sourceAmount) {
 		return $this->setData('sourceAmount', $sourceAmount);
 	}
+        
+        /**
+	 * Get the name of the institution of the source.
+	 * @return int
+	 */
+	function getSourceInstitutionName() {
+                $institution =& $this->getSourceInstitution();
+		return $institution->getInstitutionName();
+	}
+                
+        /**
+	 * Get the acronym of the institution of the source.
+	 * @return int
+	 */
+	function getSourceInstitutionAcronym() {
+                $institution =& $this->getSourceInstitution();
+		return $institution->getInstitutionAcronym();
+	}
+                
+        /**
+	 * Get the name of the institution of the source.
+	 * @return int
+	 */
+	function getSourceInstitution() {
+		return $this->institutionDao->getInstitutionById($this->getInstitutionId());
+        }
 }
-
 ?>

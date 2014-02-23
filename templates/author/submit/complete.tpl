@@ -128,16 +128,10 @@
         	<td class="label" width="20%">{translate key="proposal.endDate"}</td>
         	<td class="value">{$proposalDetails->getEndDate()}</td>
     	</tr>
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.primarySponsor"}</td>
-        	<td class="value">{$proposalDetails->getLocalizedPrimarySponsorText()}</td>
-    	</tr>
-    	{if $proposalDetails->getSecondarySponsors()}
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.secondarySponsors"}</td>
-        	<td class="value">{$proposalDetails->getLocalizedSecondarySponsorText()}</td>
-    	</tr>
-    	{/if}
+        <tr valign="top">
+            <td class="label" width="20%">{translate key="proposal.keyImplInstitution"}</td>
+            <td class="value">{$proposalDetails->getKeyImplInstitutionName()}</td>
+        </tr>
     	<tr valign="top">
         	<td class="label" width="20%">{translate key="proposal.multiCountryResearch"}</td>
         	<td class="value">{translate key=$proposalDetails->getYesNoKey($proposalDetails->getMultiCountryResearch())}</td>
@@ -184,70 +178,18 @@
 </div>
 
 <div id="sourceOfMonetary">
-	<h4><br/>{translate key="proposal.sourceOfMonetary"}</h4>
-	<div class="separator"></div>
-	<table class="listing" width="100%">
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.fundsRequired"}</td>
-        	<td class="value">{$article->getFundsRequired('en_US')} {$article->getSelectedCurrency('en_US')}</td>
-    	</tr>
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.industryGrant"}</td>
-        	<td class="value">{$article->getIndustryGrant('en_US')}</td>
-    	</tr>
-    	{if ($article->getIndustryGrant('en_US')) == "Yes"}
-     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
-        		<td class="value">{$article->getNameOfIndustry('en_US')}</td>
-    		</tr>   
-    	{/if}
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.internationalGrant"}</td>
-        	<td class="value">{$article->getInternationalGrant('en_US')}</td>
-    	</tr>
-    	{if ($article->getInternationalGrant('en_US')) == "Yes"}
-     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
-        		<td class="value">
-        			{if $article->getInternationalGrantName()}
-        				{$article->getInternationalGrantNameText()} 
-        			{/if}
-        		</td>
-    		</tr>     
-    	{/if}
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.mohGrant"}</td>
-        	<td class="value">{$article->getMohGrant('en_US')}</td>
-    	</tr>
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.governmentGrant"}</td>
-        	<td class="value">{$article->getGovernmentGrant('en_US')}</td>
-    	</tr>
-    	{if ($article->getGovernmentGrant('en_US')) == "Yes"}
-     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
-        		<td class="value">{$article->getGovernmentGrantName('en_US')}</td>
-    		</tr>     
-    	{/if}
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.universityGrant"}</td>
-        	<td class="value">{$article->getUniversityGrant('en_US')}</td>
-    	</tr>
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.selfFunding"}</td>
-        	<td class="value">{$article->getSelfFunding('en_US')}</td>
-    	</tr>
-    	<tr valign="top">
-        	<td class="label" width="20%">{translate key="proposal.otherGrant"}</td>
-        	<td class="value">{$article->getOtherGrant('en_US')}</td>
-    	</tr>
-    	{if ($article->getOtherGrant('en_US')) == "Yes"}
-     		<tr valign="top">
-        		<td class="label" width="20%">&nbsp;</td>
-        		<td class="value">{$article->getSpecifyOtherGrant('en_US')}</td>
-    		</tr>    
-    	{/if}
-	</table>
+    <h4><br/>{translate key="proposal.sourceOfMonetary"}&nbsp;&nbsp;&nbsp;<a href="{url op="submit" path="2" articleId=$article->getId()}"><i>{translate key="common.modify"}</i></a></h4>
+    <div class="separator"></div>
+    <p><b>{translate key="proposal.fundsRequired"}</b>&nbsp;&nbsp;&nbsp;&nbsp;{$article->getTotalBudget()}&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</p>
+    <table class="listing" width="100%">
+        {assign var="sources" value=$article->getSources()}
+        {foreach from=$sources item=source}
+            <tr valign="top">
+                <td width="30%" class="label">{$source->getSourceInstitutionName()}</td>
+                <td width="70%" class="value">{$source->getSourceAmount()}&nbsp;&nbsp;{$sourceCurrency->getCodeAlpha()|escape}</td>
+            </tr>
+        {/foreach}    
+    </table>
 </div>
 
 <div id=riskAssessments>

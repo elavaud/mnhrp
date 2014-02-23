@@ -13,60 +13,81 @@
 {include file="common/formErrors.tpl"}
 
 {if count($formLocales) > 1}
-<div id="locale">
-<table width="100%" class="data">
-	<tr valign="top">
-		<td width="20%" class="label">{fieldLabel name="formLocale" key="form.formLanguage"}</td>
-		<td width="80%" class="value">
-			{url|assign:"setupFormUrl" op="setup" path="3" escape=false}
-			{form_language_chooser form="setupForm" url=$setupFormUrl}
-			<span class="instruct">{translate key="form.formLanguage.description"}</span>
-		</td>
-	</tr>
-</table>
-</div>
+    <div id="locale">
+        <table width="100%" class="data">
+            <tr valign="top">
+                <td width="20%" class="label">{fieldLabel name="formLocale" key="form.formLanguage"}</td>
+                <td width="80%" class="value">
+                    {url|assign:"setupFormUrl" op="setup" path="3" escape=false}
+                    {form_language_chooser form="setupForm" url=$setupFormUrl}
+                    <span class="instruct">{translate key="form.formLanguage.description"}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
 {/if}
 
 <div id="authorGuidelinesInfo">
-<h3>3.1 {translate key="manager.setup.submission.steps"}</h3>
-<h6>3.1.1 {translate key="navigation.stepNumber" step=1} - {translate key="manager.setup.authorGuidelines"}</h6>
+    <h3>3.1 {translate key="manager.setup.submission.steps"}</h3>
+    <h6>3.1.1 {translate key="navigation.stepNumber" step=1} - {translate key="manager.setup.authorGuidelines"}</h6>
 
-<p>{translate key="manager.setup.authorGuidelinesDescription"}</p>
+    <p>{translate key="manager.setup.authorGuidelinesDescription"}</p>
 
-<p>
-	<textarea name="authorGuidelines[{$formLocale|escape}]" id="authorGuidelines" rows="12" cols="50" class="textArea">{$authorGuidelines[$formLocale]|escape}</textarea>
-</p>
+    <p>
+        <textarea name="authorGuidelines[{$formLocale|escape}]" id="authorGuidelines" rows="12" cols="50" class="textArea">{$authorGuidelines[$formLocale]|escape}</textarea>
+    </p>
 
 </div>
 
 <div id="submissionPreparationChecklist">
-<h6>3.1.2 {translate key="navigation.stepNumber" step=1} - {translate key="manager.setup.submissionPreparationChecklist"}</h6>
+    <h6>3.1.2 {translate key="navigation.stepNumber" step=1} - {translate key="manager.setup.submissionPreparationChecklist"}</h6>
 
-<p>{translate key="manager.setup.submissionPreparationChecklistDescription"}</p>
+    <p>{translate key="manager.setup.submissionPreparationChecklistDescription"}</p>
 
-{foreach name=checklist from=$submissionChecklist[$formLocale] key=checklistId item=checklistItem}
-	{if !$notFirstChecklistItem}
-		{assign var=notFirstChecklistItem value=1}
-		<table width="100%" class="data">
-			<tr valign="top">
-				<td width="5%">{translate key="common.order"}</td>
-				<td width="95%" colspan="2">&nbsp;</td>
-			</tr>
-	{/if}
+    {foreach name=checklist from=$submissionChecklist[$formLocale] key=checklistId item=checklistItem}
+        {if !$notFirstChecklistItem}
+            {assign var=notFirstChecklistItem value=1}
+            <table width="100%" class="data">
+                <tr valign="top">
+                    <td width="5%">{translate key="common.order"}</td>
+                    <td width="95%" colspan="2">&nbsp;</td>
+                </tr>
+        {/if}
 
-	<tr valign="top">
-		<td width="5%" class="label"><input type="text" name="submissionChecklist[{$formLocale|escape}][{$checklistId|escape}][order]" value="{$checklistItem.order|escape}" size="3" maxlength="2" class="textField" /></td>
-		<td class="value"><textarea name="submissionChecklist[{$formLocale|escape}][{$checklistId|escape}][content]" id="submissionChecklist-{$checklistId|escape}" rows="3" cols="40" class="textArea">{$checklistItem.content|escape}</textarea></td>
-		<td width="100%"><input type="submit" name="delChecklist[{$checklistId|escape}]" value="{translate key="common.delete"}" class="button" /></td>
-	</tr>
-{/foreach}
+        <tr valign="top">
+            <td width="5%" class="label"><input type="text" name="submissionChecklist[{$formLocale|escape}][{$checklistId|escape}][order]" value="{$checklistItem.order|escape}" size="3" maxlength="2" class="textField" /></td>
+            <td class="value"><textarea name="submissionChecklist[{$formLocale|escape}][{$checklistId|escape}][content]" id="submissionChecklist-{$checklistId|escape}" rows="3" cols="40" class="textArea">{$checklistItem.content|escape}</textarea></td>
+            <td width="100%"><input type="submit" name="delChecklist[{$checklistId|escape}]" value="{translate key="common.delete"}" class="button" /></td>
+        </tr>
+    {/foreach}
 
-{if $notFirstChecklistItem}
-	</table>
-{/if}
+    {if $notFirstChecklistItem}
+        </table>
+    {/if}
 
-<p><input type="submit" name="addChecklist" value="{translate key="manager.setup.addChecklistItem"}" class="button" /></p>
+    <p><input type="submit" name="addChecklist" value="{translate key="manager.setup.addChecklistItem"}" class="button" /></p>
 </div>
+
+<div id="submissionPreparationChecklist">
+    <h6>3.1.3 {translate key="navigation.stepNumber" step=2} - {translate key="proposal.sourceOfMonetary"}</h6>
+
+    
+    <table width="100%" class="data">
+        <tr valign="top">
+            <td colspan="2">{translate key="manager.setup.form.sourceCurrencyInstruct"}</td>
+        </tr>
+        <tr valign="top">
+            <td width="20%" class="label">{fieldLabel name="sourceCurrency" required="true" key="manager.payment.currency"}</td>
+            <td width="80%" class="value">
+                <select name="sourceCurrency" id="sourceCurrency" class="selectMenu">
+                    <option value=""></option>
+                    {html_options options=$currencies selected=$sourceCurrency}
+                </select>
+            </td>
+        </tr>
+    </table>
+</div>
+    
 <!--{*
 <div id="requiredAbstracts">
 

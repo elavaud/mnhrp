@@ -121,7 +121,7 @@ $(document).ready(
 		</tr>
 		<tr valign="top">
 			<td width="20%" class="value">
-				<input type="checkbox" name="primarySponsor" checked="checked"/>&nbsp;{translate key="proposal.primarySponsor"}
+				<input type="checkbox" name="kii" checked="checked"/>&nbsp;{translate key="proposal.keyImplInstitution"}
 			</td>
 			<td width="20%" class="value">
 				<input type="checkbox" name="dataCollection"/>&nbsp;{translate key="proposal.dataCollection"}
@@ -149,7 +149,7 @@ $(document).ready(
 	<table width="100%" class="listing">
 		<tr class="heading" valign="bottom">
 			<td>{sort_heading key='article.title' sort="title"}</td>
-			<td>{sort_heading key='search.primarySponsor' sort="primarySponsor"}</td>
+			<td>{sort_heading key='proposal.keyImplInstitution' sort="kii"}</td>
 			<td>{sort_heading key='search.region' sort="region"}</td>
 			<td>{sort_heading key='search.researchField' sort="researchField"}</td>
 			<td>{sort_heading key='search.researchDates' sort="researchDates"}</td>
@@ -164,7 +164,7 @@ $(document).ready(
 				{assign var="abstract" value=$result->getLocalizedAbstract()}
 				{assign var="proposalDetails" value=$result->getProposalDetails()}
 				<td><a href="{url op="viewProposal" path=$result->getId()}" class="action">{$abstract->getScientificTitle()|escape}</a></td>
-				<td>{$proposalDetails->getLocalizedPrimarySponsorText()}</td>
+				<td>{$proposalDetails->getKeyImplInstitutionName()}</td>
 				<td>
 					{if $proposalDetails->getMultiCountryResearch() == PROPOSAL_DETAIL_YES}
 						{$proposalDetails->getLocalizedMultiCountryText()}

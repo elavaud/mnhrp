@@ -187,8 +187,7 @@ class ReportsHandler extends Handler {
 		$decisionField = Request::getUserVar('decisions');
 		$sresearch = Request::getUserVar('studentResearch');
 		$adegree = Request::getUserVar('academicDegree');
-		$primarySponsorField = Request::getUserVar('primarySponsors');
-		$secondarySponsorField = Request::getUserVar('secondarySponsors');
+		$kiiField = Request::getUserVar('kii');
 		$researchFieldField = Request::getUserVar('researchFields');
 		$proposalTypeField = Request::getUserVar('proposalTypes');
 		$dataCollection = Request::getUserVar('dataCollection');
@@ -221,8 +220,7 @@ class ReportsHandler extends Handler {
 			$sectionId,
 			$sresearch,
 			$adegree,
-			$primarySponsorField,
-			$secondarySponsorField,
+			$kiiField,
 			$researchFieldField,
 			$proposalTypeField,
 			$dataCollection,
@@ -284,11 +282,8 @@ class ReportsHandler extends Handler {
 			$columns = $columns + array('studentInstitution' => Locale::translate("editor.reports.studentInstitution"));
 			$columns = $columns + array('studentAcademicDegree' => Locale::translate("editor.reports.studentAcademicDegree"));
 		}
-		if (Request::getUserVar('checkPrimarySponsor')){
-			$columns = $columns + array('primarySponsor' => Locale::translate("editor.reports.primarySponsor"));
-		}
-		if (Request::getUserVar('checkSecondarSponsor')){
-			$columns = $columns + array('secondaySponsor' => Locale::translate("editor.reports.secondarySponsor"));
+		if (Request::getUserVar('checkKii')){
+			$columns = $columns + array('kii' => Locale::translate("editor.reports.keyImplInstitution"));
 		}
 		if (Request::getUserVar('checkResearchFields')){
 			$columns = $columns + array('researchField' => Locale::translate("editor.reports.researchField"));
@@ -311,27 +306,6 @@ class ReportsHandler extends Handler {
 		}
 		if (Request::getUserVar('checkErcReview')){
 			$columns = $columns + array('otherErc' => Locale::translate("editor.reports.otherErcReview"));
-		}
-		if (Request::getUserVar('checkIndustryGrant')){
-			$columns = $columns + array('industryGrant' => Locale::translate("editor.reports.industryGrant"));
-		}
-		if (Request::getUserVar('checkAgencyGrant')){
-			$columns = $columns + array('agencyGrant' => Locale::translate("editor.reports.agencyGrant"));
-		}
-		if (Request::getUserVar('checkMohGrant')){
-			$columns = $columns + array('mohGrant' => Locale::translate("editor.reports.mohGrant"));
-		}
-		if (Request::getUserVar('checkGovernmentGrant')){
-			$columns = $columns + array('governmentGrant' => Locale::translate("editor.reports.governmentGrant"));
-		}	
-		if (Request::getUserVar('checkUniversityGrant')){
-			$columns = $columns + array('universityGrant' => Locale::translate("editor.reports.universityGrant"));
-		}
-		if (Request::getUserVar('checkSelfFunding')){
-			$columns = $columns + array('selfFunding' => Locale::translate("editor.reports.selfFunding"));
-		}	
-		if (Request::getUserVar('checkOtherGrant')){
-			$columns = $columns + array('otherGrant' => Locale::translate("editor.reports.otherGrant"));
 		}
 
 		
@@ -372,29 +346,17 @@ class ReportsHandler extends Handler {
 				else array_push($criterias, ("is not conducted by a student"));
 			} elseif ($sresearch == 'Yes') array_push($criterias, ("is conducted by a student in a ".$adegree." academic degree"));
 		}
-		if (!empty($primarySponsorField)){
-			$primarySponsorCriteria = "";
+		if (!empty($kiiField)){
+			$kiiCriteria = "";
 			$present = false;
-			foreach ($primarySponsorField as $primarySponsor){
-				if(!empty($primarySponsor)){
+			foreach ($kiiField as $kii){
+				if(!empty($kii)){
 					$present = true;
-					if ($primarySponsorCriteria == "" || $primarySponsorCriteria == null) $primarySponsorCriteria = $primarySponsor.' ';
-					else $primarySponsorCriteria .= 'or '.$primarySponsor.' ';
+					if ($kiiCriteria == "" || $kiiCriteria == null) $kiiCriteria = $kii.' ';
+					else $kiiCriteria .= 'or '.$kii.' ';
 				}
 			}
-			if ($present == true) array_push($criterias, ("the primary sponsor is ".$primarySponsorCriteria));
-		}
-		if (!empty($secondarySponsorField)){
-			$secondarySponsorCriteria = "";
-			$present = false;
-			foreach ($secondarySponsorField as $secondarySponsor){
-				if(!empty($secondarySponsor)){
-					$present = true;
-					if ($secondarySponsorCriteria == "" || $secondarySponsorCriteria == null) $secondarySponsorCriteria = $secondarySponsor.' ';
-					else $secondarySponsorCriteria .= 'or '.$secondarySponsor.' ';
-				}
-			}
-			if ($present == true) array_push($criterias, ("the secondary sponsor list includes ".$secondarySponsorCriteria));
+			if ($present == true) array_push($criterias, ("the key implementing institution is ".$kiiCriteria));
 		}
 		if (!empty($researchFieldField)){
 			$researchFieldCriteria = "";
@@ -499,11 +461,8 @@ class ReportsHandler extends Handler {
 				} elseif ($index == 'studentAcademicDegree') {
 					if ($submission->getLocalizedStudentInitiatedResearch() == 'Yes')$columns[$index] = $submission->getLocalizedAcademicDegree();
 					else $columns[$index] = 'Non-Student';
-				} elseif ($index == 'primarySponsor') {
-					$columns[$index] = $submission->getLocalizedPrimarySponsor();
-				} elseif ($index == 'secondaySponsor') {
-					if ($submission->getLocalizedSecondarySponsors()) $columns[$index] = $submission->getLocalizedSecondarySponsors();
-					else $columns[$index] = 'None';
+				} elseif ($index == 'kii') {
+					$columns[$index] = $submission->getKeyImplementingInstitutionName();
 				} elseif ($index == 'researchField') {
 					$columns[$index] = $submission->getLocalizedResearchFieldText();
 				} elseif ($index == 'proposalType') {
@@ -517,31 +476,13 @@ class ReportsHandler extends Handler {
 				} elseif ($index == 'duration') {
 					$columns[$index] = $submission->getLocalizedStartDate().' to '.$submission->getLocalizedEndDate();
 				} elseif ($index == 'budget') {
-					$columns[$index] = $submission->getFundsRequired('en_US');
+					$columns[$index] = $submission->getTotalBudget();
 				} elseif ($index == 'currency') {
 					$columns[$index] = $submission->getSelectedCurrency('en_US');
 				} elseif ($index == 'otherErc') {
 					if ($submission->getLocalizedReviewedByOtherErc() == 'Yes') $columns[$index] = $submission->getLocalizedOtherErcDecision();
 					else  $columns[$index] = 'No';
-				} elseif ($index == 'industryGrant') {
-					if ($submission->getIndustryGrant('en_US') == 'Yes') $columns[$index] = $submission->getNameOfIndustry('en_US');
-					else  $columns[$index] = 'No';
-				} elseif ($index == 'agencyGrant') {
-					if ($submission->getInternationalGrant('en_US') == 'Yes') $columns[$index] = $submission->getInternationalGrantName('en_US');
-					else $columns[$index] = 'No';
-				} elseif ($index == 'mohGrant') {
-					$columns[$index] = $submission->getMohGrant('en_US');
-				} elseif ($index == 'governmentGrant') {
-					if ($submission->getGovernmentGrant('en_US') == 'Yes') $columns[$index] = $submission->getGovernmentGrantName('en_US');
-					else $columns[$index] = 'No';
-				} elseif ($index == 'universityGrant') {
-					$columns[$index] = $submission->getUniversityGrant('en_US');
-				} elseif ($index == 'selfFunding') {
-					$columns[$index] = $submission->getSelfFunding('en_US');
-				} elseif ($index == 'otherGrant') {
-					if ($submission->getOtherGrant('en_US') == 'Yes') $columns[$index] = $submission->getSpecifyOtherGrant('en_US');
-					else $columns[$index] = 'No';
-				}			
+				} 			
 			}						
 			String::fputcsv($fp, $columns);
 			unset($row);

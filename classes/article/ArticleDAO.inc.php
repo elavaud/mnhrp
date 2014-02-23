@@ -871,7 +871,7 @@ class ArticleDAO extends DAO {
 				ad.geo_areas AS geo_areas,
 				ad.start_date AS start_date,
 				ad.end_date AS end_date,
-				ad.primary_sponsor AS primarysponsor,
+				ad.key_implementing_institution AS kii,
 				ad.multi_country AS multicountryresearch,
 				ad.research_fields AS researchfield
 			FROM articles a
@@ -935,7 +935,7 @@ class ArticleDAO extends DAO {
 		return $article;
 	}
 
-	function searchCustomizedProposalsPublic($query, $region, $statusFilter, $fromDate, $toDate, $investigatorName, $investigatorAffiliation, $investigatorEmail, $researchField, $proposalType, $duration, $area, $dataCollection, $status, $studentResearch, $primarySponsor, $fundsRequired, $dateSubmitted) {
+	function searchCustomizedProposalsPublic($query, $region, $statusFilter, $fromDate, $toDate, $investigatorName, $investigatorAffiliation, $investigatorEmail, $researchField, $proposalType, $duration, $area, $dataCollection, $status, $studentResearch, $kii, $dateSubmitted) {
 		
 		$searchSqlBeg = "select distinct a.article_id, 
 						ab.keywords as keywords, 
@@ -985,8 +985,8 @@ class ArticleDAO extends DAO {
 			$searchSqlBeg .= ", ad.student as studentresearch, ast.institution as institution, ast.degree as academicdegree";
 		}
 				
-		if ($primarySponsor == true){
-			$searchSqlBeg .= ", ad.primary_sponsor as primarysponsor";
+		if ($kii == true){
+			$searchSqlBeg .= ", ad.key_implementing_institution as kii";
 		}
 										
 		if ($dateSubmitted == true){
@@ -1060,7 +1060,7 @@ class ArticleDAO extends DAO {
 	function getSortMapping($heading) {
 		switch ($heading) {
 			case 'status': return 'a.status';
-			case 'primarySponsor': return 'primarysponsor';
+			case 'kii': return 'kii';
 			case 'region': return 'country';
 			case 'researchField': return 'researchfield';
 			case 'title': return 'scientific_title';

@@ -136,6 +136,32 @@ class ProposalDetails extends DataObject {
 	function getKeyImplInstitution() {
 		return $this->getData('keyImplInstitution');
 	}  
+	/**
+	 * Get key implementing institution name.
+	 * @return int
+	 */
+	function getKeyImplInstitutionName() {
+                $institutionDao =& DAORegistry::getDAO('InstitutionDAO');
+                $institution = $institutionDao->getInstitutionById($this->getKeyImplInstitution());
+		return $institution->getInstitutionName();
+	} 
+	/**
+	 * Get key implementing institution acronym.
+	 * @return int
+	 */
+	function getKeyImplInstitutionAcronym() {
+                $institutionDao =& DAORegistry::getDAO('InstitutionDAO');
+                $institution = $institutionDao->getInstitutionById($this->getKeyImplInstitution());
+		return $institution->getInstitutionAcronym();
+        }  
+	/**
+	 * Get key implementing institution object.
+	 * @return int
+	 */
+	function getKeyImplInstitutionObject() {
+                $institutionDao =& DAORegistry::getDAO('InstitutionDAO');
+                return $institutionDao->getInstitutionById($this->getKeyImplInstitution());
+        }  
         
         
 	/**

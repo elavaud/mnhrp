@@ -25,8 +25,9 @@
         <message key="manager.institutions.form.typeRequired">The type of the institution is required.</message>
         <message key="manager.setup.location">Covering area</message>
         <message key="manager.setup.location.instruct">Country, geographical area, or location covered by this Health Research Portal.</message>
-	<message key="manager.setup.form.locationRequired">The area covered by this Health Research Portal is required</message>
-
+	<message key="manager.setup.form.locationRequired">The area covered by this Health Research Portal is required.</message>
+	<message key="manager.setup.form.sourceCurrencyRequired">The currency for the sources of monetary is required.</message>        
+	<message key="manager.setup.form.sourceCurrencyInstruct">Investigators are requested to provide their sources of monetary and material support. In order to analyze these data, you need to select only one currency. This currency will then be displayed during the submission process.</message>        
         <!-- /Added -->
         
         <!-- Changed -->

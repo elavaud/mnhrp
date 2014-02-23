@@ -27,6 +27,7 @@ class JournalSetupStep3Form extends JournalSetupForm {
 				'authorGuidelines' => 'string',
 				'submissionChecklist' => 'object',
                                 'abstractLocales' => 'array',
+                                'sourceCurrency' => 'string',
                                 'copyrightNotice' => 'string',
 				'includeCreativeCommons' => 'bool',
 				'copyrightNoticeAgree' => 'bool',
@@ -53,8 +54,9 @@ class JournalSetupStep3Form extends JournalSetupForm {
 				'copySubmissionAckAddress' => 'string'
 			)
 		);
+		$this->addCheck(new FormValidator($this, 'sourceCurrency', 'required', 'manager.setup.form.sourceCurrencyRequired'));
 
-		$this->addCheck(new FormValidatorEmail($this, 'copySubmissionAckAddress', 'optional', 'user.profile.form.emailRequired'));
+                $this->addCheck(new FormValidatorEmail($this, 'copySubmissionAckAddress', 'optional', 'user.profile.form.emailRequired'));
 	}
 
 	/**
@@ -71,6 +73,7 @@ class JournalSetupStep3Form extends JournalSetupForm {
 	 * @param $dispatcher Dispatcher
 	 */
 	function display($request, $dispatcher) {
+                
 		$templateMgr =& TemplateManager::getManager($request);
 		// Add extra style sheets required for ajax components
 		// FIXME: Must be removed after OMP->OJS backporting
@@ -120,6 +123,14 @@ class JournalSetupStep3Form extends JournalSetupForm {
 			}
 			$templateMgr->assign_by_ref('metaCitationOutputFilters', $metaCitationOutputFilters);
 		}
+                
+		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+		$currencies =& $currencyDao->getCurrencies();
+		$currenciesArray = array();
+		foreach ($currencies as $currency) {
+                        $currenciesArray[$currency->getCodeAlpha()] = $currency->getName() . ' (' . $currency->getCodeAlpha() . ')';
+		}                
+		$templateMgr->assign('currencies', $currenciesArray);                
                 
 		parent::display($request, $dispatcher);
 	}

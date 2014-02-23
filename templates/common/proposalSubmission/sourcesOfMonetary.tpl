@@ -13,7 +13,7 @@
         <tr><td><br/></td></tr>
         <tr valign="top" id="totalBudget">
             <td width="20%" class="label"><b>{translate key="proposal.fundsRequired"}</b></td>
-            <td width="80%" class="value"><div id="totalBudgetVar"></div></td>
+            <td width="80%" class="value"><span id="totalBudgetVar"></span>&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</td>
         </tr>
         <tr valign="top">
             <td colspan="2"><span><i>{translate key="proposal.source.amount.instruct"}</i></span></td>
@@ -39,7 +39,7 @@
                     <input type="text" class="sourceAmount" name="sources[{$sourceIndex|escape}][amount]" id="sources-{$sourceIndex|escape}-amount" value="{$source.amount|escape}" size="10" maxlength="40"/>
                 </td>
                 <td width="5%">
-                    US$
+                    {$sourceCurrency->getCodeAlpha()|escape}
                 </td>
                 <td rowspan="2" width="10%" valign="middle">
                     <a class="removeSource" style="cursor: pointer;{if $sourceIndex == 0} display: none;{/if}">&nbsp;&nbsp;{translate key="common.remove"}</a>

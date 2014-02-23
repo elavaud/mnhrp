@@ -86,6 +86,10 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
                 
                 $templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
                 
+		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
+                
 		parent::display();
 	}
 
@@ -129,7 +133,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 				return parent::validate();
 			} elseif ( Request::getUserVar('paymentSent') ) {
 				return parent::validate();
-			} elseif ( $this->article->getFundsRequired('en_US') < 5000 ) {
+			} elseif ( $this->article->getTotalBudget() < 5000 ) {
 				return parent::validate();
 			} else {
 				$queuedPayment =& $paymentManager->createQueuedPayment($journalId, PAYMENT_TYPE_SUBMISSION, $user->getId(), $articleId, $journal->getSetting('submissionFee'));

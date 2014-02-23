@@ -214,16 +214,10 @@ class NewSearchHandler extends Handler {
 			$studentResearch = true;
 		}
 
-		$primarySponsor = false;
-		if (Request::getUserVar('primarySponsor')) {
-			$columns = $columns + array('primary_sponsor' => Locale::translate('article.primarySponsor'));
-			$primarySponsor = true;
-		}
-
-		$fundsRequired = false;
-		if (Request::getUserVar('fundsRequired')) {
-			$columns = $columns + array('funds_required' => Locale::translate('article.fundsRequired'));
-			$fundsRequired = true;
+		$kii = false;
+		if (Request::getUserVar('kii')) {
+			$columns = $columns + array('kii' => Locale::translate('proposal.keyImplInstitution'));
+			$kii = true;
 		}
 		
 		$dateSubmitted = false;
@@ -242,7 +236,7 @@ class NewSearchHandler extends Handler {
 
                 $articleDao =& DAORegistry::getDAO('ArticleDAO');
 		
-		$results = $articleDao->searchCustomizedProposalsPublic($query, $region, $statusFilter, $fromDate, $toDate, $investigatorName, $investigatorAffiliation, $investigatorEmail, $researchField, $proposalType, $duration, $area, $dataCollection, $status, $studentResearch, $primarySponsor, $fundsRequired, $dateSubmitted);
+		$results = $articleDao->searchCustomizedProposalsPublic($query, $region, $statusFilter, $fromDate, $toDate, $investigatorName, $investigatorAffiliation, $investigatorEmail, $researchField, $proposalType, $duration, $area, $dataCollection, $status, $studentResearch, $kii, $dateSubmitted);
 		
 		foreach ($results as $result) {
 			$abstract = $result->getLocalizedAbstract();
@@ -276,8 +270,8 @@ class NewSearchHandler extends Handler {
 					if ($proposalDetails->getStudentResearch() == PROPOSAL_DETAIL_YES) $columns[$index] = $studentInfo->getStudentInstitution(); else $columns[$index] = "Non Student Research";
 				} elseif ($index == 'academic_degree') {
 					if ($proposalDetails->getStudentResearch() == PROPOSAL_DETAIL_YES) $columns[$index] = Locale::translate($studentInfo->getDegreeKey());else $columns[$index] = "Non Student Research";
-				} elseif ($index == 'primary_sponsor') {
-					$columns[$index] = $proposalDetails->getPrimarySponsor();
+				} elseif ($index == 'kii') {
+					$columns[$index] = $proposalDetails->getKeyImplInstitutionName();
 				} elseif ($index == 'date_submitted') {
 					$columns[$index] = $result->getDateSubmitted();
 				} 

@@ -14,6 +14,7 @@
 
 
 import('lib.pkp.classes.form.Form');
+import('classes.form.validation.FormValidatorArrayRadios');
 
 class MetadataForm extends Form {
 	/** @var Article current article */
@@ -57,87 +58,110 @@ class MetadataForm extends Form {
                                         $supportedSubmissionLocales
                                 ))
                         );
-                        // Authors
-                        $this->addCheck(new FormValidatorCustom($this, 'authors', 'required', 'author.submit.form.authorRequired', create_function('$authors', 'return count($authors) > 0;')));
-                        $this->addCheck(new FormValidatorArray($this, 'authors', 'required', 'author.submit.form.authorRequiredFields', array('firstName', 'lastName', 'affiliation', 'phone')));
-                        $this->addCheck(new FormValidatorArrayCustom($this, 'authors', 'required', 'user.profile.form.urlInvalid', create_function('$url, $regExp', 'return empty($url) ? true : String::regexp_match($regExp, $url);'), array(ValidatorUrl::getRegexp()), false, array('url')));
+                                        $this->addCheck(new FormValidatorCustom($this, 'authors', 'required', 'author.submit.form.authorRequired', 
+                        function($authors) {
+                            return count($authors) > 0; 
+                        }));
 
-                        // Abstract
+                        $this->addCheck(new FormValidatorArray($this, 'authors', 'required', 'author.submit.form.authorRequiredFields', array('firstName', 'lastName', 'affiliation', 'phone')));				
                         $this->addCheck(new FormValidatorArray($this, 'abstracts', 'required', 'author.submit.form.abstractRequiredFields', array('scientificTitle', 'publicTitle', 'background', 'objectives', 'studyMethods', 'expectedOutcomes', 'keywords')));
-                        /*
-                        $abstractWordCount = $section->getAbstractWordCount();
+                        $this->addCheck(new FormValidatorArrayRadios($this, 'proposalDetails', 'required', 'author.submit.form.proposalDetails', array('studentInitiatedResearch', 'multiCountryResearch', 'nationwide', 'withHumanSubjects', 'reviewedByOtherErc')));
 
-                        if (isset($abstractWordCount) && $abstractWordCount > 0) {
-                                $this->addCheck(new FormValidatorCustom($this, 'abstract', 'required', 'author.submit.form.wordCountAlert', create_function('$abstract, $wordCount', 'foreach ($abstract as $localizedAbstract) {return count(explode(" ",$localizedAbstract)) < $wordCount; }'), array($abstractWordCount)));
+                        $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIINameAlreadyUsed', 
+                                function($proposalDetails) {
+                                    $institutionDao = DAORegistry::getDAO("InstitutionDAO");
+                                    if($institutionDao->institutionExistsByName($proposalDetails["otherInstitutionName"])) {
+                                        return false;
+                                    } else {
+                                        return true;
+                                    }
+                                }));
+
+                       $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIIAcronymAlreadyUsed', 
+                                function($proposalDetails) {
+                                    $institutionDao = DAORegistry::getDAO("InstitutionDAO"); 
+                                    if ($institutionDao->institutionExistsByAcronym($proposalDetails["otherInstitutionAcronym"])) {
+                                        return false;
+                                    } else {
+                                        return true;
+                                    }
+                                }));
+
+                        $this->addCheck(new FormValidatorArray($this, 'studentResearch', 'required', 'author.submit.form.studentResearch'));
+                        $this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('institution', 'amount', 'otherInstitutionName', 'otherInstitutionAcronym', 'otherInstitutionType', 'otherInstitutionLocation')));                
+
+                        $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceNameAlreadyUsed', 
+                                function($otherInstitutionName) {
+                                    $institutionDao = DAORegistry::getDAO("InstitutionDAO"); 
+                                    if($institutionDao->institutionExistsByName($otherInstitutionName)) {
+                                        return false; 
+                                    } else {
+                                        return true;
+                                    }
+                                }, array(), false, array('otherInstitutionName')));
+
+                        $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceAccronymAlreadyUsed', 
+                                function($otherInstitutionAcronym) {
+                                    $institutionDao = DAORegistry::getDAO("InstitutionDAO"); 
+                                    if($institutionDao->institutionExistsByAcronym($otherInstitutionAcronym)) {
+                                        return false; 
+                                    } else {
+                                        return true;
+                                    }
+                                 }, array(), false, array('otherInstitutionAcronym'))); 
+
+                        $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.nonNumericValue', 
+                                function($amount) {
+                                    return ctype_digit($amount);
+                                 }, array(), false, array('amount')));                          
+
+                        $this->addCheck(new FormValidatorCustom($this, 'sources', 'required', 'author.submit.form.sameSource', 
+                                function($sources) {
+                                    $institutionArray = array();
+                                    foreach($sources as $source) {
+                                        if ($source["institution"] != "OTHER" && $source["institution"] != "") {
+                                            array_push($institutionArray, $source["institution"]);
+                                        }
+                                    }
+                                    if (count($institutionArray) != count(array_unique($institutionArray))) {
+                                        return false;
+                                    }
+                                    else {
+                                        return true;
+                                    }
+                                 })); 
+
+                        if(isset($_POST['proposalDetails'])) {         
+                            $this->addCheck(new FormValidatorCustom($this, 'sources', 'required', 'author.submit.form.sameInstitutionEntries', 
+                                    function($sources, $KIIOtherInstitutionName, $KIIOtherInstitutionAcronym) {
+                                        $institutionNameArray = array(); 
+                                        $institutionAcronymArray = array(); 
+                                        foreach($sources as $source){
+                                            if($source["otherInstitutionName"] != "NA") {
+                                                array_push($institutionNameArray, $source["otherInstitutionName"]);
+                                            }
+                                            if($source["otherInstitutionAcronym"] != "NA") {
+                                                array_push($institutionAcronymArray, $source["otherInstitutionAcronym"]);
+                                            }
+                                        }
+                                        if($KIIOtherInstitutionName != "NA") {
+                                            array_push($institutionNameArray, $KIIOtherInstitutionName);
+                                        }
+                                        if($KIIOtherInstitutionAcronym != "NA") {
+                                            array_push($institutionAcronymArray, $KIIOtherInstitutionAcronym);
+                                        }
+                                        if(count($institutionNameArray) != count(array_intersect_key($institutionNameArray,array_unique(array_map('strtolower',$institutionNameArray))))) {
+                                            return false;
+                                        } elseif (count($institutionAcronymArray) != count(array_intersect_key($institutionAcronymArray,array_unique(array_map('strtolower',$institutionAcronymArray))))) {
+                                            return false;
+                                        }
+                                        else {
+                                            return true;
+                                        }
+                                     }, array($_POST["proposalDetails"]["otherInstitutionName"], $_POST["proposalDetails"]["otherInstitutionAcronym"])));
                         }
-                        */
 
-                        // Proposal Details
-                        $this->addCheck(new FormValidator($this, 'studentInitiatedResearch', 'required', 'author.submit.form.studentInitiatedResearch'));
-                        $this->addCheck(new FormValidator($this, 'startDate', 'required', 'author.submit.form.startDateRequired'));
-                        $this->addCheck(new FormValidator($this, 'endDate', 'required', 'author.submit.form.endDateRequired'));
-                        $this->addCheck(new FormValidator($this, 'primarySponsor', 'required', 'author.submit.form.primarySponsor'));
-                        $this->addCheck(new FormValidator($this, 'otherPrimarySponsor', 'required', 'author.submit.form.otherPrimarySponsor'));
-                        $this->addCheck(new FormValidator($this, 'otherSecondarySponsor', 'required', 'author.submit.form.otherSecondarySponsor'));
-                        $this->addCheck(new FormValidator($this, 'multiCountryResearch', 'required', 'author.submit.form.multiCountry'));
-                        $this->addCheck(new FormValidator($this, 'countries', 'required', 'author.submit.form.country'));
-                        $this->addCheck(new FormValidator($this, 'nationwide', 'required', 'author.submit.form.nationwide'));
-                        $this->addCheck(new FormValidator($this, 'geoAreas', 'required', 'author.submit.form.geoAreaRquired'));
-                        $this->addCheck(new FormValidator($this, 'researchFields', 'required', 'author.submit.form.researchField'));
-                        $this->addCheck(new FormValidator($this, 'otherResearchField', 'required', 'author.submit.form.otherResearchField'));
-                        $this->addCheck(new FormValidator($this, 'withHumanSubjects', 'required', 'author.submit.form.withHumanSubjectsRequired'));	        
-                        $this->addCheck(new FormValidator($this, 'proposalTypes', 'required', 'author.submit.form.proposalTypeRequired'));
-                        $this->addCheck(new FormValidator($this, 'otherProposalType', 'required', 'author.submit.form.otherProposalTypeRequired'));
-                        $this->addCheck(new FormValidator($this, 'dataCollection', 'required', 'author.submit.form.dataCollection'));
-                        $this->addCheck(new FormValidator($this, 'reviewedByOtherErc', 'required', 'author.submit.form.reviewedByOtherErcRequired'));
-                        $this->addCheck(new FormValidator($this, 'otherErcDecision', 'required', 'author.submit.form.otherErcDecisionRequired'));
-
-                        // Student
-                        $this->addCheck(new FormValidator($this, 'studentInstitution', 'required', 'author.submit.form.studentInstitution'));		
-                        $this->addCheck(new FormValidator($this, 'academicDegree', 'required', 'author.submit.form.academicDegree'));
-                        $this->addCheck(new FormValidator($this, 'supervisorName', 'required', 'author.submit.form.supervisorName'));
-                        $this->addCheck(new FormValidator($this, 'supervisorEmail', 'required', 'author.submit.form.supervisorEmail'));
-
-                        // Source of Monetary and Material Support
-                        $this->addCheck(new FormValidatorLocale($this, 'fundsRequired', 'required', 'author.submit.form.fundsRequiredRequired', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'selectedCurrency', 'required', 'author.submit.form.selectedCurrency', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'industryGrant', 'required', 'author.submit.form.industryGrant', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'nameOfIndustry', 'required', 'author.submit.form.nameOfIndustry', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'internationalGrant', 'required', 'author.submit.form.internationalGrant', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'internationalGrantName', 'required', 'author.submit.form.internationalGrantName', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'otherInternationalGrantName', 'required', 'author.submit.form.otherInternationalGrantName', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'mohGrant', 'required', 'author.submit.form.mohGrant', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'governmentGrant', 'required', 'author.submit.form.governmentGrant', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'governmentGrantName', 'required', 'author.submit.form.governmentGrantName', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'universityGrant', 'required', 'author.submit.form.universityGrant', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'selfFunding', 'required', 'author.submit.form.selfFunding', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'otherGrant', 'required', 'author.submit.form.otherGrant', $this->getRequiredLocale()));
-                        $this->addCheck(new FormValidatorLocale($this, 'specifyOtherGrant', 'required', 'author.submit.form.specifyOtherGrantField', $this->getRequiredLocale()));
-
-                        // Risk Assessment
-                        $this->addCheck(new FormValidator($this, 'identityRevealed', 'required', 'author.submit.form.identityRevealedRequired'));
-                        $this->addCheck(new FormValidator($this, 'unableToConsent', 'required', 'author.submit.form.unableToConsentRequired'));
-                        $this->addCheck(new FormValidator($this, 'under18', 'required', 'author.submit.form.under18Required'));
-                        $this->addCheck(new FormValidator($this, 'dependentRelationship', 'required', 'author.submit.form.dependentRelationshipRequired'));
-                        $this->addCheck(new FormValidator($this, 'ethnicMinority', 'required', 'author.submit.form.ethnicMinorityRequired'));
-                        $this->addCheck(new FormValidator($this, 'impairment', 'required', 'author.submit.form.impairmentRequired'));
-                        $this->addCheck(new FormValidator($this, 'pregnant', 'required', 'author.submit.form.pregnantRequired'));
-                        $this->addCheck(new FormValidator($this, 'newTreatment', 'required', 'author.submit.form.newTreatmentRequired'));
-                        $this->addCheck(new FormValidator($this, 'bioSamples', 'required', 'author.submit.form.bioSamplesRequired'));
-                        $this->addCheck(new FormValidator($this, 'radiation', 'required', 'author.submit.form.radiationRequired'));
-                        $this->addCheck(new FormValidator($this, 'distress', 'required', 'author.submit.form.distressRequired'));
-                        $this->addCheck(new FormValidator($this, 'inducements', 'required', 'author.submit.form.inducementsRequired'));
-                        $this->addCheck(new FormValidator($this, 'sensitiveInfo', 'required', 'author.submit.form.sensitiveInfoRequired'));
-                        $this->addCheck(new FormValidator($this, 'deception', 'required', 'author.submit.form.deceptionRequired'));
-                        $this->addCheck(new FormValidator($this, 'reproTechnology', 'required', 'author.submit.form.reproTechnologyRequired'));
-                        $this->addCheck(new FormValidator($this, 'genetic', 'required', 'author.submit.form.geneticsRequired'));
-                        $this->addCheck(new FormValidator($this, 'stemCell', 'required', 'author.submit.form.stemCellRequired'));
-                        $this->addCheck(new FormValidator($this, 'biosafety', 'required', 'author.submit.form.biosafetyRequired'));
-                        $this->addCheck(new FormValidator($this, 'riskLevel', 'required', 'author.submit.form.riskLevelRequired'));
-                        $this->addCheck(new FormValidator($this, 'listRisks', 'required', 'author.submit.form.listRisksRequired'));
-                        $this->addCheck(new FormValidator($this, 'howRisksMinimized', 'required', 'author.submit.form.howRisksMinimizedRequired'));
-                        $this->addCheck(new FormValidator($this, 'multiInstitutions', 'required', 'author.submit.form.multiInstitutionsRequired'));
-                        $this->addCheck(new FormValidator($this, 'conflictOfInterest', 'required', 'author.submit.form.conflictOfInterestRequired'));
+                        $this->addCheck(new FormValidatorArrayRadios($this, "riskAssessment", 'required', 'author.submit.form.riskAssessment', array('identityRevealed', 'unableToConsent', 'under18', 'dependentRelationship', 'ethnicMinority', 'impairment', 'pregnant', 'newTreatment', 'bioSamples', 'radiation', 'distress', 'inducements', 'sensitiveInfo', 'deception', 'reproTechnology', 'genetic', 'stemCell', 'biosafety', 'multiInstitutions', 'conflictOfInterest')));
 
                 } else {
                         parent::Form('submission/metadata/metadataView.tpl');
@@ -161,43 +185,14 @@ class MetadataForm extends Form {
 	 */
 	function initData() {
 		$sectionDao =& DAORegistry::getDAO('SectionDAO');
-
 		if (isset($this->article)) {
 			$article =& $this->article;
-                        
                         // Initialize th proposal details
                         $proposalDetails =& $article->getProposalDetails();
-                                      
-                        $primarySponsor = $proposalDetails->getPrimarySponsor();
-                        if (preg_match('#^Other\s\(.+\)$#', $primarySponsor)){
-                            $tempSponsor = $primarySponsor;
-                            $sponsor = preg_replace('#^Other\s\(.+\)$#','OTHER', $primarySponsor);
-                            $tempSponsor = preg_replace('#^Other\s\(#','', $tempSponsor);
-                            $tempSponsor = preg_replace('#\)$#','', $tempSponsor);
-                            $proposalDetails->setOtherPrimarySponsor($tempSponsor);
-                            $primarySponsor = $sponsor;
-                        }
-                        
-                        $secondarySponsorsArray = $proposalDetails->getSecondarySponsors();
-                        $secondarySponsors = explode("+", $secondarySponsorsArray);
-                        $h = 0;
-                        foreach ($secondarySponsors as $sponsor){
-                            if (preg_match('#^Other\s\(.+\)$#', $sponsor)){
-                                $tempSponsor = $sponsor;
-                                $sponsor = preg_replace('#^Other\s\(.+\)$#','OTHER', $sponsor);
-                                $tempSponsor = preg_replace('#^Other\s\(#','', $tempSponsor);
-                                $tempSponsor = preg_replace('#\)$#','', $tempSponsor);
-                                $proposalDetails->setOtherSecondarySponsor($tempSponsor);
-                            }
-                            $test4 = array($h => $sponsor);
-                            $secondarySponsors = array_replace ($secondarySponsors, $test4);
-                            $h++;
-                            unset ($sponsor);
-                        }
 
                         $countriesArray = $proposalDetails->getCountries();
 			$countries = explode(",", $countriesArray);
-
+                        
                         $geoAreasArray = $proposalDetails->getGeoAreas();
                         $geoAreas = explode(",", $geoAreasArray);
             
@@ -235,14 +230,23 @@ class MetadataForm extends Form {
                             unset ($type);
                         }
                         
+                        $committeeReviewed = $proposalDetails->getCommitteeReviewed();
+                        if ($committeeReviewed == "2" || $committeeReviewed == "3") {
+                            $reviewedByOtherErc = "2";
+                            $otherErcDecision = $committeeReviewed;
+                        } elseif ($committeeReviewed == "1") {
+                            $reviewedByOtherErc = $committeeReviewed;
+                            $otherErcDecision = $committeeReviewed;
+                        } else {
+                            $reviewedByOtherErc = null;
+                            $otherErcDecision = "1";                            
+                        }
+                        
                         $proposalDetailsArray = array(
                             'studentInitiatedResearch' => $proposalDetails->getStudentResearch(),
                             'startDate' => $proposalDetails->getStartDate(),
                             'endDate' => $proposalDetails->getEndDate(),
-                            'primarySponsor' => $primarySponsor,
-                            'otherPrimarySponsor' => $proposalDetails->getOtherPrimarySponsor(),
-                            'secondarySponsors' => $secondarySponsors,
-                            'otherSecondarySponsor' => $proposalDetails->getOtherSecondarySponsor(),
+                            'keyImplInstitution' => $proposalDetails->getKeyImplInstitution(),
                             'multiCountryResearch' => $proposalDetails->getMultiCountryResearch(),
                             'countries' => $countries,
                             'nationwide' => $proposalDetails->getNationwide(),
@@ -253,7 +257,8 @@ class MetadataForm extends Form {
                             'proposalTypes' => $proposalTypes,
                             'otherProposalType' => $proposalDetails->getOtherProposalType(),
                             'dataCollection' => $proposalDetails->getDataCollection(),
-                            'committeeReviewed' => $proposalDetails->getCommitteeReviewed()
+                            'reviewedByOtherErc' => $reviewedByOtherErc,
+                            'otherErcDecision' => $otherErcDecision
                         );
                         
                         // Student research
@@ -299,57 +304,21 @@ class MetadataForm extends Form {
                             'conflictOfInterest' => $riskAssessment->getConflictOfInterest(),
                             'multiInstitutions' => $riskAssessment->getMultiInstitutions()			
 			);
-			
-                        
-                        
-                        $internationalGrantNameArray = $article->getInternationalGrantName(null);
-                        if (empty($internationalGrantNameArray)) {
-                            $internationalGrantNameArray = array ('en_US' => (string) '');
-                        }
-                        $internationalGrantName[Locale::getLocale()] = explode("+", $internationalGrantNameArray[Locale::getLocale()]);
-                        $g = 0;
-                        foreach ($internationalGrantName[Locale::getLocale()] as $grant){
-                            if (preg_match('#^Other\s\(.+\)$#', $grant)){
-                                $tempGrant = $grant;
-                                $grant = preg_replace('#^Other\s\(.+\)$#','OTHER', $grant);
-                                $tempGrant = preg_replace('#^Other\s\(#','', $tempGrant);
-                                $tempGrant = preg_replace('#\)$#','', $tempGrant);
-                                $article->setOtherInternationalGrantName($tempGrant, Locale::getLocale());
-                            }
-                            $test3 = array($g => $grant);
-                            $internationalGrantName[Locale::getLocale()] = array_replace ($internationalGrantName[Locale::getLocale()], $test3);
-                            $g++;
-                            unset ($grant);
-                        }
-                        
-                        $articleDao =& DAORegistry::getDAO('ArticleDAO');
-                        						
+			                                                						
 			$this->_data = array(
 				'authors' => array(),
 
                             	'abstracts' => array(),
 
                             	'proposalDetails' => $proposalDetailsArray,
+                            
+				'sources' => array(),
 
                                 'studentResearch' => $studentResearchArray,
                                 
                                 'riskAssessment' => $riskAssessmentArray,
                             
-				'section' => $sectionDao->getSection($article->getSectionId()),                                 
-                                'fundsRequired' => $article->getFundsRequired(null),
-                                'selectedCurrency' => $article->getSelectedCurrency(null),
-                                'industryGrant' => $article->getIndustryGrant(null),
-                                'nameOfIndustry' => $article->getNameOfIndustry(null),
-                                'internationalGrant' => $article->getInternationalGrant(null),
-                                'internationalGrantName' => $internationalGrantName,
-                                'otherInternationalGrantName' =>$article->getOtherInternationalGrantName(null),
-                                'mohGrant' => $article->getMohGrant(null),
-                                'governmentGrant' => $article->getGovernmentGrant(null),
-                                'governmentGrantName' => $article->getGovernmentGrantName(null),
-                                'universityGrant' => $article->getUniversityGrant(null),
-                                'selfFunding' => $article->getSelfFunding(null),
-                                'otherGrant' => $article->getOtherGrant(null),
-                                'specifyOtherGrant' => $article->getSpecifyOtherGrant(null)
+				'section' => $sectionDao->getSection($article->getSectionId())                                 
 			);
 			
                        
@@ -371,6 +340,23 @@ class MetadataForm extends Form {
 					$this->setData('primaryContact', $i);
 				}
 			}
+
+                        
+                        $sources =& $article->getSources();
+                        if (empty($sources)) {
+                            array_push ($sources, new ProposalSource());
+                        }
+                        for ($i=0, $count=count($sources); $i < $count; $i++) {
+                            array_push(
+                                    $this->_data['sources'],
+                                    array(
+                                            'sourceId' => $sources[$i]->getSourceId(),
+                                            'institution' => $sources[$i]->getInstitutionId(),
+                                            'amount' => $sources[$i]->getSourceAmount()
+                                    )
+                            );
+                        }
+			
                         
                         $journal = Request::getJournal();
                         $abstracts =& $article->getAbstracts();
@@ -399,71 +385,58 @@ class MetadataForm extends Form {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		return array('fundsRequired', 'selectedCurrency', 'industryGrant', 'nameOfIndustry', 'internationalGrant', 'internationalGrantName', 'otherInternationalGrantName', 'mohGrant', 'governmentGrant', 'governmentGrantName', 'universityGrant', 'selfFunding', 'otherGrant', 'specifyOtherGrant');
+		return array();
 	}
 
 	/**
 	 * Display the form.
 	 */
 	function display() {
-		$journal =& Request::getJournal();
-		$settingsDao =& DAORegistry::getDAO('JournalSettingsDAO');
-		$roleDao =& DAORegistry::getDAO('RoleDAO');
-		$sectionDao =& DAORegistry::getDAO('SectionDAO');
-
-		Locale::requireComponents(array(LOCALE_COMPONENT_OJS_EDITOR)); // editor.cover.xxx locale keys; FIXME?
-
-		$templateMgr =& TemplateManager::getManager();
-		$templateMgr->assign('articleId', isset($this->article)?$this->article->getId():null);
-		$templateMgr->assign('journalSettings', $settingsDao->getJournalSettings($journal->getId()));
-		$templateMgr->assign('rolePath', Request::getRequestedPage());
-		$templateMgr->assign('canViewAuthors', $this->canViewAuthors);
-
-		$templateMgr->assign('helpTopicId','submission.indexingAndMetadata');
-		if ($this->article) {
-			$templateMgr->assign_by_ref('section', $sectionDao->getSection($this->article->getSectionId()));
-		}
-
-		if ($this->isEditor) {
-			import('classes.article.Article');
-			$hideAuthorOptions = array(
-				AUTHOR_TOC_DEFAULT => Locale::Translate('editor.article.hideTocAuthorDefault'),
-				AUTHOR_TOC_HIDE => Locale::Translate('editor.article.hideTocAuthorHide'),
-				AUTHOR_TOC_SHOW => Locale::Translate('editor.article.hideTocAuthorShow')
-			);
-			$templateMgr->assign('hideAuthorOptions', $hideAuthorOptions);
-			$templateMgr->assign('isEditor', true);
-		}
-
+                $journal = Request::getJournal();
+                
 		$countryDao =& DAORegistry::getDAO('CountryDAO');
-		$countries =& $countryDao->getCountries();
-                $templateMgr->assign_by_ref('coutryList', $countries);
+                $proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
+                $studentResearchDao =& DAORegistry::getDAO('StudentResearchDAO');
+                $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+		$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
+		$riskAssessmentDao =& DAORegistry::getDAO('RiskAssessmentDAO');
+		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+                
+                $geoAreas =& $regionDAO->getAreasOfTheCountry();
+
+                $coveredArea = $journal->getLocalizedSetting('location'); 
+                $institutionLocations = array('EXT' => Locale::translate('common.outside').' '.$coveredArea) + $geoAreas;
+                
+                $institutionsList = $institutionDao->getInstitutionsList();
+                $institutionsListWithOther = $institutionsList + array('OTHER' => Locale::translate('common.other'));
+                $sourcesList = $institutionsListWithOther + array('KII' => Locale::translate('proposal.keyImplInstitution'));
+                
+		$templateMgr =& TemplateManager::getManager();
                 
 		if (Request::getUserVar('addAuthor') || Request::getUserVar('delAuthor')  || Request::getUserVar('moveAuthor')) {
 			$templateMgr->assign('scrollToAuthor', true);
 		}
-
-                $proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
-
-                // Get proposal types
-                $proposalTypes = $proposalDetailsDao->getProposalTypes();
-                $templateMgr->assign('proposalTypesList', $proposalTypes);
-
-                //Get research fields
-                $researchFields = $proposalDetailsDao->getResearchFields();
-                $templateMgr->assign('researchFieldsList', $researchFields);
-
-                //Get list of agencies
-                $agencies = $proposalDetailsDao->getAgencies();
-                $templateMgr->assign('agencies', $agencies);
-
-                //Get list of regions of geographical areas of the country
-                $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-                $geoAreas =& $regionDAO->getAreasOfTheCountry();
-                $templateMgr->assign_by_ref('geoAreasList', $geoAreas);
-
-                $journal = Request::getJournal();
-                $templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
+                
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                
+                $templateMgr->assign('abstractLocales', $journal->getSupportedLocaleNames());
+                $templateMgr->assign('coutryList', $countryDao->getCountries());
+                $templateMgr->assign('proposalTypesList', $proposalDetailsDao->getProposalTypes());
+                $templateMgr->assign('researchFieldsList', $proposalDetailsDao->getResearchFields());
+                $templateMgr->assign('proposalDetailYesNoArray', $proposalDetailsDao->getYesNoArray());
+                $templateMgr->assign('nationwideRadioButtons', $proposalDetailsDao->getNationwideRadioButtons());
+                $templateMgr->assign('dataCollectionArray', $proposalDetailsDao->getDataCollectionArray());
+                $templateMgr->assign('otherErcDecisionArray', $proposalDetailsDao->getOtherErcDecisionArray());
+                $templateMgr->assign('academicDegreesArray', $studentResearchDao->getAcademicDegreesArray());
+                $templateMgr->assign('geoAreasList', $geoAreas);
+                $templateMgr->assign('institutionsList', $institutionsListWithOther);
+                $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
+                $templateMgr->assign('sourcesList', $sourcesList);
+                $templateMgr->assign('institutionTypes', $institutionDao->getInstitutionTypes());                
+                $templateMgr->assign('institutionLocations', $institutionLocations);
+                $templateMgr->assign('riskAssessmentYesNoArray', $riskAssessmentDao->getYesNoArray());
+                $templateMgr->assign('riskAssessmentLevelsOfRisk', $riskAssessmentDao->getLevelOfRiskArray());
+                $templateMgr->assign('riskAssessmentConflictOfInterestArray', $riskAssessmentDao->getConflictOfInterestArray());
 
                 parent::display();
 	}
@@ -475,87 +448,14 @@ class MetadataForm extends Form {
 	function readInputData() {
 		$this->readUserVars(
 			array(
-				// Authors
 				'authors',
 				'deletedAuthors',
-				'primaryContact',
-				
-				// Abstract
-				'abstracts',
-                
-                                // Proposal Details
-				'studentInitiatedResearch',
-                                'startDate',
-                                'endDate',
-                                'primarySponsor',
-                                'otherPrimarySponsor',
-                                'secondarySponsors',
-                                'otherSecondarySponsor',
-                                'multiCountryResearch',
-                                'countries',
-                                'nationwide',
-                                'geoAreas',
-                                'researchFields',
-                                'otherResearchField',
-                                'withHumanSubjects',
-                                'proposalTypes',
-                                'otherProposalType',
-                                'dataCollection',
-                                'reviewedByOtherErc',
-                                'otherErcDecision',
-				
-                                // Student Research
-				'studentInstitution',
-				'academicDegree',
-				'supervisorName',
-				'supervisorEmail',
-                            
-				// Source of Monetary and Material Support
-                                'fundsRequired',
-                                'selectedCurrency',
-                                'industryGrant',
-                                'nameOfIndustry',
-                                'internationalGrant',
-                                'internationalGrantName',
-                                'otherInternationalGrantName',
-                                'mohGrant',
-                                'governmentGrant',
-                                'governmentGrantName',
-                                'universityGrant',
-                                'selfFunding',
-                                'otherGrant',
-                                'specifyOtherGrant',
-                
-                                // Risk Assessment
-				'identityRevealed',
-				'unableToConsent',
-				'under18',
-				'dependentRelationship',
-				'ethnicMinority',
-				'impairment',
-				'pregnant',
-				'newTreatment',
-				'bioSamples',
-				'radiation',
-				'distress',
-				'inducements',
-				'sensitiveInfo',
-				'deception',
-				'reproTechnology',
-				'genetic',
-				'stemCell',
-				'biosafety',
-				'riskLevel',
-				'listRisks',
-				'howRisksMinimized',
-				'risksToTeam',
-				'risksToSubjects',
-				'risksToCommunity',
-				'benefitsToParticipants',
-				'knowledgeOnCondition',
-				'knowledgeOnDisease',
-				'multiInstitutions',
-				'conflictOfInterest'
+				'primaryContact',				
+				'abstracts',                
+                                'proposalDetails',                            
+				'studentResearch',                            
+				'sources',
+                                'riskAssessment'
 			)
 		);
 
@@ -663,58 +563,56 @@ class MetadataForm extends Form {
 		///////// Update Proposal Details /////////
                 ///////////////////////////////////////////
                 
+                $proposalDetailsData = $this->getData('proposalDetails');
+                        
                 import('classes.article.ProposalDetails');
 		$proposalDetails = new ProposalDetails();
-
+                
+		$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
+                import ('classes.journal.Institution');
+                
+                
 		$proposalDetails->setArticleId($article->getId());
                 
-                $proposalDetails->setStudentResearch($this->getData('studentInitiatedResearch'));
+                $proposalDetails->setStudentResearch($proposalDetailsData['studentInitiatedResearch']);
                 
-                $proposalDetails->setStartDate($this->getData('startDate'));
+                $proposalDetails->setStartDate($proposalDetailsData['startDate']);
                 
-                $proposalDetails->setEndDate($this->getData('endDate'));
-                
-                $primarySponsor = $this->getData('primarySponsor');
-                if($primarySponsor == "OTHER") {
-                    $otherSponsor = $this->getData('otherPrimarySponsor');
-                    if($otherSponsor != "") {
-                                $primarySponsor = "Other (". $otherSponsor .")";
-                    }
+                $proposalDetails->setEndDate($proposalDetailsData['endDate']);
+                                
+                if($proposalDetailsData['keyImplInstitution'] == "OTHER"){
+                    $institution = new Institution();
+                    $institution->setInstitutionName($proposalDetailsData['otherInstitutionName']);
+                    $institution->setInstitutionAcronym($proposalDetailsData['otherInstitutionAcronym']);
+                    $institution->setInstitutionType($proposalDetailsData['otherInstitutionType']);
+                    $institution->setInstitutionLocation($proposalDetailsData['otherInstitutionLocation']);
+                    $institutionId = $institutionDao->insertInstitution($institution);
+                    $proposalDetails->setKeyImplInstitution($institutionId);
+                    unset($institution);
+                } else {
+                    $proposalDetails->setKeyImplInstitution($proposalDetailsData['keyImplInstitution']);                    
                 }
-                $proposalDetails->setPrimarySponsor($primarySponsor);
                 
-                $secondarySponsorArray = $this->getData('secondarySponsors');
-                foreach($secondarySponsorArray as $i => $sponsor) {
-                        if($sponsor == "OTHER") {
-                                $otherSponsor = $this->getData('otherSecondarySponsor');
-                                if($otherSponsor != "") {
-                                        $secondarySponsorArray[$i] = "Other (". $otherSponsor .")";
-                                }
-                        }
-                }
-                $secondarySponsors = implode("+", $secondarySponsorArray);
-                $proposalDetails->setSecondarySponsors($secondarySponsors);
+                $proposalDetails->setMultiCountryResearch($proposalDetailsData['multiCountryResearch']);
                 
-                $proposalDetails->setMultiCountryResearch($this->getData('multiCountryResearch'));
-                
-                if ($this->getData('multiCountryResearch') == PROPOSAL_DETAIL_YES) {
-                    $countriesArray = $this->getData('countries');
+                if ($proposalDetailsData['multiCountryResearch'] == PROPOSAL_DETAIL_YES) {
+                    $countriesArray = $proposalDetailsData['countries'];
                     $countries = implode(",", $countriesArray);
                     $proposalDetails->setCountries($countries);                    
                 }
 		
-                $proposalDetails->setNationwide($this->getData('nationwide'));
+                $proposalDetails->setNationwide($proposalDetailsData['nationwide']);
                 
-                if ($this->getData('nationwide') != PROPOSAL_DETAIL_YES) {
-                    $geoAreasArray = $this->getData('geoAreas');
+                if ($proposalDetailsData['nationwide'] != PROPOSAL_DETAIL_YES) {
+                    $geoAreasArray = $proposalDetailsData['geoAreas'];
                     $geoAreas = implode(",", $geoAreasArray);
                     $proposalDetails->setGeoAreas($geoAreas);
                 }
                 
-                $researchFieldsArray = $this->getData('researchFields');
+                $researchFieldsArray = $proposalDetailsData['researchFields'];
                 foreach($researchFieldsArray as $i => $field) {
                         if($field == "OTHER") {
-                                $otherField = $this->getData('otherResearchField');
+                                $otherField = $proposalDetailsData['otherResearchField'];
                                 if($otherField != "") {
                                         $researchFieldsArray[$i] = "Other (". $otherField .")";
                                 }
@@ -723,13 +621,13 @@ class MetadataForm extends Form {
                 $researchFields = implode("+", $researchFieldsArray);
                 $proposalDetails->setResearchFields($researchFields);
                 
-                $proposalDetails->setHumanSubjects($this->getData('withHumanSubjects'));    
+                $proposalDetails->setHumanSubjects($proposalDetailsData['withHumanSubjects']);    
 
                 if ($this->getData('withHumanSubjects') == PROPOSAL_DETAIL_YES) {
-                    $proposalTypesArray = $this->getData('proposalTypes');
+                    $proposalTypesArray = $proposalDetailsData['proposalTypes'];
                     foreach($proposalTypesArray as $i => $type) {
                             if($type == "OTHER") {
-                                    $otherType = $this->getData('otherProposalType');
+                                    $otherType = $proposalDetailsData['otherProposalType'];
                                     if($otherType != "") {
                                             $proposalTypesArray[$i] = "Other (". $otherType .")";
                                     }
@@ -739,92 +637,127 @@ class MetadataForm extends Form {
                     $proposalDetails->setProposalTypes($proposalTypes);
                 }
                 
-                $proposalDetails->setDataCollection($this->getData('dataCollection'));
+                $proposalDetails->setDataCollection($proposalDetailsData['dataCollection']);
                 
                 if ($this->getData('reviewedByOtherErc') == PROPOSAL_DETAIL_YES) {
-                    $proposalDetails->setCommitteeReviewed($this->getData('otherErcDecision'));    
+                    $proposalDetails->setCommitteeReviewed($proposalDetailsData['otherErcDecision']);    
                 } else $proposalDetails->setCommitteeReviewed(PROPOSAL_DETAIL_NO);    
-
+                
                 // Update or insert student research
                 import('classes.article.StudentResearch');
 		$studentResearchInfo = new StudentResearch();
                 $studentResearchInfo->setArticleId($article->getId());
-                $studentResearchInfo->setInstitution($this->getData('studentInstitution'));
-                $studentResearchInfo->setDegree($this->getData('academicDegree'));
-                $studentResearchInfo->setSupervisorName($this->getData('supervisorName'));
-                $studentResearchInfo->setSupervisorEmail($this->getData('supervisorEmail'));
+                $studentResearchData = $this->getData('studentResearch');
+                $studentResearchInfo->setInstitution($studentResearchData['studentInstitution']);
+                $studentResearchInfo->setDegree($studentResearchData['academicDegree']);
+                $studentResearchInfo->setSupervisorName($studentResearchData['supervisorName']);
+                $studentResearchInfo->setSupervisorEmail($studentResearchData['supervisorEmail']);
                 
                 $proposalDetails->setStudentResearchInfo($studentResearchInfo);
                 $article->setProposalDetails($proposalDetails);
                 
                 ///////////////////////////////////////////
-		///////// Update Source of Monetary ///////
+		//////// Update Sources of Monetary ///////
                 ///////////////////////////////////////////
-                $article->setInternationalGrant($this->getData('internationalGrant'), null); 
-                $internationalGrantNameArray = $this->getData('internationalGrantName');
-                foreach($internationalGrantNameArray[Locale::getLocale()] as $i => $grant) {
-                        if($grant == "OTHER") {
-                                $otherGrant = $this->getData('otherInternationalGrantName');
-                        if($otherGrant != "") {
-                                $internationalGrantNameArray[Locale::getLocale()][$i] = "Other (". $otherGrant[Locale::getLocale()] .")";
+                
+                $sources = $article->getSources();
+                $sourcesData = $this->getData('sources');
+                
+                //Remove sources
+                foreach ($sources as $source) {
+                    $isPresent = false;
+                    foreach ($sourcesData as $sourceData) {
+                        if (!empty($sourceData['sourceId'])) {
+                            if ($source->getSourceId() == $sourceData['sourceId']) {
+                                $isPresent = true;
+                            }
                         }
-                        }
+                    }
+                    if (!$isPresent) {
+                        $article->removeSource($source->getSourceId());
+                    }
+                    unset($source);
+                    
                 }
 
-                $internationalGrantName[Locale::getLocale()] = implode("+", $internationalGrantNameArray[Locale::getLocale()]);
-                $article->setInternationalGrantName($internationalGrantName, null); // Localized
+                for ($i=0, $count=count($sourcesData); $i < $count; $i++) {
+                    if (!empty($sourcesData[$i]['sourceId'])) {
+                        // Update an existing source
+                        $source =& $article->getSource($sourcesData[$i]['sourceId']);
+                        $isExistingSource = true;
+                    } else {
+                        // Create a new source
+                        $source = new ProposalSource();
+                        $isExistingSource = false;
+                    }
+                    if ($source != null) {
+                        $source->setArticleId($article->getId());
 
-                $article->setFundsRequired($this->getData('fundsRequired'), null); // Localized
-                $article->setSelectedCurrency($this->getData('selectedCurrency'), null);
-                $article->setIndustryGrant($this->getData('industryGrant'), null);
-                $article->setNameOfIndustry($this->getData('nameOfIndustry'), null); 
-                $article->setMohGrant($this->getData('mohGrant'), null);
-                $article->setGovernmentGrant($this->getData('governmentGrant'), null);
-                $article->setGovernmentGrantName($this->getData('governmentGrantName'), null); 
-                $article->setUniversityGrant($this->getData('universityGrant'), null); 
-                $article->setSelfFunding($this->getData('selfFunding'), null); 
-                $article->setOtherGrant($this->getData('otherGrant'), null); 
-                $article->setSpecifyOtherGrant($this->getData('specifyOtherGrant'), null);         
+                        if ($sourcesData[$i]['institution'] == "OTHER") {                        
+                            $institution = new Institution();
+                            $institution->setInstitutionName($sourcesData[$i]['otherInstitutionName']);
+                            $institution->setInstitutionAcronym($sourcesData[$i]['otherInstitutionAcronym']);
+                            $institution->setInstitutionType($sourcesData[$i]['otherInstitutionType']);
+                            $institution->setInstitutionLocation($sourcesData[$i]['otherInstitutionLocation']);
+                            $institutionId = $institutionDao->insertInstitution($institution);
+                            $source->setInstitutionId($institutionId);
+                            unset($institution);
+                        } elseif ($sourcesData[$i]['institution'] == "KII") {
+                            $source->setInstitutionId($proposalDetails->getKeyImplInstitution());
+                        } else {
+                            $source->setInstitutionId($sourcesData[$i]['institution']);
+                        }
 
+                        $source->setSourceAmount($sourcesData[$i]['amount']);
+                        
+                        if (!$isExistingSource) {
+                            $article->addSource($source);
+                        }
+                    }
+                    unset($source);
+                } 
 
+                
                 ///////////////////////////////////////////
 		///////////// Risk Assessment /////////////
                 ///////////////////////////////////////////
 
                 import('classes.article.RiskAssessment');
 		$riskAssessment = new RiskAssessment();
+                $riskAssessmentData = $this->getData('riskAssessment');
+                
                 $riskAssessment->setArticleId($article->getId());
-                $riskAssessment->setIdentityRevealed($this->getData('identityRevealed'));
-                $riskAssessment->setUnableToConsent($this->getData('unableToConsent'));
-                $riskAssessment->setUnder18($this->getData('under18'));
-                $riskAssessment->setDependentRelationship($this->getData('dependentRelationship'));
-                $riskAssessment->setEthnicMinority($this->getData('ethnicMinority'));
-                $riskAssessment->setImpairment($this->getData('impairment'));
-                $riskAssessment->setPregnant($this->getData('pregnant'));
-                $riskAssessment->setNewTreatment($this->getData('newTreatment'));
-                $riskAssessment->setBioSamples($this->getData('bioSamples'));
-                $riskAssessment->setRadiation($this->getData('radiation'));
-                $riskAssessment->setDistress($this->getData('distress'));
-                $riskAssessment->setInducements($this->getData('inducements'));
-                $riskAssessment->setSensitiveInfo($this->getData('sensitiveInfo'));
-                $riskAssessment->setDeception($this->getData('deception'));
-                $riskAssessment->setReproTechnology($this->getData('reproTechnology'));
-                $riskAssessment->setGenetic($this->getData('genetic'));
-                $riskAssessment->setStemCell($this->getData('stemCell'));
-                $riskAssessment->setBiosafety($this->getData('biosafety'));
-                $riskAssessment->setRiskLevel($this->getData('riskLevel'));
-                $riskAssessment->setListRisks($this->getData('listRisks'));
-                $riskAssessment->setHowRisksMinimized($this->getData('howRisksMinimized'));
+                $riskAssessment->setIdentityRevealed($riskAssessmentData['identityRevealed']);
+                $riskAssessment->setUnableToConsent($riskAssessmentData['unableToConsent']);
+                $riskAssessment->setUnder18($riskAssessmentData['under18']);
+                $riskAssessment->setDependentRelationship($riskAssessmentData['dependentRelationship']);
+                $riskAssessment->setEthnicMinority($riskAssessmentData['ethnicMinority']);
+                $riskAssessment->setImpairment($riskAssessmentData['impairment']);
+                $riskAssessment->setPregnant($riskAssessmentData['pregnant']);
+                $riskAssessment->setNewTreatment($riskAssessmentData['newTreatment']);
+                $riskAssessment->setBioSamples($riskAssessmentData['bioSamples']);
+                $riskAssessment->setRadiation($riskAssessmentData['radiation']);
+                $riskAssessment->setDistress($riskAssessmentData['distress']);
+                $riskAssessment->setInducements($riskAssessmentData['inducements']);
+                $riskAssessment->setSensitiveInfo($riskAssessmentData['sensitiveInfo']);
+                $riskAssessment->setDeception($riskAssessmentData['deception']);
+                $riskAssessment->setReproTechnology($riskAssessmentData['reproTechnology']);
+                $riskAssessment->setGenetic($riskAssessmentData['genetic']);
+                $riskAssessment->setStemCell($riskAssessmentData['stemCell']);
+                $riskAssessment->setBiosafety($riskAssessmentData['biosafety']);
+                $riskAssessment->setRiskLevel($riskAssessmentData['riskLevel']);
+                $riskAssessment->setListRisks($riskAssessmentData['listRisks']);
+                $riskAssessment->setHowRisksMinimized($riskAssessmentData['howRisksMinimized']);
 
-                $riskAssessment->setRisksToTeam($this->getData('risksToTeam') ? 1 : 0);
-                $riskAssessment->setRisksToSubjects($this->getData('risksToSubjects') ? 1 : 0);
-                $riskAssessment->setRisksToCommunity($this->getData('risksToCommunity') ? 1 : 0);
-                $riskAssessment->setBenefitsToParticipants($this->getData('benefitsToParticipants') ? 1 : 0);
-                $riskAssessment->setKnowledgeOnCondition($this->getData('knowledgeOnCondition') ? 1 : 0);
-                $riskAssessment->setKnowledgeOnDisease($this->getData('knowledgeOnDisease') ? 1 : 0);
+                $riskAssessment->setRisksToTeam(isset($riskAssessmentData['risksToTeam']) ? 1 : 0);
+                $riskAssessment->setRisksToSubjects(isset($riskAssessmentData['risksToSubjects']) ? 1 : 0);
+                $riskAssessment->setRisksToCommunity(isset($riskAssessmentData['risksToCommunity']) ? 1 : 0);
+                $riskAssessment->setBenefitsToParticipants(isset($riskAssessmentData['benefitsToParticipants']) ? 1 : 0);
+                $riskAssessment->setKnowledgeOnCondition(isset($riskAssessmentData['knowledgeOnCondition']) ? 1 : 0);
+                $riskAssessment->setKnowledgeOnDisease(isset($riskAssessmentData['knowledgeOnDisease']) ? 1 : 0);
 
-                $riskAssessment->setMultiInstitutions($this->getData('multiInstitutions'));
-                $riskAssessment->setConflictOfInterest($this->getData('conflictOfInterest'));           
+                $riskAssessment->setMultiInstitutions($riskAssessmentData['multiInstitutions']);
+                $riskAssessment->setConflictOfInterest($riskAssessmentData['conflictOfInterest']);           
                 $article->setRiskAssessment($riskAssessment);
 		
 	

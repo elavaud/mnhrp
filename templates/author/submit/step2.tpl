@@ -16,15 +16,15 @@
     <input type="hidden" name="articleId" value="{$articleId|escape}" />
     {include file="common/formErrors.tpl"}
 
-    {include file="author/submit/step2Contents/authors.tpl"}
+    {include file="common/proposalSubmission/authors.tpl"}
     
-    {include file="author/submit/step2Contents/titleAndAbstracts.tpl"}
+    {include file="common/proposalSubmission/titleAndAbstracts.tpl"}
 
-    {include file="author/submit/step2Contents/proposalDetails.tpl"}
+    {include file="common/proposalSubmission/proposalDetails.tpl"}
 
-    {include file="author/submit/step2Contents/sourcesOfMonetary.tpl"}
+    {include file="common/proposalSubmission/sourcesOfMonetary.tpl"}
     
-    {include file="author/submit/step2Contents/riskAssessment.tpl"}
+    {include file="common/proposalSubmission/riskAssessment.tpl"}
     
     <p><input type="submit" value="{translate key="common.saveAndContinue"}" class="button defaultButton"/> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="confirmAction('{url page="author"}', '{translate|escape:"jsparam" key="author.submit.cancelSubmission"}')" /></p>
 
@@ -34,4 +34,4 @@
 
 {include file="common/footer.tpl"}
 
-{include file="author/submit/step2Contents/javascript.tpl"}
+{include file="common/proposalSubmission/javascript.tpl"}

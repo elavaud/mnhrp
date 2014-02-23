@@ -322,6 +322,18 @@ class Submission extends DataObject {
 	}
         
         /**
+	 * Get total budget.
+	 * @return int
+	 */
+	function &getTotalBudget() {
+		$totalBudget = (int)0;
+                foreach ($this->sources as $source) {
+                    $totalBudget = $totalBudget + $source->getSourceAmount();
+                }
+		return $totalBudget;
+	}
+        
+        /**
 	 * Get a specific abstract of this submission by locale.
 	 * @param $locale string
 	 * @return object Abstract
@@ -1104,61 +1116,7 @@ class Submission extends DataObject {
 	 */
 	function setCommentsStatus($commentsStatus) {
 		return $this->setData('commentsStatus', $commentsStatus);
-	}
-
-        /**
-	 * Get "localized" funds required (if applicable).
-	 * @return string
-	 */
-	function getLocalizedFundsRequired() {
-		return $this->getLocalizedData('fundsRequired');
-	}
-
-	/**
-	 * Get funds required.
-	 * @param $locale
-	 * @return string
-	 */
-	function getFundsRequired($locale) {
-		return $this->getData('fundsRequired', $locale);
-	}
-
-	/**
-	 * Set funds required.
-	 * @param $fundsRequired string
-	 * @param $locale
-	 */
-	function setFundsRequired($fundsRequired, $locale) {
-		return $this->setData('fundsRequired', $fundsRequired, $locale);
-	}
-
-
-    /**
-	 * Get "localized" selected Currency (if applicable).
-	 * @return string
-	 */
-	function getLocalizedSelectedCurrency() {
-		return $this->getLocalizedData('selectedCurrency');
-	}
-
-	/**
-	 * Get selected currency.
-	 * @param $locale
-	 * @return string
-	 */
-	function getSelectedCurrency($locale) {
-		return $this->getData('selectedCurrency', $locale);
-	}
-
-	/**
-	 * Set selected Currency.
-	 * @param $selectedCurrency string
-	 * @param $locale
-	 */
-	function setSelectedCurrency($selectedCurrency, $locale) {
-		return $this->setData('selectedCurrency', $selectedCurrency, $locale);
-	}
-	
+	}	
 
 	/***********************************************
 	 *

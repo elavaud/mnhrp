@@ -613,7 +613,7 @@ return $returner;
 	* @param $rangeInfo object
 	* @return array EditorSubmission
 	*/
-	function &getEditorSubmissionsReport($journalId, $sectionId = null, $sresearch = null, $adegree = null, $primarySponsorField = null, $secondarySponsorField = null, $researchFieldFields = null, $proposalTypeFields = null, $dataCollection = null, $multiCountry = null, $nationwide = null,$countryFields = null, $startDateBefore = null, $startDateAfter = null, $endDateBefore = null, $endDateAfter = null, $submittedBefore = null, $submittedAfter = null, $approvedBefore = null, $approvedAfter = null, $decisionFields = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
+	function &getEditorSubmissionsReport($journalId, $sectionId = null, $sresearch = null, $adegree = null, $kiiField = null, $researchFieldFields = null, $proposalTypeFields = null, $dataCollection = null, $multiCountry = null, $nationwide = null,$countryFields = null, $startDateBefore = null, $startDateAfter = null, $endDateBefore = null, $endDateAfter = null, $submittedBefore = null, $submittedAfter = null, $approvedBefore = null, $approvedAfter = null, $decisionFields = null, $sortBy = null, $sortDirection = SORT_DIRECTION_ASC) {
 
 		$sql = "";
 		if (!empty($sresearch)) {
@@ -636,28 +636,16 @@ return $returner;
 			} if ($present) $sql .= " AND (".$decisionSql.")";
 		}
 
-		if(!empty($primarySponsorField)){
-			$primarySponsorSql = "";
+		if(!empty($kiiField)){
+			$kiiSql = "";
 			$present = false;
-			foreach ($primarySponsorField as $primarySponsor){
-				if(!empty($primarySponsor)){
+			foreach ($kiiField as $kii){
+				if(!empty($kii)){
 					$present = true;
-					if ($primarySponsorSql == "" || $primarySponsorSql == null) $primarySponsorSql = "LOWER(ad.primary_sponsor) LIKE '" . $primarySponsor . "%'";
-					else $primarySponsorSql .= " OR LOWER(ad.primary_sponsor) LIKE '" . $primarySponsor . "%'";
+					if ($kiiSql == "" || $kiiSql == null) $kiiSql = "LOWER(ad.key_implementing_institution) LIKE '" . $kii . "%'";
+					else $kiiSql .= " OR LOWER(ad.key_implementing_institution) LIKE '" . $kii . "%'";
 				}
-			} if ($present) $sql .= " AND (".$primarySponsorSql.")";
-		}
-		
-		if(!empty($secondarySponsorField)){
-			$secondarySponsorSql = "";
-			$present = false;
-			foreach ($secondarySponsorField as $secondarySponsor){
-				if(!empty($secondarySponsor)){
-					$present = true;
-					if ($secondarySponsorSql == "" || $secondarySponsorSql == null) $secondarySponsorSql = "LOWER(ad.secondary_sponsors) LIKE '%" . $secondarySponsor . "%'";
-					else $secondarySponsorSql .= " OR LOWER(ad.secondary_sponsors) LIKE '%" . $secondarySponsor . "%'";
-				}
-			} if ($present) $sql .= " AND (".$secondarySponsorSql.")";
+			} if ($present) $sql .= " AND (".$kiiSql.")";
 		}
 		
 		if(!empty($researchFieldFields)){

@@ -237,9 +237,9 @@ class ProposalDetailsDAO extends DAO{
 
         function getProposalTypeSingle($code) {
             $proposalTypes = $this->getProposalTypes();
-            foreach($proposalTypes as $pt) {
-                if ($pt['code'] == $code) {
-                    return $pt['name'];
+            foreach($proposalTypes as $ptKey => $ptValue) {
+                if ($ptKey == $code) {
+                    return $ptValue;
                 }
             }
             return $code;
@@ -293,9 +293,9 @@ class ProposalDetailsDAO extends DAO{
 
         function getResearchFieldSingle($code) {
             $researchFields = $this->getResearchFields();
-            foreach($researchFields as $rf) {
-                if ($rf['code'] == $code) {
-                    return $rf['name'];
+            foreach($researchFields as $rfKey => $rfValue) {
+                if ($rfKey == $code) {
+                    return $rfValue;
                 }
             }
             return $code;

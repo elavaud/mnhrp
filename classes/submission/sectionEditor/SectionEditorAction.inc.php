@@ -2710,8 +2710,7 @@ class SectionEditorAction extends Action {
                 $pdf->MultiRow($cell_width, Locale::translate('proposal.endDate').': ', $endDate->format('l d F Y'));
                 $pdf->ln();
                 
-                $pdf->MultiRow($cell_width, Locale::translate('proposal.primarySponsor').': ', $proposalDetails->getLocalizedPrimarySponsorText());
-                if ($proposalDetails->getSecondarySponsors()) $pdf->MultiRow($cell_width, Locale::translate('proposal.secondarySponsors').': ', $proposalDetails->getLocalizedSecondarySponsorText());
+                $pdf->MultiRow($cell_width, Locale::translate('proposal.keyImplInstitution"').': ', $proposalDetails->getKeyImplInstitutionName());
                 $pdf->ln();
                 
                 $pdf->MultiRow($cell_width, Locale::translate('proposal.multiCountryResearch').': ', Locale::translate($proposalDetails->getYesNoKey($proposalDetails->getMultiCountryResearch())));

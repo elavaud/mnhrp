@@ -294,6 +294,7 @@ class Upgrade extends Installer {
 			// Setup page 3
 			'authorGuidelines' => 'authorGuidelines',
 			'submissionChecklist' => 'submissionChecklist',
+			'sourceCurrency' => 'sourceCurrency',
 			'copyrightNotice' => 'copyrightNotice',
 			'metaDisciplineExamples' => 'metaDisciplineExamples',
 			'metaSubjectClassTitle' => 'metaSubjectClassTitle',

@@ -13,6 +13,14 @@
   -->
 
 <locale name="en_US" full_name = "English">
+    
+    
+        <!-- New keys, February 2014 -->
+        
+        <message key="editor.reports.keyImplInstitution">Key Implementing Institution</message>
+        
+        <!--  -->    
+    
 	<message key="editor.article.activeReviewers">Active Reviewer(s)</message>
     <message key="editor.article.addReviewer">Add Reviewer</message>
 	<message key="editor.article.archiveSubmission">Reject and Archive Submission</message>

@@ -376,6 +376,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
 		$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
 		$riskAssessmentDao =& DAORegistry::getDAO('RiskAssessmentDAO');
+		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
                 
                 $geoAreas =& $regionDAO->getAreasOfTheCountry();
 
@@ -392,6 +393,8 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
 			$templateMgr->assign('scrollToAuthor', true);
 		}
                 
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                
                 $templateMgr->assign('abstractLocales', $journal->getSupportedLocaleNames());
                 $templateMgr->assign('coutryList', $countryDao->getCountries());
                 $templateMgr->assign('proposalTypesList', $proposalDetailsDao->getProposalTypes());
@@ -403,6 +406,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 $templateMgr->assign('academicDegreesArray', $studentResearchDao->getAcademicDegreesArray());
                 $templateMgr->assign('geoAreasList', $geoAreas);
                 $templateMgr->assign('institutionsList', $institutionsListWithOther);
+                $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
                 $templateMgr->assign('sourcesList', $sourcesList);
                 $templateMgr->assign('institutionTypes', $institutionDao->getInstitutionTypes());                
                 $templateMgr->assign('institutionLocations', $institutionLocations);
@@ -565,7 +569,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 
                 $proposalDetails->setHumanSubjects($proposalDetailsData['withHumanSubjects']);    
 
-                if ($this->getData('withHumanSubjects') == PROPOSAL_DETAIL_YES) {
+                if ($proposalDetailsData['withHumanSubjects'] == PROPOSAL_DETAIL_YES) {
                     $proposalTypesArray = $proposalDetailsData['proposalTypes'];
                     foreach($proposalTypesArray as $i => $type) {
                             if($type == "OTHER") {
@@ -581,7 +585,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 
                 $proposalDetails->setDataCollection($proposalDetailsData['dataCollection']);
                 
-                if ($this->getData('reviewedByOtherErc') == PROPOSAL_DETAIL_YES) {
+                if ($proposalDetailsData['reviewedByOtherErc'] == PROPOSAL_DETAIL_YES) {
                     $proposalDetails->setCommitteeReviewed($proposalDetailsData['otherErcDecision']);    
                 } else $proposalDetails->setCommitteeReviewed(PROPOSAL_DETAIL_NO);    
                 
