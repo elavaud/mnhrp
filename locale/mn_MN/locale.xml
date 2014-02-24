@@ -430,8 +430,8 @@
     <message key="user.ercrole.status">Committee Member Status</message>
 	<message key="user.role.reviewer">Committee Member</message> 
 	<message key="user.role.author">Investigator</message> 
-    <message key="user.role.primaryInvestigator">Primary Investigator</message>
-    <message key="user.role.primaryInvestigatorInstruct">Primary/First investigator of the research</message>
+    <message key="user.role.primaryInvestigator">Principal Investigator</message>
+    <message key="user.role.primaryInvestigatorInstruct">Principal/First investigator of the research</message>
     <message key="user.role.coinvestigator">Co-Investigator(s)</message>
     <message key="user.role.coinvestigatorInstruct">Co-Investigator(s) of the research.</message>
 	<message key="user.role.managers">Administrators</message> 
@@ -624,7 +624,7 @@ current password.<br /><br />Enter your email address below to reset your passwo
     <message key="search.dataCollection">Data Collection</message>
     <message key="search.status">Status</message>
     <message key="search.dateSubmitted">Date submitted</message>
-	<message key="search.primaryInvestigator">Primary Investigator</message>
+	<message key="search.primaryInvestigator">Principal Investigator</message>
     <message key="search.primarySponsor">Primary Sponsor</message>
     <message key="search.proposalType">Proposal Type</message>    
     <message key="search.region">Geographical Area</message>

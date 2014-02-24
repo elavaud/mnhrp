@@ -455,7 +455,7 @@
     <message key="editor.reports.decision">Last secretary decision</message>
     <message key="editor.reports.submitDate">Date Submitted</message>
     <message key="editor.reports.approveDate">Date Approved</message>
-	<message key="editor.reports.author">Primary Investigator</message>
+	<message key="editor.reports.author">Principal Investigator</message>
     <message key="editor.reports.authorAffiliation">PI Affiliation</message>
     <message key="editor.reports.authorEmail">PI E-Mail</message>
 	<message key="editor.reports.scientificTitle">Scientific Title</message>

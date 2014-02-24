@@ -306,7 +306,7 @@
         <message key="proposal.proofOfRegistration">Proof Of Registration Included? </message>
         <message key="proposal.dataCollection">Data Collection</message>
         <message key="proposal.sourceOfMonetary">Source(s) of Monetary or Material Support</message>
-        <message key="proposal.submittedAsPi">Submitting as Primary Investigator?</message>
+        <message key="proposal.submittedAsPi">Submitting as Principal Investigator?</message>
         <message key="proposal.nationalApprovalEnclosed">National Approval Enclosed?</message>
 
         <!-- Risk Assesment -->
@@ -479,7 +479,7 @@
 	<message key="user.role.copyeditor">Copyeditor</message>
 	<message key="user.role.proofreader">Proofreader</message>
 	<message key="user.role.author">Investigator</message>
-    <message key="user.role.primaryInvestigator">Primary Investigator</message>
+    <message key="user.role.primaryInvestigator">Principal Investigator</message>
     <message key="user.role.coinvestigator">Co-Investigator(s)</message>
 	<message key="user.role.subscriptionManager">Subscription Manager</message>
 	<message key="user.role.managers">Administrators</message> /* Replaced Journal Managers with Committee Admins - spf */
@@ -1107,7 +1107,7 @@ current password.<br /><br />Enter your email address below to reset your passwo
     <message key="search.status">Status</message>
     <message key="search.dateSubmitted">Date submitted</message>
 	<message key="search.responsibleOfficer">Responsible Officer</message>
-	<message key="search.primaryInvestigator">Primary Investigator</message>
+	<message key="search.primaryInvestigator">Principal Investigator</message>
     <message key="search.primarySponsor">Primary Sponsor</message>
     <message key="search.proposalType">Proposal Type</message>    
     <message key="search.region">Geographical Area</message>
