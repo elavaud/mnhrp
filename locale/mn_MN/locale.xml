@@ -610,7 +610,7 @@ current password.<br /><br />Enter your email address below to reset your passwo
 	<message key="user.register.loginToRegister">Enter your existing username and password to register with this system.</message>
 	<message key="user.register.registrationDisabled">The Health Research Portal is currently not accepting user registrations.</message>
 	<message key="user.register.form.passwordLengthTooShort">The password you entered is not long enough.</message>
-	<message key="user.register.reviewerInterests">Identify reviewing interests (substantive areas and research methods):</message>
+	<message key="user.register.reviewerInterests">Identify technical expertises (substantive areas and research methods):</message>
 	<message key="user.register.reviewerInterestsInstruct">If you intend to be a reviewer in this system.</message>
     
 	<!-- Search -->

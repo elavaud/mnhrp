@@ -716,7 +716,7 @@ class Upgrade extends Installer {
 	}
 
 	/**
-	 * For 2.3.3 upgrade:  Migrate reviewing interests from free text to controlled vocab structure
+	 * For 2.3.3 upgrade:  Migrate technical expertises from free text to controlled vocab structure
 	 * @return boolean
 	 */
 	function migrateReviewingInterests() {

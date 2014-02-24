@@ -164,7 +164,7 @@
 	<message key="manager.reviewerSearch.avgAmount">Average number of days per review</message>
 	<message key="manager.reviewerSearch.lastAmount">Days since last review</message>
 	<message key="manager.reviewerSearch.activeAmount">Number of currently active reviews</message>
-	<message key="manager.reviewerSearch.interests">Reviewing Interests</message>
+	<message key="manager.reviewerSearch.interests">Technical Expertises</message>
 	<message key="manager.roles">Roles</message>
 	<message key="manager.setup.citationAssistant">Citation Markup Assistant</message>
 	<message key="manager.setup.citationFilterParser">Citation Extraction</message>
