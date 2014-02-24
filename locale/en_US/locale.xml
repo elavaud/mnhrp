@@ -327,7 +327,6 @@
         <message key="proposal.radiation">Use of ionizing radiation?</message>
         <message key="proposal.distress">Pain or psychological distress?</message><message key="proposal.inducements">Inducements?</message>
         <message key="proposal.sensitiveInfo">Collection of sensitive information?</message>
-        <message key="proposal.deception">Deception?</message>
         <message key="proposal.reproTechnology">Assisted reproductive technology?</message>
         <message key="proposal.genetic">Human genetic or genomic studies?</message>
         <message key="proposal.stemCell">Stem cell research?</message>
@@ -367,7 +366,6 @@
         <message key="proposal.distressAbb">Distress</message>
         <message key="proposal.inducementsAbb">Inducements</message>
         <message key="proposal.sensitiveInfoAbb">Sensitive information</message>
-        <message key="proposal.deceptionAbb">Deception</message>
         <message key="proposal.reproTechnologyAbb">Reproductive technology</message>
         <message key="proposal.geneticsAbb">Human genetic or genomic</message>
         <message key="proposal.stemCellAbb">Stem cell</message>

@@ -161,7 +161,6 @@
             <message key="author.submit.form.distressRequired">Please indicate if the research includes pain or psychological distress.</message>
             <message key="author.submit.form.inducementsRequired">Please indicate if the research includes inducements.</message>
             <message key="author.submit.form.sensitiveInfoRequired">Please indicate if the research includes collection of sensitive informations.</message>
-            <message key="author.submit.form.deceptionRequired">Please indicate if the research includes deception.</message>
             <message key="author.submit.form.reproTechnologyRequired">Please indicate if the research includes assisted reproductive technology.</message>
             <message key="author.submit.form.geneticsRequired">Please indicate if the research includes human genetic or genomic studies.</message>
             <message key="author.submit.form.stemCellRequired">Please indicate if the research includes stem cell.</message>
