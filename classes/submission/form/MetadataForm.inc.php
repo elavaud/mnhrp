@@ -161,7 +161,7 @@ class MetadataForm extends Form {
                                      }, array($_POST["proposalDetails"]["otherInstitutionName"], $_POST["proposalDetails"]["otherInstitutionAcronym"])));
                         }
 
-                        $this->addCheck(new FormValidatorArrayRadios($this, "riskAssessment", 'required', 'author.submit.form.riskAssessment', array('identityRevealed', 'unableToConsent', 'under18', 'dependentRelationship', 'ethnicMinority', 'impairment', 'pregnant', 'newTreatment', 'bioSamples', 'radiation', 'distress', 'inducements', 'sensitiveInfo', 'deception', 'reproTechnology', 'genetic', 'stemCell', 'biosafety', 'multiInstitutions', 'conflictOfInterest')));
+                    $this->addCheck(new FormValidatorArrayRadios($this, "riskAssessment", 'required', 'author.submit.form.riskAssessment', array('identityRevealed', 'unableToConsent', 'under18', 'dependentRelationship', 'ethnicMinority', 'impairment', 'pregnant', 'newTreatment', 'bioSamples', 'radiation', 'distress', 'inducements', 'sensitiveInfo', 'reproTechnology', 'genetic', 'stemCell', 'biosafety', 'exportHumanTissue', 'multiInstitutions', 'conflictOfInterest')));
 
                 } else {
                         parent::Form('submission/metadata/metadataView.tpl');
@@ -287,11 +287,11 @@ class MetadataForm extends Form {
                             'distress' => $riskAssessment->getDistress(),
                             'inducements' => $riskAssessment->getInducements(),
                             'sensitiveInfo' => $riskAssessment->getSensitiveInfo(),
-                            'deception' => $riskAssessment->getDeception(),
                             'reproTechnology' => $riskAssessment->getReproTechnology(),
                             'genetic' => $riskAssessment->getGenetic(),
                             'stemCell' => $riskAssessment->getStemCell(),
                             'biosafety' => $riskAssessment->getBiosafety(),
+                            'exportHumanTissue' => $riskAssessment->getExportHumanTissue(),
                             'riskLevel' => $riskAssessment->getRiskLevel(),
                             'listRisks' => $riskAssessment->getListRisks(),
                             'howRisksMinimized' => $riskAssessment->getHowRisksMinimized(),
@@ -740,11 +740,11 @@ class MetadataForm extends Form {
                 $riskAssessment->setDistress($riskAssessmentData['distress']);
                 $riskAssessment->setInducements($riskAssessmentData['inducements']);
                 $riskAssessment->setSensitiveInfo($riskAssessmentData['sensitiveInfo']);
-                $riskAssessment->setDeception($riskAssessmentData['deception']);
                 $riskAssessment->setReproTechnology($riskAssessmentData['reproTechnology']);
                 $riskAssessment->setGenetic($riskAssessmentData['genetic']);
                 $riskAssessment->setStemCell($riskAssessmentData['stemCell']);
                 $riskAssessment->setBiosafety($riskAssessmentData['biosafety']);
+                $riskAssessment->setExportHumanTissue($riskAssessmentData['exportHumanTissue']);
                 $riskAssessment->setRiskLevel($riskAssessmentData['riskLevel']);
                 $riskAssessment->setListRisks($riskAssessmentData['listRisks']);
                 $riskAssessment->setHowRisksMinimized($riskAssessmentData['howRisksMinimized']);

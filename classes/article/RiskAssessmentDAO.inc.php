@@ -49,7 +49,7 @@ class RiskAssessmentDAO extends DAO{
 	function insertRiskAssessment(&$riskAssessment) {
 		$this->update(
 			'INSERT INTO article_risk_assessments
-				(article_id, identity_revealed, unable_to_consent, under_18, dependent_relationship, ethnic_minority, mental_impairment, pregnant, new_treatment, biological_samples, ionizing_radiation, distress, inducements, sensitive_information, deception, repro_technology, genetic, stem_cell, biosafety, level_of_risk, risks_list, risks_management, risks_to_team, risks_to_subjects, risks_to_community, benefits_to_participants, knowledge_on_condition, knowledge_on_disease, multi_institution, conflict_of_interest)
+				(article_id, identity_revealed, unable_to_consent, under_18, dependent_relationship, ethnic_minority, mental_impairment, pregnant, new_treatment, biological_samples, ionizing_radiation, distress, inducements, sensitive_information, repro_technology, genetic, stem_cell, biosafety, export_human_tissue, level_of_risk, risks_list, risks_management, risks_to_team, risks_to_subjects, risks_to_community, benefits_to_participants, knowledge_on_condition, knowledge_on_disease, multi_institution, conflict_of_interest)
 				VALUES			(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 			array(
 				(int) $riskAssessment->getArticleId(),
@@ -66,11 +66,11 @@ class RiskAssessmentDAO extends DAO{
 				(int) $riskAssessment->getDistress(),
 				(int) $riskAssessment->getInducements(),
 				(int) $riskAssessment->getSensitiveInfo(),
-				(int) $riskAssessment->getDeception(),
 				(int) $riskAssessment->getReproTechnology(),
 				(int) $riskAssessment->getGenetic(),
 				(int) $riskAssessment->getStemCell(),
 				(int) $riskAssessment->getBiosafety(),
+				(int) $riskAssessment->getExportHumanTissue(),
 				(int) $riskAssessment->getRiskLevel(),
 				(string) $riskAssessment->getListRisks(),
 				(string) $riskAssessment->getHowRisksMinimized(),
@@ -109,12 +109,12 @@ class RiskAssessmentDAO extends DAO{
 				distress = ?,
 				inducements = ?,
 				sensitive_information = ?,
-				deception = ?,
 				repro_technology = ?,
 				genetic = ?,
 				stem_cell = ?,
 				biosafety = ?,
-				level_of_risk = ?,
+                                export_human_tissue = ?,
+                                level_of_risk = ?,
 				risks_list = ?,
 				risks_management = ?,
 				risks_to_team = ?,
@@ -140,11 +140,11 @@ class RiskAssessmentDAO extends DAO{
 				(int) $riskAssessment->getDistress(),
 				(int) $riskAssessment->getInducements(),
 				(int) $riskAssessment->getSensitiveInfo(),
-				(int) $riskAssessment->getDeception(),
 				(int) $riskAssessment->getReproTechnology(),
 				(int) $riskAssessment->getGenetic(),
 				(int) $riskAssessment->getStemCell(),
 				(int) $riskAssessment->getBiosafety(),
+				(int) $riskAssessment->getExportHumanTissue(),
 				(int) $riskAssessment->getRiskLevel(),
 				(string) $riskAssessment->getListRisks(),
 				(string) $riskAssessment->getHowRisksMinimized(),
@@ -207,11 +207,11 @@ class RiskAssessmentDAO extends DAO{
 		$riskAssessment->setDistress($row['distress']);
 		$riskAssessment->setInducements($row['inducements']);
 		$riskAssessment->setSensitiveInfo($row['sensitive_information']);
-		$riskAssessment->setDeception($row['deception']);
 		$riskAssessment->setReproTechnology($row['repro_technology']);
 		$riskAssessment->setGenetic($row['genetic']);
 		$riskAssessment->setStemCell($row['stem_cell']);
 		$riskAssessment->setBiosafety($row['biosafety']);
+		$riskAssessment->setExportHumanTissue($row['export_human_tissue']);
 		$riskAssessment->setRiskLevel($row['level_of_risk']);
 		$riskAssessment->setListRisks($row['risks_list']);
 		$riskAssessment->setHowRisksMinimized($row['risks_management']);

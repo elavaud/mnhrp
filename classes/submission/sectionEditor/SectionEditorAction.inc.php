@@ -2767,11 +2767,11 @@ class SectionEditorAction extends Action {
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.distress'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getDistress())));
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.inducements'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getInducements())));
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.sensitiveInfo'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getSensitiveInfo())));
-                $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.deception'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getDeception())));
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.reproTechnology'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getReproTechnology())));
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.genetic'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getGenetic())));
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.stemCell'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getStemCell())));
                 $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.biosafety'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getBiosafety())));
+                $pdf->MultiRow($cell_width_risk_assessment, Locale::translate('proposal.exportHumanTissue'), Locale::translate($riskAssessment->getYesNoKey($riskAssessment->getExportHumanTissue())));
                 $pdf->ln();
 
                 $pdf->SetFont('dejavusans','BI',11);

@@ -26,7 +26,8 @@
 	 *  DEFAULT - Default settings for configuration items.
 	-->
                 
-        <!-- Added modified February 9th 2013 -->
+        <!-- Common Source and Institution Terms. Added in February 2014-->
+        
         <message key="institution.acronym">Acronym</message>
 	<message key="institution.institution">Institution</message>
 	<message key="institution.institutions">Institutions</message>
@@ -49,6 +50,9 @@
 
         <message key="proposal.otherSource.instruct"><![CDATA[If your source of monetary is not included in the above list, please provide the following information.<br/><i><font color="red">Please note that if this one has already been provided as an other institution for your key implementing institution, just select "Key Implementing Institution" in the bottom of the above list.</font></i>]]></message>
 
+        <message key="proposal.exportHumanTissue">Export of human tissue outside the country?</message>
+
+        <!-- Common Source and Institution Terms. Added in February 2014 - End -->
 
         <!-- review froms start -->
 

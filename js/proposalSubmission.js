@@ -362,7 +362,11 @@ function showOrHideOtherLevelOfRisk(){
     } else {
         $('#listRisksField').show();
         $('#howRisksMinimizedField').show();
-        $('#listRisks').val("");
-        $('#howRisksMinimized').val("");
+        if ($('#listRisks').val() === "NA") {
+            $('#listRisks').val("");
+        }
+        if ($('#howRisksMinimized').val() === "NA") {
+            $('#howRisksMinimized').val("");
+        }
     }
 }

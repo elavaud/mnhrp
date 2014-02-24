@@ -98,12 +98,6 @@
                 {html_radios name='riskAssessment[sensitiveInfo]' options=$riskAssessmentYesNoArray selected=$riskAssessment.sensitiveInfo separator='&nbsp;&nbsp;&nbsp;&nbsp;'}
             </td>
         </tr>
-        <tr valign="top" id="deceptionField">
-            <td width="40%" class="label">{fieldLabel name="deception" required="true" key="proposal.deception"}</td>
-            <td width="60%" class="value">
-                {html_radios name='riskAssessment[deception]' options=$riskAssessmentYesNoArray selected=$riskAssessment.deception separator='&nbsp;&nbsp;&nbsp;&nbsp;'}
-            </td>
-        </tr>
         <tr valign="top" id="reproTechnologyField">
             <td width="40%" class="label">{fieldLabel name="reproTechnology" required="true" key="proposal.reproTechnology"}</td>
             <td width="60%" class="value">
@@ -128,6 +122,12 @@
                 {html_radios name='riskAssessment[biosafety]' options=$riskAssessmentYesNoArray selected=$riskAssessment.biosafety separator='&nbsp;&nbsp;&nbsp;&nbsp;'}
             </td>
         </tr>
+        <tr valign="top" id="exportHumanTissueField">
+            <td width="40%" class="label">{fieldLabel name="exportHumanTissue" required="true" key="proposal.exportHumanTissue"}</td>
+            <td width="60%" class="value">
+                {html_radios name='riskAssessment[exportHumanTissue]' options=$riskAssessmentYesNoArray selected=$riskAssessment.exportHumanTissue separator='&nbsp;&nbsp;&nbsp;&nbsp;'}
+            </td>
+        </tr>        
         <tr valign="top"><td colspan="2">&nbsp;</td></tr>
     </table>
 

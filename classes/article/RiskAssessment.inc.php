@@ -256,22 +256,6 @@ class RiskAssessment extends DataObject {
 	}
 
 	/**
-	 * Get deception.
-	 * @return int
-	 */
-	function getDeception() {
-		return $this->getData('deception');
-	}
-
-	/**
-	 * Set deception (yes/no).
-	 * @param $deception int
-	 */
-	function setDeception($deception) {
-		return $this->setData('deception', $deception);
-	}
-
-	/**
 	 * Get reproTechnology.
 	 * @return int
 	 */
@@ -334,7 +318,23 @@ class RiskAssessment extends DataObject {
 	function setBiosafety($biosafety) {
 		return $this->setData('biosafety', $biosafety);
 	}
+        
+	/**
+	 * Get if the research involves exporting human tissue outside of the country.
+	 * @return int
+	 */
+	function getExportHumanTissue() {
+		return $this->getData('exportHumanTissue');
+	}
 
+	/**
+	 * Set if the research involves exporting human tissue outside of the country (yes/no).
+	 * @param $exportHumanTissue int
+	 */
+	function setExportHumanTissue($exportHumanTissue) {
+		return $this->setData('exportHumanTissue', $exportHumanTissue);
+	}        
+        
 	/**
 	 * Get riskLevel.
 	 * @return int
