@@ -40,7 +40,7 @@
                 <td align="right" class="nowrap">
                     <a href="{url op='editInstitution' path=$institution->getInstitutionId()}" class="action">{translate key="common.edit"}</a>
                     &nbsp;|&nbsp;
-                    <a href="{url op='deleteInstitution' path=$institution->getInstitutionId()}" onclick="return confirm('Delete this institution?');" class="action">{translate key="common.delete"}</a>
+                    <a href="{url op='deleteInstitutionForm' path=$institution->getInstitutionId()}" class="action">{translate key="common.delete"}</a>
                     &nbsp;
                 </td>
             </tr>

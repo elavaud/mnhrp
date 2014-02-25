@@ -158,6 +158,29 @@ class ProposalSourceDAO extends DAO{
 	function getInsertSourceId() {
 		return $this->getInsertId('article_source', 'source_id');
 	}
+        
+        /*
+         * Count the number of sources using a specific institution
+         */
+        function getCountSourcesByInstitution($institutionId) {
+            $result = $this->retrieve('SELECT count(*) FROM article_source WHERE institution_id = ?', (int) $institutionId);
+            
+            $returner = isset($result->fields[0]) ? $result->fields[0] : 0;
+
+            $result->Close();
+            unset($result);
+            return $returner;            
+        }
+        
+        /*
+         * Replace the institution by another institution
+         */
+        function replaceInstitutionSource($oldInstitutionId, $replacementInstitutionId) {
+		return $this->update('UPDATE article_source SET institution_id = '.$replacementInstitutionId.' WHERE institution_id = '.$oldInstitutionId);
+		
+        }         
+        
+        
 }
 
 ?>

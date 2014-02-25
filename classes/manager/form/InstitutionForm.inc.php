@@ -6,7 +6,7 @@
  * @class InstitutionForm
  * @ingroup manager_form
  *
- * @brief Form for creating and modifying journal sections.
+ * @brief Form for creating and modifying institutions.
  */
 
 // $Id$
@@ -16,23 +16,8 @@ import('classes.journal.Institution');
 
 class InstitutionForm extends Form {
 
-	/** @var $sectionId int The ID of the section being edited */
+	/** @var $institutionId int The ID of the institution being edited */
 	var $institutionId;
-
-	/** @var $includeSectionEditor object Additional section editor to
-	 *       include in assigned list for this section
-	 */
-	var $includeSectionEditor;
-
-	/** @var $omitSectionEditor object Assigned section editor to omit from
-	 *       assigned list for this section
-	 */
-	var $omitSectionEditor;
-
-	/** @var $sectionEditors array List of user objects representing the
-	 *       available section editors for this journal.
-	 */
-	var $sectionEditors;
 
 	/**
 	 * Constructor.

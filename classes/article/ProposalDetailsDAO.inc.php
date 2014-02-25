@@ -330,6 +330,26 @@ class ProposalDetailsDAO extends DAO{
                 PROPOSAL_DETAIL_REVIEW_AVAILABLE => Locale::translate("proposal.otherErcDecisionFinalAvailable")
             );
         }
+        
+        /*
+         * Count the number of Key Implementing Institution using a specific institution
+         */
+        function getCountKIIByInstitution($institutionId) {
+            $result = $this->retrieve('SELECT count(*) FROM article_details WHERE key_implementing_institution = ?', (int) $institutionId);
+            $returner = isset($result->fields[0]) ? $result->fields[0] : 0;
+
+            $result->Close();
+            unset($result);
+            return $returner;
+        }
+        
+        /*
+         * Replace the Key Implementing Institution by another institution
+         */
+        function replaceKII($oldInstitutionId, $replacementInstitutionId) {
+		return $this->update('UPDATE article_details SET key_implementing_institution = '.$replacementInstitutionId.' WHERE key_implementing_institution = '.$oldInstitutionId);
+		
+        }        
 }
 
 ?>

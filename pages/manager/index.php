@@ -57,6 +57,7 @@ switch ($op) {
 	//
 	case 'institutions':
 	case 'deleteInstitution':
+	case 'deleteInstitutionForm':
 	case 'editInstitution':
 	case 'createInstitution':
 	case 'updateInstitution':

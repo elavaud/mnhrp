@@ -48,16 +48,27 @@ class InstitutionHandler extends ManagerHandler {
 	}
 	
 	/**
-	 * Deletes an institution.
+	 * Delete an institution.
 	 */
 	function deleteInstitution($args) {
 		$this->validate();
-
+		$this->setupTemplate(true);
+                
 		if (isset($args) && !empty($args)) {
-			$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
-			$institutionDao->deleteInstitutionById($args[0]);
+                        import('classes.manager.form.InstitutionDeleteForm');                
+                        $institutionDeleteForm = new InstitutionDeleteForm((int) $args[0]);
+                        
+                        $institutionDeleteForm->readInputData();
+                        if ($institutionDeleteForm->validate()) {
+                                $institutionDeleteForm->execute();
+                                Request::redirect(null, null, 'institutions');
+                        } else {
+                                $institutionDeleteForm->display();
+                        }                        
 		}
-		Request::redirect(null, null, 'institutions');
+		else {
+                    Request::redirect(null, null, 'institutions');
+                }
 	}
 	
 	/**
@@ -102,7 +113,25 @@ class InstitutionHandler extends ManagerHandler {
 		$institutionForm->display();
 	}
 	
+	/**
+	 * Display form to delete a institution.
+	 * @param $args array optional, if set the first parameter is the ID of the institution to edit
+	*/
+	function deleteInstitutionForm($args) {
 
+		$this->validate();
+		$this->setupTemplate(true);
+		import('classes.manager.form.InstitutionDeleteForm');
+		if (isset($args) && !empty($args)) {
+                    $institutionDeleteForm = new InstitutionDeleteForm((int)$args[0]);
+                } else {
+                    Request::redirect(null, null, 'institutions');
+                }
+		$institutionDeleteForm->initData();
+                
+		$institutionDeleteForm->display();
+	}
+        
 	function setupTemplate($subclass = false) {
 		Locale::requireComponents(array(LOCALE_COMPONENT_PKP_SUBMISSION, LOCALE_COMPONENT_PKP_READER));
 		parent::setupTemplate(true);

@@ -15,9 +15,7 @@
     {include file="common/header.tpl"}
 {/strip}
 
-<form name="institution" method="post" action="{url op="updateInstitution" path="$institutionId}">
-    <input type="hidden" name="editorAction" value="" />
-    <input type="hidden" name="userId" value="" />
+<form name="institution" method="post" action="{url op="updateInstitution" path="$institutionId"}">
 
     {include file="common/formErrors.tpl"}
     <div id="institutionForm">
