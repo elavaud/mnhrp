@@ -101,6 +101,10 @@ class SubmissionEditHandler extends SectionEditorHandler {
                 $templateMgr->assign_by_ref('abstract', $submission->getLocalizedAbstract());
                 $templateMgr->assign_by_ref('riskAssessment', $submission->getRiskAssessment());
             
+                $currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));                
+                
 		$templateMgr->display('sectionEditor/submission.tpl');
 	}
 	

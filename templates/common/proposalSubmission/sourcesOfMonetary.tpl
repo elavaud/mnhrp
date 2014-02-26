@@ -9,17 +9,8 @@
 <div id="sources">
 
     <h3>{translate key="proposal.sourceOfMonetary"}</h3>
-    <table width="100%" class="data">
-        <tr><td><br/></td></tr>
-        <tr valign="top" id="totalBudget">
-            <td width="20%" class="label"><b>{translate key="proposal.fundsRequired"}</b></td>
-            <td width="80%" class="value"><span id="totalBudgetVar"></span>&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</td>
-        </tr>
-        <tr valign="top">
-            <td colspan="2"><span><i>{translate key="proposal.source.amount.instruct"}</i></span></td>
-        </tr>
-        <tr><td><br/></td></tr>
-    </table>
+
+    <span><i><br/>{translate key="proposal.source.amount.instruct"}</i><br/>&nbsp;</span>
 
     {foreach name=sources from=$sources key=sourceIndex item=source}
         <table width="100%" style="border-top: dotted 1px #C0C0C0 !important; padding-bottom:10px; padding-top: 10px;" {if $sourceIndex == 0} id="firstSource"{else} class="sourceSuppClass" {/if}> 
@@ -84,6 +75,13 @@
         </table>
     {/foreach}
     <p><a id="addAnotherSource" style="cursor: pointer;" >{translate key="proposal.source.add"}</a></p>
+    <table width="100%" class="data">
+        <tr><td><br/></td></tr>
+        <tr valign="top" id="totalBudget">
+            <td width="20%" class="label"><b>{translate key="proposal.fundsRequired"}</b></td>
+            <td width="80%" class="value"><span id="totalBudgetVar"></span>&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</td>
+        </tr>
+    </table>
 
 </div>
 

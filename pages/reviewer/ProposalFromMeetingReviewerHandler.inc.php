@@ -49,7 +49,8 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
                 $sectionDao =& DAORegistry::getDao('SectionDAO');
 		$articleFileDao =& DAORegistry::getDao('ArticleFileDAO');
 		$ercReviewersDao = DAORegistry::getDAO('ErcReviewersDAO');
-
+                $currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+                
 		$sectionDecision =& $this->sectionDecision;
 		$this->setupTemplate(true, 2);
 		
@@ -69,7 +70,10 @@ class ProposalFromMeetingReviewerHandler extends ReviewerHandler {
 		$templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
             
 		$templateMgr->assign('isReviewer', $ercReviewersDao->ercReviewerExists($journal->getId(), $submission->getSectionId(), $user->getId()));
-		
+	
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
+                
 		$templateMgr->display('reviewer/viewProposalFromMeeting.tpl');
 	}
 

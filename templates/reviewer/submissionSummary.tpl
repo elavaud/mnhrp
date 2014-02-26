@@ -167,9 +167,8 @@
 </div>
 
 <div id="sourceOfMonetary">
-    <h4><br/>{translate key="proposal.sourceOfMonetary"}&nbsp;&nbsp;&nbsp;<a href="{url op="submit" path="2" articleId=$submission->getId()}"><i>{translate key="common.modify"}</i></a></h4>
+    <h4><br/>{translate key="proposal.sourceOfMonetary"}</h4>
     <div class="separator"></div>
-    <p><b>{translate key="proposal.fundsRequired"}</b>&nbsp;&nbsp;&nbsp;&nbsp;{$submission->getTotalBudget()}&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</p>
     <table class="listing" width="100%">
         {assign var="sources" value=$submission->getSources()}
         {foreach from=$sources item=source}
@@ -179,6 +178,7 @@
             </tr>
         {/foreach}    
     </table>
+    <p><b>{translate key="proposal.fundsRequired"}</b>&nbsp;&nbsp;&nbsp;&nbsp;{$submission->getTotalBudget()}&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</p>
 </div>
 
 <div id=riskAssessments>

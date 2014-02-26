@@ -248,7 +248,11 @@ class SubmitHandler extends AuthorHandler {
                                         $sectionDao =& DAORegistry::getDAO('SectionDAO');
                                         $section = $sectionDao->getSection($article->getSectionId());
                                         $templateMgr->assign_by_ref('section', $section);
-
+                                        
+                                        $currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+                                        $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                                        $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
+                
                                         $templateMgr->display('author/submit/complete.tpl');
 					
 				} else {

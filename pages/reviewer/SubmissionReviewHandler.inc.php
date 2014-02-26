@@ -52,6 +52,9 @@ class SubmissionReviewHandler extends ReviewerHandler {
 		} else {
 			$confirmedStatus = 1;
 		}
+                
+                $currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+                
 		$this->setupTemplate(false, 0, $submission->getArticleId(), $reviewId);
 		$templateMgr =& TemplateManager::getManager();
 
@@ -76,7 +79,10 @@ class SubmissionReviewHandler extends ReviewerHandler {
 		$templateMgr->assign_by_ref('reviewerRecommendationOptions', ReviewAssignment::getReviewerRecommendationOptions());
                 $templateMgr->assign_by_ref('abstractLocales', $journal->getSupportedLocaleNames());
 		$templateMgr->assign('helpTopicId', 'editorial.reviewersRole.review');
-		
+
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));                
+                
                 $templateMgr->assign('pageToDisplay', $page);
                 
 		$templateMgr->display('reviewer/submission.tpl');

@@ -19,7 +19,7 @@
 		{if ($submissionPayment->getPayMethodPluginName()) == 'ManualPayment'}Payment received in cash or cheque<br/>Date: {$submissionPayment->getTimestamp()|date_format:$datetimeFormatLong}
 		{elseif ($submissionPayment->getPayMethodPluginName()) == 'Waiver'}Waiver by the secretary<br/>Date: {$submissionPayment->getTimestamp()|date_format:$datetimeFormatLong}
 		{/if}
-	{elseif $submission->getFundsRequired('en_US') < 5000}
+	{elseif $submission->getTotalBudget() < 5000}
 		<b>Payment issue solved</b><br/>Payment method:&nbsp;&nbsp;Exempted of fee (under 5000 US$)
 	{else}
 		Please confirm the reception of the waive of the payment:<br/>

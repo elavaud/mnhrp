@@ -174,24 +174,24 @@ class Action extends PKPAction {
 					);
 				}
 
-                //Added by AIM, Jan 20, 2012
-                $notificationUsers = array();
-                $roleDao =& DAORegistry::getDAO('RoleDAO');
-                $editors = $roleDao->getUsersByRoleId(ROLE_ID_EDITOR);
+                                //Added by AIM, Jan 20, 2012
+                                $notificationUsers = array();
+                                $roleDao =& DAORegistry::getDAO('RoleDAO');
+                                $editors = $roleDao->getUsersByRoleId(ROLE_ID_EDITOR);
 
-                while (!$editors->eof()) {
-                        $editor =& $editors->next();
-                        $notificationUsers[] = array('id' => $editor->getId(), 'role' => $roleDao->getRolePath(ROLE_ID_EDITOR));
-                        unset($editor);
-                }
-                //print_r($notificationUsers); die();
-                foreach ($notificationUsers as $userRole) {
-                        $url = $router->url($request, null, $userRole['role'], 'submission', $article->getId(), null, 'metadata');
-                        $notificationManager->createNotification(
-                                $userRole['id'], 'notification.type.metadataModified',
-                                $article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_METADATA_MODIFIED
-                        );
-                }
+                                while (!$editors->eof()) {
+                                        $editor =& $editors->next();
+                                        $notificationUsers[] = array('id' => $editor->getId(), 'role' => $roleDao->getRolePath(ROLE_ID_EDITOR));
+                                        unset($editor);
+                                }
+                                //print_r($notificationUsers); die();
+                                foreach ($notificationUsers as $userRole) {
+                                        $url = $router->url($request, null, $userRole['role'], 'submission', $article->getId(), null, 'metadata');
+                                        $notificationManager->createNotification(
+                                                $userRole['id'], 'notification.type.metadataModified',
+                                                $article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_METADATA_MODIFIED
+                                        );
+                                }
 
 				// Add log entry
 				$user =& $request->getUser();

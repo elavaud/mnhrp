@@ -393,14 +393,37 @@ class MetadataForm extends Form {
 	 */
 	function display() {
                 $journal = Request::getJournal();
-                
+                $settingsDao =& DAORegistry::getDAO('JournalSettingsDAO');
+		$sectionDao =& DAORegistry::getDAO('SectionDAO');
 		$countryDao =& DAORegistry::getDAO('CountryDAO');
                 $proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
                 $studentResearchDao =& DAORegistry::getDAO('StudentResearchDAO');
                 $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
 		$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
 		$riskAssessmentDao =& DAORegistry::getDAO('RiskAssessmentDAO');
-		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');                
+                
+		Locale::requireComponents(array(LOCALE_COMPONENT_OJS_EDITOR)); // editor.cover.xxx locale keys; FIXME?
+
+		$templateMgr =& TemplateManager::getManager();
+
+		$templateMgr->assign('helpTopicId','submission.indexingAndMetadata');
+		if ($this->article) {
+			$templateMgr->assign_by_ref('section', $sectionDao->getSection($this->article->getSectionId()));
+		}
+
+		if ($this->isEditor) {
+			import('classes.article.Article');
+			$hideAuthorOptions = array(
+				AUTHOR_TOC_DEFAULT => Locale::Translate('editor.article.hideTocAuthorDefault'),
+				AUTHOR_TOC_HIDE => Locale::Translate('editor.article.hideTocAuthorHide'),
+				AUTHOR_TOC_SHOW => Locale::Translate('editor.article.hideTocAuthorShow')
+			);
+			$templateMgr->assign('hideAuthorOptions', $hideAuthorOptions);
+			$templateMgr->assign('isEditor', true);
+		}
+
+
                 
                 $geoAreas =& $regionDAO->getAreasOfTheCountry();
 
@@ -411,7 +434,6 @@ class MetadataForm extends Form {
                 $institutionsListWithOther = $institutionsList + array('OTHER' => Locale::translate('common.other'));
                 $sourcesList = $institutionsListWithOther + array('KII' => Locale::translate('proposal.keyImplInstitution'));
                 
-		$templateMgr =& TemplateManager::getManager();
                 
 		if (Request::getUserVar('addAuthor') || Request::getUserVar('delAuthor')  || Request::getUserVar('moveAuthor')) {
 			$templateMgr->assign('scrollToAuthor', true);
@@ -419,6 +441,11 @@ class MetadataForm extends Form {
                 
                 $sourceCurrencyId = $journal->getSetting('sourceCurrency');
                 
+                
+		$templateMgr->assign('articleId', isset($this->article)?$this->article->getId():null);
+		$templateMgr->assign('journalSettings', $settingsDao->getJournalSettings($journal->getId()));
+		$templateMgr->assign('rolePath', Request::getRequestedPage());
+		$templateMgr->assign('canViewAuthors', $this->canViewAuthors);
                 $templateMgr->assign('abstractLocales', $journal->getSupportedLocaleNames());
                 $templateMgr->assign('coutryList', $countryDao->getCountries());
                 $templateMgr->assign('proposalTypesList', $proposalDetailsDao->getProposalTypes());
@@ -563,7 +590,7 @@ class MetadataForm extends Form {
 		///////// Update Proposal Details /////////
                 ///////////////////////////////////////////
                 
-                $proposalDetailsData = $this->getData('proposalDetails');
+                                $proposalDetailsData = $this->getData('proposalDetails');
                         
                 import('classes.article.ProposalDetails');
 		$proposalDetails = new ProposalDetails();
@@ -623,7 +650,7 @@ class MetadataForm extends Form {
                 
                 $proposalDetails->setHumanSubjects($proposalDetailsData['withHumanSubjects']);    
 
-                if ($this->getData('withHumanSubjects') == PROPOSAL_DETAIL_YES) {
+                if ($proposalDetailsData['withHumanSubjects'] == PROPOSAL_DETAIL_YES) {
                     $proposalTypesArray = $proposalDetailsData['proposalTypes'];
                     foreach($proposalTypesArray as $i => $type) {
                             if($type == "OTHER") {
@@ -639,7 +666,7 @@ class MetadataForm extends Form {
                 
                 $proposalDetails->setDataCollection($proposalDetailsData['dataCollection']);
                 
-                if ($this->getData('reviewedByOtherErc') == PROPOSAL_DETAIL_YES) {
+                if ($proposalDetailsData['reviewedByOtherErc'] == PROPOSAL_DETAIL_YES) {
                     $proposalDetails->setCommitteeReviewed($proposalDetailsData['otherErcDecision']);    
                 } else $proposalDetails->setCommitteeReviewed(PROPOSAL_DETAIL_NO);    
                 
