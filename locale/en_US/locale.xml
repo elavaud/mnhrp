@@ -34,7 +34,8 @@
         <message key="institution.delete">Delete Institution</message>
         <message key="institution.delete.replacementMessage">It appears that the institution you would like to delete is currently in used as a "Key Implementing Institution" or as a "Source of Monetary" by one or multiple proposal(s). If you want to delete this institution, you therefore need to select a replacing institution for the concerned proposal(s).</message>
         <message key="institution.delete.replacementWarning">Attention! The deletion of an instituion and its replacement can not be undone. Please be sure you want to delete this particular institution and, if applicable, you selected the right replacement institution. It is strongly recommended to operate daily backup of the database. Please contact your server administrator for more information.</message>
-	<message key="institution.institution">Institution</message>
+	<message key="institution.international">International</message>
+        <message key="institution.institution">Institution</message>
 	<message key="institution.institutions">Institutions</message>
 	<message key="institution.location">Location</message>
 	<message key="institution.name">Name</message>

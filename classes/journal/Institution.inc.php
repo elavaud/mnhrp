@@ -21,6 +21,9 @@ define('INSTITUTION_TYPE_PRIVATE_PROFIT', 2);
 define('INSTITUTION_TYPE_PRIVATE_NON_PROFIT', 3);
 define('INSTITUTION_TYPE_PRIVATE_INDIVIDUAL', 4);
 
+define('INSTITUTION_NATIONAL', 0);
+define('INSTITUTION_INTERNATIONAL', 1);
+
 class Institution extends DataObject {
 
 	/**
@@ -94,6 +97,38 @@ class Institution extends DataObject {
 	}
         
         /**
+	 * Get if the institution is international or national.
+	 * @return int
+	 */
+        function getInstitutionInternational() {
+		return $this->getData('international');
+        }
+        
+        /**
+	 * Get institution international full text.
+	 * @return string
+	 */
+	function getInstitutionInternationalText() {
+                $international = $this->getData('international');
+                if ($international == INSTITUTION_NATIONAL) {
+                    $journal =& Request::getJournal();
+                    $coveredArea = $journal->getLocalizedSetting('location');               
+                    return $coveredArea;
+                } else {
+                    return Locale::translate('institution.international');
+                }
+
+	}
+
+        /**
+	 * Set if the institution is international or national.
+	 * @param $international int
+	 */
+        function setInstitutionInternational($international){
+		return $this->setData('international', $international);
+        }
+        
+        /**
 	 * Get institution location.
 	 * @return string
 	 */
@@ -106,16 +141,19 @@ class Institution extends DataObject {
 	 * @return string
 	 */
 	function getInstitutionLocationText() {
-                $location = $this->getData('location');
-                if ($location == 'EXT') {
-                    $journal =& Request::getJournal();
-                    $coveredArea = $journal->getLocalizedSetting('location');               
-                    return Locale::translate('common.outside').' '.$coveredArea;
-                } else {
+            
+                $international = $this->getInstitutionInternational();
+                $location = $this->getInstitutionLocation(); 
+                $returner = (string) '';
+                if ($international == INSTITUTION_NATIONAL) {
                     $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-                    return $regionDAO->getAreaOfTheCountry($location);
+                    $returner = $regionDAO->getAreaOfTheCountry($location);
+                } elseif ($international == INSTITUTION_INTERNATIONAL) {
+                    $countryDAO =& DAORegistry::getDAO('CountryDAO');
+                    $returner = $countryDAO->getCountry($location);
                 }
-
+                
+                return $returner;            
 	}
         
 	/**

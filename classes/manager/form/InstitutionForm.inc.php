@@ -33,7 +33,9 @@ class InstitutionForm extends Form {
                 $this->addCheck(new FormValidatorCustom($this, 'name', 'required', 'manager.institutions.form.nameExists', array(DAORegistry::getDAO('InstitutionDAO'), 'institutionExistsByName'), array($this->institutionId), true));
 		$this->addCheck(new FormValidator($this, 'acronym', 'required', 'manager.institutions.form.acronymRequired'));
                 $this->addCheck(new FormValidatorCustom($this, 'acronym', 'required', 'manager.institutions.form.acronymExists', array(DAORegistry::getDAO('InstitutionDAO'), 'institutionExistsByAcronym'), array($this->institutionId), true));
-		$this->addCheck(new FormValidator($this, 'location', 'required', 'manager.institutions.form.regionRequired'));
+                $this->addCheck(new FormValidator($this, 'international', 'required', 'manager.institutions.form.regionRequired'));
+                $this->addCheck(new FormValidator($this, 'locationCountry', 'required', 'manager.institutions.form.regionRequired'));
+                $this->addCheck(new FormValidator($this, 'locationInternational', 'required', 'manager.institutions.form.regionRequired'));
 		$this->addCheck(new FormValidator($this, 'type', 'required', 'manager.institutions.form.typeRequired'));
 	}
 
@@ -42,20 +44,23 @@ class InstitutionForm extends Form {
 	 * Display the form.
 	 */
 	function display() {
-		$journal =& Request::getJournal();
-		$templateMgr =& TemplateManager::getManager();
-		
-		$templateMgr->assign('institutionId', $this->institutionId);
-
                 $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-                $coveredArea = $journal->getLocalizedSetting('location');               
-                $regions = array('EXT' => Locale::translate('common.outside').' '.$coveredArea) + $regionDAO->getAreasOfTheCountry();
+                $institutionDAO =& DAORegistry::getDAO('InstitutionDAO');
+		$countryDao =& DAORegistry::getDAO('CountryDAO');
+                         
+                $regions = $regionDAO->getAreasOfTheCountry();
+                $institutionTypes = $institutionDAO->getInstitutionTypes();
+                $internationalArray = $institutionDAO->getInstitutionInternationalArray();
+		$countries =& $countryDao->getCountries();
+                
+		$templateMgr =& TemplateManager::getManager();
+                
+		$templateMgr->assign('institutionId', $this->institutionId);
+                $templateMgr->assign('internationalArray', $internationalArray);
+                $templateMgr->assign('institutionTypes', $institutionTypes);
+		$templateMgr->assign_by_ref('countries', $countries);                
                 $templateMgr->assign_by_ref('regions', $regions);
                 
-                $institutionDAO =& DAORegistry::getDAO('InstitutionDAO');
-                $institutionTypes = $institutionDAO->getInstitutionTypes();
-                
-                $templateMgr->assign('institutionTypes', $institutionTypes);
 		parent::display(); 
 	}
 
@@ -67,10 +72,24 @@ class InstitutionForm extends Form {
 			$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
 			$institution =& $institutionDao->getInstitutionById($this->institutionId);
 			
+                        $international = $institution->getInstitutionInternational();
+                        if ($international == INSTITUTION_NATIONAL) {
+                            $locationCountry = $institution->getInstitutionLocation();
+                            $locationInternational = null;                                                    
+                        } elseif ($international == INSTITUTION_INTERNATIONAL) {
+                            $locationCountry = null;
+                            $locationInternational = $institution->getInstitutionLocation();                                                    
+                        } else {
+                            $locationCountry = null;
+                            $locationInternational = null;                                                    
+                        }
+                        
 			$this->_data = array(
 				'name' => $institution->getInstitutionName(),
 				'acronym' => $institution->getInstitutionAcronym(),
-				'location' => $institution->getInstitutionLocation(),
+				'international' => $international,
+				'locationCountry' => $locationCountry,
+				'locationInternational' => $locationInternational,
 				'type' => $institution->getInstitutionType()
 			);
 		}
@@ -83,7 +102,7 @@ class InstitutionForm extends Form {
 	*/
 	function readInputData() {
 	
-		$this->readUserVars(array('name', 'acronym', 'location', 'type'));
+		$this->readUserVars(array('name', 'acronym', 'international', 'locationCountry', 'locationInternational', 'type'));
 	}
 
 	/**
@@ -103,8 +122,16 @@ class InstitutionForm extends Form {
                 
 		$institution->setInstitutionName($this->getData('name'));
 		$institution->setInstitutionAcronym($this->getData('acronym'));
-		$institution->setInstitutionLocation($this->getData('location'));
-		$institution->setInstitutionType($this->getData('type'));
+                
+                $international = $this->getData('international');
+                $institution->setInstitutionInternational($international);
+                if ($international == INSTITUTION_NATIONAL) {
+                    $institution->setInstitutionLocation($this->getData('locationCountry'));
+                } elseif ($international == INSTITUTION_INTERNATIONAL) {
+                    $institution->setInstitutionLocation($this->getData('locationInternational'));
+                }
+                
+                $institution->setInstitutionType($this->getData('type'));
 
 		if ($institution->getInstitutionId() != null) {
 			$institutionDao->updateInstitution($institution);

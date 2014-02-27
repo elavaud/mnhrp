@@ -84,14 +84,15 @@ class InstitutionDAO extends DAO {
 	function insertInstitution(&$institution){
             $this->update(
 			'INSERT INTO institutions
-				(type, location, name, acronym)
+				(type, international, location, name, acronym)
 				VALUES
-				(?,?,?,?)',
+				(?,?,?,?,?)',
 			array(
-				$institution->getInstitutionType(),
-				$institution->getInstitutionLocation(),
-				$institution->getInstitutionName(),
-				$institution->getInstitutionAcronym()
+				(int) $institution->getInstitutionType(),
+				(int) $institution->getInstitutionInternational(),
+				(string) $institution->getInstitutionLocation(),
+				(string) $institution->getInstitutionName(),
+				(string) $institution->getInstitutionAcronym()
                         )
 		);
 		$institution->setId($this->getInsertInstitutionId());
@@ -108,16 +109,18 @@ class InstitutionDAO extends DAO {
 			'UPDATE institutions
 				SET
 					type = ?,
+                                        international = ?,
 					location = ?,
 					name = ?,
                                         acronym = ?
 				WHERE institution_id = ?',
 			array(
-				$institution->getInstitutionType(),
-				$institution->getInstitutionLocation(),
-				$institution->getInstitutionName(),
-				$institution->getInstitutionAcronym(),
-				$institution->getInstitutionId()                            
+				(int) $institution->getInstitutionType(),
+				(int) $institution->getInstitutionInternational(),
+				(string) $institution->getInstitutionLocation(),
+				(string) $institution->getInstitutionName(),
+				(string) $institution->getInstitutionAcronym(),
+				(int) $institution->getInstitutionId()                            
 			)
 		);
 	}
@@ -131,6 +134,7 @@ class InstitutionDAO extends DAO {
 		$institution = new Institution();
 		$institution->setInstitutionId($row['institution_id']);
 		$institution->setInstitutionType($row['type']);
+		$institution->setInstitutionInternational($row['international']);
 		$institution->setInstitutionLocation($row['location']);
 		$institution->setInstitutionName($row['name']);
 		$institution->setInstitutionAcronym($row['acronym']);
@@ -138,9 +142,7 @@ class InstitutionDAO extends DAO {
 		HookRegistry::call('InstitutionDAO::_returnInstitutionFromRow', array(&$institution, &$row));
 
 		return $institution;
-	}
-        
-        
+	}        
         
         /**
 	 * Get a list of all the available type of institution.
@@ -156,6 +158,19 @@ class InstitutionDAO extends DAO {
 		return $sourceTypesList;
 	}
         
+        /**
+	 * Get a list of all the available type of institution.
+	 * @return int
+	 */
+	function getInstitutionInternationalArray() {
+                $journal = Request::getJournal();
+                $coveredArea = $journal->getLocalizedSetting('location'); 
+                $internationalArray = array(
+                    INSTITUTION_NATIONAL => $coveredArea,
+                    INSTITUTION_INTERNATIONAL => Locale::translate('institution.international')
+                );                
+		return $internationalArray;
+	}
         
         /**
 	 * Check if a institution exists with the specified name.
