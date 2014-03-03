@@ -528,7 +528,12 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                     $institution->setInstitutionName($proposalDetailsData['otherInstitutionName']);
                     $institution->setInstitutionAcronym($proposalDetailsData['otherInstitutionAcronym']);
                     $institution->setInstitutionType($proposalDetailsData['otherInstitutionType']);
-                    $institution->setInstitutionLocation($proposalDetailsData['otherInstitutionLocation']);
+                    $institution->setInstitutionInternational($proposalDetailsData['international']);                    
+                    if($proposalDetailsData['international'] == INSTITUTION_NATIONAL){
+                        $institution->setInstitutionLocation($proposalDetailsData['locationCountry']);
+                    } elseif($proposalDetailsData['international'] == INSTITUTION_INTERNATIONAL){
+                        $institution->setInstitutionLocation($proposalDetailsData['locationInternational']);
+                    }
                     $institutionId = $institutionDao->insertInstitution($institution);
                     $proposalDetails->setKeyImplInstitution($institutionId);
                     unset($institution);
@@ -641,7 +646,12 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                             $institution->setInstitutionName($sourcesData[$i]['otherInstitutionName']);
                             $institution->setInstitutionAcronym($sourcesData[$i]['otherInstitutionAcronym']);
                             $institution->setInstitutionType($sourcesData[$i]['otherInstitutionType']);
-                            $institution->setInstitutionLocation($sourcesData[$i]['otherInstitutionLocation']);
+                            $institution->setInstitutionInternational($sourcesData[$i]['international']);                    
+                            if($sourcesData[$i]['international'] == INSTITUTION_NATIONAL){
+                                $institution->setInstitutionLocation($sourcesData[$i]['locationCountry']);
+                            } elseif($proposalDetailsData['international'] == INSTITUTION_INTERNATIONAL){
+                                $institution->setInstitutionLocation($sourcesData[$i]['locationInternational']);
+                            }                            
                             $institutionId = $institutionDao->insertInstitution($institution);
                             $source->setInstitutionId($institutionId);
                             unset($institution);
