@@ -1,5 +1,5 @@
 /* 
- * JS file summarizing all the functions used during the submission or the edition of article
+ * JS file containing all the functions used during the submission or the edition of article
  */
 
 function showOrHideStudentInfo(){
@@ -43,9 +43,9 @@ function showOrHideOherKeyImplementingInstitutionField(){
         if ($('#otherInstitutionType option[value="9999"]').length > 0){
             $('#otherInstitutionType option[value="9999"]').remove();
         }
-        if ($('#otherInstitutionLocation option[value="9999"]').length > 0){
-            $('#otherInstitutionLocation option[value="9999"]').remove();
-        }               
+        if ($("#radioInternationalSupp").length > 0) {
+            $('#radioInternationalSupp').remove();
+        }
     } else {
         $('#otherInstitution').hide();
         $('#otherInstitutionName').val("NA");
@@ -54,12 +54,51 @@ function showOrHideOherKeyImplementingInstitutionField(){
             $('#otherInstitutionType').append('<option value="9999"></option>');
         }
         $('#otherInstitutionType').val("9999");
-        if (!$('#otherInstitutionLocation option[value="9999"]').length > 0){
-            $('#otherInstitutionLocation').append('<option value="9999"></option>');
+        if (!$("#radioInternationalSupp").length > 0) {
+            $('<input type="radio" name="proposalDetails[international]" id="radioInternationalSupp" style="display: none;" val="NA"/>').appendTo('#otherInstitution');
         }
-        $('#otherInstitutionLocation').val("9999");                
-    } 	
+        $('#radioInternationalSupp').attr('checked',true);     
+    }
+    showLocationKII();
 }
+
+function showLocationKII() {
+    var value = $("input:radio[name='proposalDetails[international]']:checked").val();
+    if (value === INSTITUTION_NATIONAL) {
+        $('#locationCountryRow').show();
+        if ($('#locationCountry option[value="0"]').length > 0){
+            $('#locationCountry option[value="0"]').remove();
+        }                
+        $('#locationInternationalRow').hide();
+        if (!$('#locationInternational option[value="0"]').length > 0){
+            $('#locationInternational').append('<option value="0"></option>');
+        }
+        $('#locationInternational').val("0");                
+    } else if (value === INSTITUTION_INTERNATIONAL) {
+        $('#locationCountryRow').hide();
+        if (!$('#locationCountry option[value="0"]').length > 0){
+            $('#locationCountry').append('<option value="0"></option>');
+        }
+        $('#locationCountry').val("0");                   
+        $('#locationInternationalRow').show();
+        if ($('#locationInternational option[value="0"]').length > 0){
+            $('#locationInternational option[value="0"]').remove();
+        }                  
+    } else {
+        $('#locationCountryRow').hide();
+        if (!$('#locationCountry option[value="0"]').length > 0){
+            $('#locationCountry').append('<option value="0"></option>');
+        }
+        $('#locationCountry').val("0");                 
+
+        $('#locationInternationalRow').hide();
+        if (!$('#locationInternational option[value="0"]').length > 0){
+            $('#locationInternational').append('<option value="0"></option>');
+        }
+        $('#locationInternational').val("0");                 
+    }
+}
+
 
 function showOrHideMultiCountryResearch(){
     var value = $("input:radio[name='proposalDetails[multiCountryResearch]']:checked").val();
@@ -249,7 +288,7 @@ function isNumeric(){
             displayTotalBudget();
             return true;
         } else {
-            alert('{/literal}{translate key="proposal.source.amount.instruct"}{literal}');
+            alert(SOURCE_AMOUNT_NUMERIC);
             $(this).focus();
             return false;
         }   
@@ -265,7 +304,7 @@ function displayTotalBudget(){
 }
 
 function showOrHideOtherSource() {
-    $("#sources select[id^=sources-]").each(function () {
+    $("#sources select[id$=-institution]").each(function () {
         var iterator = $(this).attr('id');
         iterator = iterator.replace('sources-', '');
         iterator = iterator.replace('-institution', '');
@@ -283,8 +322,8 @@ function showOrHideOtherSource() {
             if ($('#sources-'+iterator+'-otherInstitutionType option[value="NA"]').length > 0){
                 $('#sources-'+iterator+'-otherInstitutionType option[value="NA"]').remove();
             }
-            if ($('#sources-'+iterator+'-otherInstitutionLocation option[value="NA"]').length > 0){
-                $('#sources-'+iterator+'-otherInstitutionLocation option[value="NA"]').remove();
+            if ($('#sources-'+iterator+'-radioInternationalSupp').length > 0) {
+                $('#sources-'+iterator+'-radioInternationalSupp').remove();
             }
         } else {
             $('#' + idTr).hide();
@@ -294,18 +333,69 @@ function showOrHideOtherSource() {
                 $('#sources-'+iterator+'-otherInstitutionType').append('<option value="NA"></option>');
             }
             $('#sources-'+iterator+'-otherInstitutionType').val('NA');
-            if (!$('#sources-'+iterator+'-otherInstitutionLocation option[value="NA"]').length > 0){
-                $('#sources-'+iterator+'-otherInstitutionLocation').append('<option value="NA"></option>');
+            if (!$('#sources-'+iterator+'-radioInternationalSupp').length > 0) {
+                $('<input type="radio" name="sources['+iterator+'][international]" id="sources-'+iterator+'-radioInternationalSupp" style="display: none;" val="NA"/>').appendTo('#sources-'+iterator+'-locationInternationalCol');
             }
-            $('#sources-'+iterator+'-otherInstitutionLocation').val('NA');
+            $('#sources-'+iterator+'-radioInternationalSupp').attr('checked',true);     
+        }
+    });
+    showLocationOtherSource();
+}
+
+function showLocationOtherSource() {
+    $("#sources tr[id$=-otherInstitution]").each(function () {
+        
+        var iterator = $(this).attr('id');
+        iterator = iterator.replace('sources-', '');
+        iterator = iterator.replace('-otherInstitution', '');
+                
+        var value = $("input:radio[name='sources["+iterator+"][international]']:checked").val();
+
+        if (value === INSTITUTION_NATIONAL) {
+            $('#sources-'+iterator+'-locationCountryRow').show();
+            if ($('#sources-'+iterator+'-locationCountry option[value="0"]').length > 0){
+                $('#sources-'+iterator+'-locationCountry option[value="0"]').remove();
+            }                
+            $('#sources-'+iterator+'-locationInternationalRow').hide();
+            if (!$('#sources-'+iterator+'-locationInternational option[value="0"]').length > 0){
+                $('#sources-'+iterator+'-locationInternational').append('<option value="0"></option>');
+            }
+            $('#sources-'+iterator+'-locationInternational').val("0");                
+        } else if (value === INSTITUTION_INTERNATIONAL) {
+            $('#sources-'+iterator+'-locationCountryRow').hide();
+            if (!$('#sources-'+iterator+'-locationCountry option[value="0"]').length > 0){
+                $('#sources-'+iterator+'-locationCountry').append('<option value="0"></option>');
+            }
+            $('#sources-'+iterator+'-locationCountry').val("0");                   
+            $('#sources-'+iterator+'-locationInternationalRow').show();
+            if ($('#sources-'+iterator+'-locationInternational option[value="0"]').length > 0){
+                $('#sources-'+iterator+'-locationInternational option[value="0"]').remove();
+            }                  
+        } else {
+            $('#sources-'+iterator+'-locationCountryRow').hide();
+            if (!$('#sources-'+iterator+'-locationCountry option[value="0"]').length > 0){
+                $('#sources-'+iterator+'-locationCountry').append('<option value="0"></option>');
+            }
+            $('#sources-'+iterator+'-locationCountry').val("0");                 
+
+            $('#sources-'+iterator+'-locationInternationalRow').hide();
+            if (!$('#sources-'+iterator+'-locationInternational option[value="0"]').length > 0){
+                $('#sources-'+iterator+'-locationInternational').append('<option value="0"></option>');
+            }
+            $('#sources-'+iterator+'-locationInternational').val("0");                 
         }
     });
 }
 
 function addSource(){
 
+    // Create the new element "source" based on the first source
     var sourceHtml = '<table width="100%" valign="top" class="sourceSuppClass" style="border-top: dotted 1px #C0C0C0 !important; padding-bottom:10px; padding-top: 10px;">' + $('#firstSource').html() + '</table>';
-
+    
+    // Save the value of the radio button (it will be overwritten when placing the source element)
+    var radioFirstSourceValue = $("input:radio[name='sources[0][international]']:checked").val();
+    
+    // Place the new source element at the bottom of the list of sources and get a reference to this element
     if ($("#sources table.sourceSuppClass")[0]){
         $('#sources table.sourceSuppClass:last').after(sourceHtml);
         var lastElement = $('#sources table.sourceSuppClass:last');
@@ -314,42 +404,53 @@ function addSource(){
         var lastElement = $('#firstSource').next();
     }
 
+    // Get the right iterator for the added source
     var numItems = $('#sources table.sourceSuppClass').length;
 
+    // Correct the name and id attributes with the right iterator, set everything to default, and add the events
     lastElement.find("select[id$=-institution]").attr("id", "sources-"+numItems+"-institution")
                                                 .attr("name", "sources["+numItems+"][institution]")
                                                 .attr('selectedIndex', 0)
                                                 .change(showOrHideOtherSource);
-
     lastElement.find("input[id$=-amount]").attr("id", "sources-"+numItems+"-amount")
                                           .attr("name", "sources["+numItems+"][amount]")
                                           .val('')
                                           .keyup(isNumeric);
-
     lastElement.find("tr[id$=-otherInstitution]").attr("id", "sources-"+numItems+"-otherInstitution")
                                                  .hide();
-
     lastElement.find("input[id$=-otherInstitutionName]").attr("id", "sources-"+numItems+"-otherInstitutionName")
                                                         .attr("name", "sources["+numItems+"][otherInstitutionName]")
                                                         .val('NA');
-
     lastElement.find("input[id$=-otherInstitutionAcronym]").attr("id", "sources-"+numItems+"-otherInstitutionAcronym")
                                                            .attr("name", "sources["+numItems+"][otherInstitutionAcronym]")
                                                            .val('NA');
-
     lastElement.find("select[id$=-otherInstitutionType]").attr("id", "sources-"+numItems+"-otherInstitutionType")
                                                          .attr("name", "sources["+numItems+"][otherInstitutionType]")
                                                          .append('<option value="NA"></option>')
                                                          .val('NA');
-
-    lastElement.find("select[id$=-otherInstitutionLocation]").attr("id", "sources-"+numItems+"-otherInstitutionLocation")
-                                                             .attr("name", "sources["+numItems+"][otherInstitutionLocation]")
-                                                             .append('<option value="NA"></option>')
-                                                             .val('NA');
-
+    lastElement.find("td[id$=-locationInternationalCol]").attr("id", "sources-"+numItems+"-locationInternationalCol");
+    if (lastElement.find('#sources input[id=sources-0-radioInternationalSupp').length > 0) {
+        $('#sources-0-radioInternationalSupp').remove();
+    }    
+    lastElement.find("input:radio").each(function(){$(this).attr("name", "sources["+numItems+"][international]");})
+                                   .change(showLocationOtherSource);
+    $('<input type="radio" name="sources['+numItems+'][international]" id="sources-'+numItems+'-radioInternationalSupp" style="display: none;" val="NA"/>').appendTo('#sources-'+numItems+'-locationInternationalCol');
+    $('#sources-'+numItems+'-radioInternationalSupp').attr('checked',true);    
+    lastElement.find("tr[id$=-locationCountryRow]").attr("id", "sources-"+numItems+"-locationCountryRow");
+    lastElement.find("select[id$=-locationCountry]").attr("id", "sources-"+numItems+"-locationCountry")
+                                                    .attr("name", "sources["+numItems+"][locationCountry]")
+                                                    .append('<option value="0"></option>')
+                                                    .val('0');
+    lastElement.find("tr[id$=-locationInternationalRow]").attr("id", "sources-"+numItems+"-locationInternationalRow");
+    lastElement.find("select[id$=-locationInternational]").attr("id", "sources-"+numItems+"-locationInternational")
+                                                          .attr("name", "sources["+numItems+"][locationInternational]")
+                                                          .append('<option value="0"></option>')
+                                                          .val('0');
     lastElement.find('.removeSource').show();
     lastElement.find('.removeSource').click(function(){$(this).closest('table').remove();displayTotalBudget();});
-
+    
+    // Set back the radio button of the first source
+    $('#sources input[name="sources[0][international]"][value="'+radioFirstSourceValue+'"]').attr('checked',true);    
 }       
 
 function showOrHideOtherLevelOfRisk(){

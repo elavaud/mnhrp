@@ -17,11 +17,16 @@
        var PROPOSAL_DETAIL_NO = "{/literal}{$smarty.const.PROPOSAL_DETAIL_NO}{literal}";
        var PROPOSAL_DETAIL_YES = "{/literal}{$smarty.const.PROPOSAL_DETAIL_YES}{literal}";
        
+       var INSTITUTION_NATIONAL = "{/literal}{$smarty.const.INSTITUTION_NATIONAL}{literal}";
+       var INSTITUTION_INTERNATIONAL = "{/literal}{$smarty.const.INSTITUTION_INTERNATIONAL}{literal}";       
+       
        var PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS = "{/literal}{$smarty.const.PROPOSAL_DETAIL_YES_WITH_RANDOM_AREAS}{literal}";
        
        var PROPOSAL_DETAIL_UNDER_REVIEW = "{/literal}{$smarty.const.PROPOSAL_DETAIL_UNDER_REVIEW}{literal}";
        var PROPOSAL_DETAIL_REVIEW_AVAILABLE = "{/literal}{$smarty.const.PROPOSAL_DETAIL_REVIEW_AVAILABLE}{literal}";
-    
+       
+       var SOURCE_AMOUNT_NUMERIC = "{/literal}{translate key="proposal.source.amount.instruct"}{literal}";
+       
        var RISK_ASSESSMENT_NO = "{/literal}{$smarty.const.RISK_ASSESSMENT_NO}{literal}";
        var RISK_ASSESSMENT_YES = "{/literal}{$smarty.const.RISK_ASSESSMENT_YES}{literal}";
        var RISK_ASSESSMENT_NOT_PROVIDED = "{/literal}{$smarty.const.RISK_ASSESSMENT_NOT_PROVIDED}{literal}";
@@ -46,6 +51,8 @@
         $( "#endDate" ).datepicker({changeMonth: true, changeYear: true, dateFormat: 'dd-M-yy', minDate: '-1 y'});
         
         $("#keyImplInstitution").change(showOrHideOherKeyImplementingInstitutionField);
+        
+        $("[name='proposalDetails[international]']").change(showLocationKII);
         
         $("[name='proposalDetails[multiCountryResearch]']").change(showOrHideMultiCountryResearch);
         
@@ -77,6 +84,8 @@
                 
         $("#sources select[id$=-institution]").each(function() {$(this).change(showOrHideOtherSource);});
         
+        $("#sources").find("input:radio").each(function() {$(this).change(showLocationOtherSource);});
+    
         $("#sources input[id$=-amount]").each(function() {$(this).keyup(isNumeric);});
         
         $("#addAnotherSource").click(addSource);
@@ -91,6 +100,8 @@
                 showOrHideStudentInfo();
                                 
                 showOrHideOherKeyImplementingInstitutionField();
+                
+                showLocationKII();
                 
                 showOrHideMultiCountryResearch();
                 
@@ -107,6 +118,8 @@
                 displayTotalBudget();
                 
                 showOrHideOtherSource();
+                
+                //showLocationOtherSource();
                 
                 showOrHideOtherLevelOfRisk();
             }

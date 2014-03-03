@@ -65,7 +65,7 @@ class MetadataForm extends Form {
 
                         $this->addCheck(new FormValidatorArray($this, 'authors', 'required', 'author.submit.form.authorRequiredFields', array('firstName', 'lastName', 'affiliation', 'phone')));				
                         $this->addCheck(new FormValidatorArray($this, 'abstracts', 'required', 'author.submit.form.abstractRequiredFields', array('scientificTitle', 'publicTitle', 'background', 'objectives', 'studyMethods', 'expectedOutcomes', 'keywords')));
-                        $this->addCheck(new FormValidatorArrayRadios($this, 'proposalDetails', 'required', 'author.submit.form.proposalDetails', array('studentInitiatedResearch', 'multiCountryResearch', 'nationwide', 'withHumanSubjects', 'reviewedByOtherErc')));
+                        $this->addCheck(new FormValidatorArrayRadios($this, 'proposalDetails', 'required', 'author.submit.form.proposalDetails', array('studentInitiatedResearch', 'international', 'multiCountryResearch', 'nationwide', 'withHumanSubjects', 'reviewedByOtherErc')));
 
                         $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIINameAlreadyUsed', 
                                 function($proposalDetails) {
@@ -88,7 +88,7 @@ class MetadataForm extends Form {
                                 }));
 
                         $this->addCheck(new FormValidatorArray($this, 'studentResearch', 'required', 'author.submit.form.studentResearch'));
-                        $this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('institution', 'amount', 'otherInstitutionName', 'otherInstitutionAcronym', 'otherInstitutionType', 'otherInstitutionLocation')));                
+                        $this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('institution', 'amount', 'otherInstitutionName', 'otherInstitutionAcronym', 'otherInstitutionType', 'locationCountry', 'locationInternational')));                
 
                         $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceNameAlreadyUsed', 
                                 function($otherInstitutionName) {
@@ -426,9 +426,6 @@ class MetadataForm extends Form {
 
                 
                 $geoAreas =& $regionDAO->getAreasOfTheCountry();
-
-                $coveredArea = $journal->getLocalizedSetting('location'); 
-                $institutionLocations = array('EXT' => Locale::translate('common.outside').' '.$coveredArea) + $geoAreas;
                 
                 $institutionsList = $institutionDao->getInstitutionsList();
                 $institutionsListWithOther = $institutionsList + array('OTHER' => Locale::translate('common.other'));
@@ -440,7 +437,6 @@ class MetadataForm extends Form {
 		}
                 
                 $sourceCurrencyId = $journal->getSetting('sourceCurrency');
-                
                 
 		$templateMgr->assign('articleId', isset($this->article)?$this->article->getId():null);
 		$templateMgr->assign('journalSettings', $settingsDao->getJournalSettings($journal->getId()));
@@ -459,8 +455,8 @@ class MetadataForm extends Form {
                 $templateMgr->assign('institutionsList', $institutionsListWithOther);
                 $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
                 $templateMgr->assign('sourcesList', $sourcesList);
-                $templateMgr->assign('institutionTypes', $institutionDao->getInstitutionTypes());                
-                $templateMgr->assign('institutionLocations', $institutionLocations);
+                $templateMgr->assign('institutionTypes', $institutionDao->getInstitutionTypes());     
+                $templateMgr->assign('internationalArray', $institutionDao->getInstitutionInternationalArray());
                 $templateMgr->assign('riskAssessmentYesNoArray', $riskAssessmentDao->getYesNoArray());
                 $templateMgr->assign('riskAssessmentLevelsOfRisk', $riskAssessmentDao->getLevelOfRiskArray());
                 $templateMgr->assign('riskAssessmentConflictOfInterestArray', $riskAssessmentDao->getConflictOfInterestArray());

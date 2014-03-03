@@ -62,13 +62,28 @@
                         </tr>
                         <tr valign="top">
                             <td width="20%" class="label">{fieldLabel required="true" key="institution.location"}</td>
+                            <td width="80%" class="value" id="sources-{$sourceIndex|escape}-locationInternationalCol">
+                                {html_radios name="sources[`$sourceIndex`][international]" options=$internationalArray selected=$source.international separator='&nbsp;&nbsp;&nbsp;&nbsp;'}
+                            </td>
+                        </tr>
+                        <tr valign="top" id="sources-{$sourceIndex|escape}-locationCountryRow">
+                            <td width="20%" class="label">&nbsp;</td>
                             <td width="80%" class="value">
-                                <select name="sources[{$sourceIndex|escape}][otherInstitutionLocation]" id="sources-{$sourceIndex|escape}-otherInstitutionLocation" class="selectMenu">
+                                <select name="sources[{$sourceIndex|escape}][locationCountry]" id="sources-{$sourceIndex|escape}-locationCountry" class="selectMenu">
                                     <option value=""></option>
-                                    {html_options options=$institutionLocations selected=$source.otherInstitutionLocation}
+                                    {html_options options=$geoAreasList selected=$source.locationCountry}
                                 </select>
                             </td>
                         </tr>
+                        <tr valign="top" id="sources-{$sourceIndex|escape}-locationInternationalRow">
+                            <td width="20%" class="label">&nbsp;</td>
+                            <td width="80%" class="value">
+                                <select name="sources[{$sourceIndex|escape}][locationInternational]" id="sources-{$sourceIndex|escape}-locationInternational" class="selectMenu">
+                                    <option value=""></option>
+                                    {html_options options=$coutryList selected=$source.locationInternational}
+                                </select>
+                            </td>
+                        </tr>                          
                     </table>
                 </td>
             </tr>

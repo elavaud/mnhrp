@@ -93,14 +93,29 @@
                         </td>
                     </tr>
                     <tr valign="top">
-                        <td width="20%" class="label">{fieldLabel required="true" key="institution.location"}</td>
+                        <td width="20%" class="label">{fieldLabel name="international" required="true" key="institution.location"}</td>
                         <td width="80%" class="value">
-                            <select name="proposalDetails[otherInstitutionLocation]" id="otherInstitutionLocation" class="selectMenu">
+                            {html_radios name='proposalDetails[international]' options=$internationalArray selected=$proposalDetails.international separator='&nbsp;&nbsp;&nbsp;&nbsp;'}
+                        </td>
+                    </tr>
+                    <tr valign="top" id="locationCountryRow">
+                        <td width="20%" class="label">&nbsp;</td>
+                        <td width="80%" class="value">
+                            <select name="proposalDetails[locationCountry]" id="locationCountry" class="selectMenu">
                                 <option value=""></option>
-                                {html_options options=$institutionLocations selected=$proposalDetails.otherInstitutionLocation}
+                                {html_options options=$geoAreasList selected=$proposalDetails.locationCountry}
                             </select>
                         </td>
                     </tr>
+                    <tr valign="top" id="locationInternationalRow">
+                        <td width="20%" class="label">&nbsp;</td>
+                        <td width="80%" class="value">
+                            <select name="proposalDetails[locationInternational]" id="locationInternational" class="selectMenu">
+                                <option value=""></option>
+                                {html_options options=$coutryList selected=$proposalDetails.locationInternational}
+                            </select>
+                        </td>
+                    </tr>                      
                 </table>
             </td>
         </tr>

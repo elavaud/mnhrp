@@ -28,7 +28,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                         
 		$this->addCheck(new FormValidatorArray($this, 'authors', 'required', 'author.submit.form.authorRequiredFields', array('firstName', 'lastName', 'affiliation', 'phone')));				
 		$this->addCheck(new FormValidatorArray($this, 'abstracts', 'required', 'author.submit.form.abstractRequiredFields', array('scientificTitle', 'publicTitle', 'background', 'objectives', 'studyMethods', 'expectedOutcomes', 'keywords')));
-		$this->addCheck(new FormValidatorArrayRadios($this, 'proposalDetails', 'required', 'author.submit.form.proposalDetails', array('studentInitiatedResearch', 'multiCountryResearch', 'nationwide', 'withHumanSubjects', 'reviewedByOtherErc')));
+		$this->addCheck(new FormValidatorArrayRadios($this, 'proposalDetails', 'required', 'author.submit.form.proposalDetails', array('studentInitiatedResearch', 'international', 'multiCountryResearch', 'nationwide', 'withHumanSubjects', 'reviewedByOtherErc')));
                 
                 $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIINameAlreadyUsed', 
                         function($proposalDetails) {
@@ -51,7 +51,8 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                         }));
                         
                 $this->addCheck(new FormValidatorArray($this, 'studentResearch', 'required', 'author.submit.form.studentResearch'));
-		$this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('institution', 'amount', 'otherInstitutionName', 'otherInstitutionAcronym', 'otherInstitutionType', 'otherInstitutionLocation')));                
+		//$this->addCheck(new FormValidatorArray($this, 'sources', 'required', 'author.submit.form.sourceRequiredFields', array('institution', 'amount', 'otherInstitutionName', 'otherInstitutionAcronym', 'otherInstitutionType', 'locationCountry', 'locationInternational')));                
+                $this->addCheck(new FormValidatorArrayRadios($this, "sources", 'required', 'author.submit.form.sourceRequiredFields', array('international'), true));                
                 
                 $this->addCheck(new FormValidatorArrayCustom($this, 'sources', 'required', 'author.submit.form.sourceNameAlreadyUsed', 
                         function($otherInstitutionName) {
@@ -379,22 +380,18 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
 		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
                 
                 $geoAreas =& $regionDAO->getAreasOfTheCountry();
-
-                $coveredArea = $journal->getLocalizedSetting('location'); 
-                $institutionLocations = array('EXT' => Locale::translate('common.outside').' '.$coveredArea) + $geoAreas;
                 
                 $institutionsList = $institutionDao->getInstitutionsList();
                 $institutionsListWithOther = $institutionsList + array('OTHER' => Locale::translate('common.other'));
                 $sourcesList = $institutionsListWithOther + array('KII' => Locale::translate('proposal.keyImplInstitution'));
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
                 
 		$templateMgr =& TemplateManager::getManager();
                 
 		if (Request::getUserVar('addAuthor') || Request::getUserVar('delAuthor')  || Request::getUserVar('moveAuthor')) {
 			$templateMgr->assign('scrollToAuthor', true);
 		}
-                
-                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
-                
+                                
                 $templateMgr->assign('abstractLocales', $journal->getSupportedLocaleNames());
                 $templateMgr->assign('coutryList', $countryDao->getCountries());
                 $templateMgr->assign('proposalTypesList', $proposalDetailsDao->getProposalTypes());
@@ -408,8 +405,8 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                 $templateMgr->assign('institutionsList', $institutionsListWithOther);
                 $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
                 $templateMgr->assign('sourcesList', $sourcesList);
-                $templateMgr->assign('institutionTypes', $institutionDao->getInstitutionTypes());                
-                $templateMgr->assign('institutionLocations', $institutionLocations);
+                $templateMgr->assign('institutionTypes', $institutionDao->getInstitutionTypes());
+                $templateMgr->assign('internationalArray', $institutionDao->getInstitutionInternationalArray());
                 $templateMgr->assign('riskAssessmentYesNoArray', $riskAssessmentDao->getYesNoArray());
                 $templateMgr->assign('riskAssessmentLevelsOfRisk', $riskAssessmentDao->getLevelOfRiskArray());
                 $templateMgr->assign('riskAssessmentConflictOfInterestArray', $riskAssessmentDao->getConflictOfInterestArray());

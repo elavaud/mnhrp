@@ -44,13 +44,13 @@ class InstitutionForm extends Form {
 	 * Display the form.
 	 */
 	function display() {
-                $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-                $institutionDAO =& DAORegistry::getDAO('InstitutionDAO');
+                $regionDao =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+                $institutionDao =& DAORegistry::getDAO('InstitutionDAO');
 		$countryDao =& DAORegistry::getDAO('CountryDAO');
                          
-                $regions = $regionDAO->getAreasOfTheCountry();
-                $institutionTypes = $institutionDAO->getInstitutionTypes();
-                $internationalArray = $institutionDAO->getInstitutionInternationalArray();
+                $regions = $regionDao->getAreasOfTheCountry();
+                $institutionTypes = $institutionDao->getInstitutionTypes();
+                $internationalArray = $institutionDao->getInstitutionInternationalArray();
 		$countries =& $countryDao->getCountries();
                 
 		$templateMgr =& TemplateManager::getManager();

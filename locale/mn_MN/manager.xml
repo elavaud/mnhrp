@@ -23,7 +23,7 @@
         <message key="manager.institutions.form.nameExists">The name specified for the institution already exists. Please be sure the institution does not already exist in the database.</message>
         <message key="manager.institutions.form.nameRequired">The name of the institution is required.</message>
         <message key="manager.institutions.form.replacementInstitutionRequired">Please choose a replacement institution. The institution you intend to delete is used by some proposals in the database. You therefore need to choose a replacing institution for these proposals. Please choose carefully: this operation can not be undone.</message>
-        <message key="manager.institutions.form.regionRequired">The geographical area of the institution is required. Please speccify where the headquarter is located.</message>
+        <message key="manager.institutions.form.regionRequired">The geographical area of the institution is required. Please specify where the headquarter is located.</message>
         <message key="manager.institutions.form.typeRequired">The type of the institution is required.</message>
         <message key="manager.setup.location">Covering area</message>
         <message key="manager.setup.location.instruct">Country, geographical area, or location covered by this Health Research Portal.</message>
