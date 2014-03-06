@@ -68,30 +68,35 @@ class FormValidatorArrayRadios extends FormValidator {
 		if (!is_array($data)) return false;
                 $isValid = true;
 		foreach ($data as $key => $value) {
-                        if (is_array($value) && $this->twoDimenstion) {
-                                foreach($this->_radiofields as $radioFieldKey => $radioFieldValue){
-                                    foreach ($value as $subkey => $subvalue) {
-                                        if ($subkey == $radioFieldValue) {
-                                            unset ($this->_radiofields[$radioFieldKey]);
-                                        }
-                                    }
+                    if (is_array($value) && $this->twoDimenstion) {
+                        foreach($this->_radiofields as $radioFieldKey => $radioFieldValue){
+                            foreach ($value as $subkey => $subvalue) {
+                                if ($subkey == $radioFieldValue) {
+                                    unset ($this->_radiofields[$radioFieldKey]);
                                 }
-                                foreach($value as $subkey => $subvalue ) {
-                                    if( isset( $subvalue ) && $subvalue != "") {
-                                       unset( $value[$subkey] );
-                                    }                                 
-                                }
-                                if (!empty($value) || !empty($this->_radiofields)){
-                                    $isValid = false;
-                                    array_push($this->_errorFields, $this->getField()."[{$key}]");
-                                }                               
+                            }
                         }
+                        foreach($value as $subkey => $subvalue ) {
+                            if( isset( $subvalue ) && $subvalue != "") {
+                               unset( $value[$subkey] );
+                            }                                 
+                        }
+                        if (!empty($value) || !empty($this->_radiofields)){
+                            $isValid = false;
+                            array_push($this->_errorFields, $this->getField()."[{$key}]");
+                        }                               
+                    } elseif(!is_array($value)) {
+                        if (is_null($value) || trim((string)$value) == '') {
+                            $isValid = false;
+                            array_push($this->_errorFields, $this->getField()."[{$key}]");
+                        }
+                    }
 		}
                 if (!$this->twoDimenstion) {
                     foreach($this->_radiofields as $radioField){
-                            if (!isset($data[$radioField])) {
-                                    $isValid = false;
-                            }
+                        if (!isset($data[$radioField])) {
+                            $isValid = false;
+                        }
                     }                    
                 }
 
