@@ -282,7 +282,7 @@
 
         <message key="proposal.startDate">Start Date</message>
         <message key="proposal.endDate">End Date</message>
-        <message key="proposal.fundsRequired">Estimated Budget</message>
+        <message key="proposal.fundsRequired">Total Estimated Budget</message>
         <message key="proposal.primarySponsor">Primary sponsor</message>
         <message key="proposal.otherPrimarySponsor">Please specify your primary sponsor:</message>
         <message key="proposal.secondarySponsors">Secondary sponsor(s)</message>
