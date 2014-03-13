@@ -28,6 +28,7 @@ class JournalSetupStep3Form extends JournalSetupForm {
 				'submissionChecklist' => 'object',
                                 'abstractLocales' => 'array',
                                 'sourceCurrency' => 'string',
+                                'convertionRate' => 'int',
                                 'copyrightNotice' => 'string',
 				'includeCreativeCommons' => 'bool',
 				'copyrightNoticeAgree' => 'bool',
@@ -55,7 +56,23 @@ class JournalSetupStep3Form extends JournalSetupForm {
 			)
 		);
 		$this->addCheck(new FormValidator($this, 'sourceCurrency', 'required', 'manager.setup.form.sourceCurrencyRequired'));
-
+                                
+                $this->addCheck(new FormValidatorCustom($this, 'convertionRate', 'required', 'manager.setup.form.exchangeRateInstruct2', 
+                        function($convertionRate) {
+                            $convertionRate = preg_replace('/\s+/', '', $convertionRate);
+                            $convertionRate = trim($convertionRate);
+                            if(preg_match('/^[0-9]+([\.,][0-9]*)?$/',$convertionRate)){
+                                $convertionRate = rtrim($convertionRate, " \t\n\r\0\x0B.,0" );
+                                if ($convertionRate != "") {
+                                    return true;
+                                } else {
+                                    return false;
+                                } 
+                            } else {
+                                return false;
+                            }
+                        }));
+                
                 $this->addCheck(new FormValidatorEmail($this, 'copySubmissionAckAddress', 'optional', 'user.profile.form.emailRequired'));
 	}
 
@@ -132,8 +149,42 @@ class JournalSetupStep3Form extends JournalSetupForm {
 		}                
 		$templateMgr->assign('currencies', $currenciesArray);                
                 
+                $originalSourceCurrencyAlpha = $journal->getSetting('sourceCurrency');
+                $originalSourceCurrency = $currencyDao->getCurrencyByAlphaCode($originalSourceCurrencyAlpha);
+		$templateMgr->assign('originalSourceCurrency', $originalSourceCurrency->getName().' ('.$originalSourceCurrencyAlpha.')');                
+                
+		$proposalSourceDao =& DAORegistry::getDAO('ProposalSourceDAO');
+		$templateMgr->assign('countSources', $proposalSourceDao->countSources());                
+                
 		parent::display($request, $dispatcher);
 	}
+        
+	function execute() {
+		$proposalSourceDao =& DAORegistry::getDAO('ProposalSourceDAO');
+                if ($proposalSourceDao->countSources() > 0){
+                    $journal = Request::getJournal();
+                    $originalSourceCurrencyAlpha = $journal->getSetting('sourceCurrency');
+                    $formSourceCurrencyApha = $this->getData('sourceCurrency');
+                    if ($originalSourceCurrencyAlpha != $formSourceCurrencyApha) {
+                        $exchangeRate = $this->getData('convertionRate');
+                        $exchangeRate = preg_replace('/\s+/', '', $exchangeRate);
+                        $exchangeRate = trim($exchangeRate);
+                        if(preg_match('/^[0-9]+([\.,][0-9]*)?$/',$exchangeRate)){
+                            $exchangeRate = rtrim($exchangeRate, " \t\n\r\0\x0B.,0" );
+                            if ($exchangeRate != "") {
+                                $exchangeRate = str_replace(",", ".", $exchangeRate);
+                                $proposalSourceDao->changeCurrency($exchangeRate);
+                            } else {
+                                return null;
+                            }
+                        } else {
+                            return null;  
+                        }
+                    }
+                }                
+		return parent::execute();
+	}        
+        
 }
 
 ?>

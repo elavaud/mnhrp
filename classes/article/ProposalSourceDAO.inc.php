@@ -177,10 +177,28 @@ class ProposalSourceDAO extends DAO{
          */
         function replaceInstitutionSource($oldInstitutionId, $replacementInstitutionId) {
 		return $this->update('UPDATE article_source SET institution_id = '.$replacementInstitutionId.' WHERE institution_id = '.$oldInstitutionId);
-		
+        }
+        
+        /*
+         * count how many proposal sources has already been entered or not.
+         */
+        function countSources() {
+            $result = $this->retrieve('SELECT count(*) FROM article_source');
+            
+            $returner = isset($result->fields[0]) ? $result->fields[0] : 0;
+
+            $result->Close();
+            unset($result);
+            return $returner;            
+        }        
+        
+        /*
+         * The currency has been changed and all the sources of monetary should be change with the new currency using the exchange rate
+	 * @param $exchangeRate int
+         */
+        function changeCurrency($exchangeRate) {
+		return $this->update('UPDATE article_source SET amount = amount*'.$exchangeRate);
         }         
-        
-        
 }
 
 ?>

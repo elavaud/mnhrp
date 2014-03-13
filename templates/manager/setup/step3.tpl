@@ -9,7 +9,64 @@
 {assign var="pageTitle" value="manager.setup.guidingSubmissions"}
 {include file="manager/setup/setupHeader.tpl"}
 
-<form name="setupForm" method="post" action="{url op="saveSetup" path="3"}">
+{literal}
+     <script type="text/javascript">
+         
+         var ORIGINAL_SOURCE_CURRENCY = '{/literal}{$originalSourceCurrency}{literal}';
+         var EXCHANGE_RATE_NOT_NUMERIC = '{/literal}{translate key="manager.setup.form.exchangeRateInstruct2"}{literal}';
+         var CONFIRM_EXCHANGE_RATE = '{/literal}{translate key="manager.setup.form.exchangeRateConfirm"}{literal}';
+         var COUNT_SOURCES = '{/literal}{$countSources}{literal}';
+    
+         function showOrHideChangeCurrency(){
+             var sourceCurrencySelectedText = $("#sourceCurrency option:selected").text();
+             if (ORIGINAL_SOURCE_CURRENCY !== sourceCurrencySelectedText && COUNT_SOURCES > 0){
+                $('#newSourceCurrencyInstructRow').show();
+                $('#newSourceCurrencyRow').show();
+                if($('#convertionRate').val() === "1"){
+                   $('#convertionRate').val(''); 
+                }
+                $("#futureCurrency").html(sourceCurrencySelectedText);
+             } else {
+                $('#newSourceCurrencyInstructRow').hide();
+                $('#newSourceCurrencyRow').hide();
+                $('#convertionRate').val('1'); 
+             }
+         }      
+
+         function checkChangeOfCurrency(){
+             var sourceCurrencySelectedText = $("#sourceCurrency option:selected").text();
+             if (ORIGINAL_SOURCE_CURRENCY !== sourceCurrencySelectedText && COUNT_SOURCES > 0){
+                 var exchangeRate = $("#convertionRate").val().trim();
+                 exchangeRate = exchangeRate.replace(/ /g,'');
+                 var regexNumeric = /^[0-9]+([\.,][0-9]*)?$/;
+                 if (exchangeRate.match(regexNumeric)){
+                     exchangeRate = exchangeRate.replace(/[\.,0]+$/,'');
+                     if (exchangeRate === "") {
+                         alert(EXCHANGE_RATE_NOT_NUMERIC);
+                         return false;
+                     } else {
+                         return confirm(CONFIRM_EXCHANGE_RATE + ' \n 1 ' + ORIGINAL_SOURCE_CURRENCY + ' = ' + exchangeRate + ' ' + sourceCurrencySelectedText + '?');
+                     }
+                 } else {
+                     alert(EXCHANGE_RATE_NOT_NUMERIC);
+                     return false;
+                 }
+             } else {
+                 return true;
+             }
+         } 
+    
+         $(document).ready(
+            function() {
+                showOrHideChangeCurrency();
+                $("#sourceCurrency").change(showOrHideChangeCurrency);  
+                $('#setupForm').submit(checkChangeOfCurrency);
+            }
+         );  
+     </script>
+{/literal}         
+         
+<form name="setupForm" id="setupForm" method="post" action="{url op="saveSetup" path="3"}">
 {include file="common/formErrors.tpl"}
 
 {if count($formLocales) > 1}
@@ -85,6 +142,14 @@
                 </select>
             </td>
         </tr>
+        <tr valign="top" id="newSourceCurrencyInstructRow">
+            <td width="20%">&nbsp;</td>
+            <td width="80%"><b>{translate key="manager.setup.form.exchangeRateInstruct"}</b><br/>{translate key="manager.setup.form.exchangeRateInstruct2"}</td>
+        </tr>
+        <tr valign="top" id="newSourceCurrencyRow">
+            <td width="20%">&nbsp;</td>
+            <td width="80%" class="label"><b>1&nbsp;{$originalSourceCurrency}&nbsp;&nbsp;=&nbsp;&nbsp;<input type="text" class="textField" name="convertionRate" id="convertionRate" value="{$convertionRate|escape}" size="10" maxlength="255" />&nbsp;&nbsp;<span id="futureCurrency"></span></b><br/><i>{translate key="manager.setup.form.exchangeRateExamples"}</i><br/><br/><font color="red"><b>{translate key="manager.setup.form.exchangeRateAlert"}</b></font></td>
+        </tr>             
     </table>
 </div>
     
@@ -105,7 +170,7 @@
 </table>
 
 </div>
-*}-->
+
 <div class="separator"></div>
 
 <div id="authorCopyrightNotice">
@@ -408,14 +473,13 @@
 	</script>{/literal}
 {/if}
 </div>
-
+*}-->
 <div class="separator"></div>
 
-<p><input type="submit" value="{translate key="common.saveAndContinue"}" class="button defaultButton" /> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="document.location.href='{url op="setup" escape=false}'" /></p>
+<p><input type="submit" value="{translate key="common.saveAndContinue"}" class="button defaultButton" id="submitForm"/> <input type="button" value="{translate key="common.cancel"}" class="button" onclick="document.location.href='{url op="setup" escape=false}'" /></p>
 
 <p><span class="formRequired">{translate key="common.requiredField"}</span></p>
 
 </form>
 
 {include file="common/footer.tpl"}
-
