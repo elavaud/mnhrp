@@ -32,9 +32,9 @@
 	<message key="manager.setup.form.sourceCurrencyInstruct">Investigators are requested to provide their sources of monetary and material support. In order to analyze these data, you need to select only one currency. This currency will then be displayed during the submission process.</message>        
         
 	<message key="manager.setup.form.exchangeRateInstruct">Some "Sources of monetary or material support" has already been entered in the database. In order to compare and analyze the sources, the same currency should be used for all of them. If you are considering changing the currency you should therefore provide an exchange rate for converting the previously entered sources.</message>
-	<message key="manager.setup.form.exchangeRateInstruct2">The exchange rate should be a positive number, non-null, and composed exclusively of digits. If you consider using a decimal mark (symbol used to separate the integer part from the fraction part), please use only 1 dot "." or coma ",".</message>
+	<message key="manager.setup.form.exchangeRateInstruct2">The exchange rate should be a positive number, non-null, and composed exclusively of digits. If you consider using a decimal mark (symbol used to separate the integer part from the fraction part), please use only 1 dot "." or comma ",".</message>
 	<message key="manager.setup.form.exchangeRateExamples">Examples of good exchange rate: "150,35" or "43890.54" or "0.322" or "87" ...</message>
-	<message key="manager.setup.form.exchangeRateConfirm">Attention! This operation can not be un-done! Please carefully confirm the following exchange rate:</message>
+	<message key="manager.setup.form.exchangeRateConfirm">Attention! This operation can not be undone! Please carefully confirm the following exchange rate:</message>
 	<message key="manager.setup.form.exchangeRateAlert">Attention! This operation on the database can not be undone! Please ensure with your server administrator that you have backups of the database. We strongly recommend an automatic daily backup.</message>        
         <!-- /Added -->
         
