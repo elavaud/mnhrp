@@ -257,11 +257,11 @@
         {foreach from=$sources item=source}
             <tr valign="top">
                 <td width="30%" class="label">{$source->getSourceInstitutionName()}</td>
-                <td width="70%" class="value">{$source->getSourceAmount()}&nbsp;&nbsp;{$sourceCurrency->getCodeAlpha()|escape}</td>
+                <td width="70%" class="value">{$source->getSourceAmountString()}&nbsp;&nbsp;{$sourceCurrency->getCodeAlpha()|escape}</td>
             </tr>
         {/foreach}    
     </table>
-    <p><b>{translate key="proposal.fundsRequired"}</b>&nbsp;&nbsp;&nbsp;&nbsp;{$submission->getTotalBudget()}&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</p>
+    <p><b>{translate key="proposal.fundsRequired"}</b>&nbsp;&nbsp;&nbsp;&nbsp;{$submission->getTotalBudgetString()}&nbsp;&nbsp;{$sourceCurrency->getName()|escape}&nbsp;({$sourceCurrency->getCodeAlpha()|escape})</p>
 </div>
 
 <div id=riskAssessments>

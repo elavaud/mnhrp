@@ -93,6 +93,21 @@ class ProposalSource extends DataObject {
 	}
         
         /**
+	 * Get source amount to display in a readable manner ("12 345 678" instead of "12345678").
+	 * @return string
+	 */
+	function getSourceAmountString() {
+		$sourceAmountString = (string) $this->getData('sourceAmount');
+                $sourceAmountReversed = strrev($sourceAmountString);
+                $sourceAmountReversedArray = str_split($sourceAmountReversed, 3);
+                $stringToReturn = (string) "";
+                foreach (array_reverse($sourceAmountReversedArray) as $sourceAmountReversedItem) {
+                    $stringToReturn = $stringToReturn.' '.strrev($sourceAmountReversedItem);
+                }
+                return $stringToReturn;
+	}
+        
+        /**
 	 * Get the name of the institution of the source.
 	 * @return int
 	 */

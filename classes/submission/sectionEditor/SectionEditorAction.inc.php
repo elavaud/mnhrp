@@ -2748,13 +2748,13 @@ class SectionEditorAction extends Action {
                 
                 $pdf->SetFont('dejavusans','',11);
                 foreach($sources as $source){
-                    $pdf->MultiRow($cell_width_source, $source->getSourceInstitutionName(), $source->getSourceAmount().' '.$sourceCurrency->getCodeAlpha());
+                    $pdf->MultiRow($cell_width_source, $source->getSourceInstitutionName(), $source->getSourceAmountString().' '.$sourceCurrency->getCodeAlpha());
                     $pdf->ln();
                 }
                 $pdf->ln();
                 
                 $pdf->SetFont('dejavusans','BI',11);
-                $pdf->MultiRow($cell_width_source, Locale::translate('proposal.fundsRequired').': ', $sectionEditorSubmission->getTotalBudget().' '.$sourceCurrency->getName().' ('.$sourceCurrency->getCodeAlpha().')');
+                $pdf->MultiRow($cell_width_source, Locale::translate('proposal.fundsRequired').': ', $sectionEditorSubmission->getTotalBudgetString().' '.$sourceCurrency->getName().' ('.$sourceCurrency->getCodeAlpha().')');
                 $pdf->ln();
                         
                 

@@ -325,12 +325,27 @@ class Submission extends DataObject {
 	 * Get total budget.
 	 * @return int
 	 */
-	function &getTotalBudget() {
+	function getTotalBudget() {
 		$totalBudget = (int)0;
                 foreach ($this->sources as $source) {
                     $totalBudget = $totalBudget + $source->getSourceAmount();
                 }
 		return $totalBudget;
+	}
+        
+        /**
+	 * Get total budget to display in a readable manner ("12 345 678" instead of "12345678").
+	 * @return string
+	 */
+	function getTotalBudgetString() {
+		$totalBudgetString = (string) $this->getTotalBudget();
+                $totalBudgetReversed = strrev($totalBudgetString);
+                $totalBudgetReversedArray = str_split($totalBudgetReversed, 3);
+                $stringToReturn = (string) "";
+                foreach (array_reverse($totalBudgetReversedArray) as $totalBudgetReversedItem) {
+                    $stringToReturn = $stringToReturn.' '.strrev($totalBudgetReversedItem);
+                }
+                return $stringToReturn;
 	}
         
         /**
