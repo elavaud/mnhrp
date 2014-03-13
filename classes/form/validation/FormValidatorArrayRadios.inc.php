@@ -85,6 +85,17 @@ class FormValidatorArrayRadios extends FormValidator {
                             $isValid = false;
                             array_push($this->_errorFields, $this->getField()."[{$key}]");
                         }                               
+                    } elseif(is_array($value) && !$this->twoDimenstion) {
+                        foreach($value as $subkey => $subvalue ) {
+                            if( empty( $subvalue ) )
+                            {
+                               unset( $value[$subkey] );
+                            }
+                        }
+                        if (empty($value)){
+                            $isValid = false;
+                            array_push($this->_errorFields, $this->getField()."[{$key}]");
+                        }
                     } elseif(!is_array($value)) {
                         if (is_null($value) || trim((string)$value) == '') {
                             $isValid = false;

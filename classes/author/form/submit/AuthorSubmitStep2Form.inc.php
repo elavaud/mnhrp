@@ -40,7 +40,7 @@ class AuthorSubmitStep2Form extends AuthorSubmitForm {
                             }
                         }));
 
-               $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIIAcronymAlreadyUsed', 
+                $this->addCheck(new FormValidatorCustom($this, 'proposalDetails', 'required', 'author.submit.form.KIIAcronymAlreadyUsed', 
                         function($proposalDetails) {
                             $institutionDao = DAORegistry::getDAO("InstitutionDAO"); 
                             if ($institutionDao->institutionExistsByAcronym($proposalDetails["otherInstitutionAcronym"])) {
