@@ -16,15 +16,14 @@
 
 
 import('lib.pkp.classes.form.Form');
+import('classes.submission.common.Action');
 
 class SubmissionsReportForm extends Form {
 	/**
 	 * Constructor.
 	 */
-	function SubmissionsReportForm(&$request) {
+	function SubmissionsReportForm() {
 		parent::Form('sectionEditor/reports/submissionsReport.tpl');
-		$site =& Request::getSite();
-		$user =& Request::getUser();
 		// Validation checks for this form
 		$this->addCheck(new FormValidatorPost($this));
 		//$this->addCheck(new FormValidator($this,'countries', 'required', 'editor.reports.countryRequired'));
@@ -42,37 +41,45 @@ class SubmissionsReportForm extends Form {
 	}
 
 	function display() {
-		
-		$templateMgr =& TemplateManager::getManager();
+                $journal = Request::getJournal();
+            
+		$countryDao =& DAORegistry::getDAO('CountryDAO');
+                $proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
+                $studentResearchDao =& DAORegistry::getDAO('StudentResearchDAO');
+                $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
+		$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
+		$riskAssessmentDao =& DAORegistry::getDAO('RiskAssessmentDAO');
+		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
+                
+                $institutionsList = $institutionDao->getInstitutionsList();
+                $institutionsListWithOther = $institutionsList + array('OTHER' => Locale::translate('common.other'));
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+
+                $templateMgr =& TemplateManager::getManager();
 		$decisionOptions = array(
-				SUBMISSION_SECTION_DECISION_APPROVED => 'editor.article.decision.approved',
-				SUBMISSION_SECTION_DECISION_RESUBMIT => 'editor.article.decision.resubmit',
-				SUBMISSION_SECTION_DECISION_DECLINED => 'editor.article.decision.declined',
-				SUBMISSION_SECTION_DECISION_COMPLETE => 'editor.article.decision.complete',
-				SUBMISSION_SECTION_DECISION_INCOMPLETE => 'editor.article.decision.incomplete',
-				SUBMISSION_SECTION_DECISION_EXEMPTED => 'editor.article.decision.exempted',
-				SUBMISSION_SECTION_DECISION_FULL_REVIEW => 'editor.article.decision.fullReview',
-				SUBMISSION_SECTION_DECISION_EXPEDITED => 'editor.article.decision.expedited'
+                    SUBMISSION_SECTION_DECISION_APPROVED => 'editor.article.decision.approved',
+                    SUBMISSION_SECTION_DECISION_RESUBMIT => 'editor.article.decision.resubmit',
+                    SUBMISSION_SECTION_DECISION_DECLINED => 'editor.article.decision.declined',
+                    SUBMISSION_SECTION_DECISION_COMPLETE => 'editor.article.decision.complete',
+                    SUBMISSION_SECTION_DECISION_INCOMPLETE => 'editor.article.decision.incomplete',
+                    SUBMISSION_SECTION_DECISION_EXEMPTED => 'editor.article.decision.exempted',
+                    SUBMISSION_SECTION_DECISION_FULL_REVIEW => 'editor.article.decision.fullReview',
+                    SUBMISSION_SECTION_DECISION_EXPEDITED => 'editor.article.decision.expedited'
 		);
 		$templateMgr->assign_by_ref('decisionsOptions', $decisionOptions);
-
-                $proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
                 
-                // Get list of agencies
-                $agencies = $proposalDetailsDao->getAgencies();
-                $templateMgr->assign('agencies', $agencies);
-
-                //Get research fields
-                $researchFields = $proposalDetailsDao->getResearchFields();
-                $templateMgr->assign('researchFields', $researchFields);
-
-                // Get proposal types
-                $proposalTypes = $proposalDetailsDao->getProposalTypes();
-                $templateMgr->assign('proposalTypes', $proposalTypes);
-
-                $countryDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
-                $countries =& $countryDAO->getAreasOfTheCountry();
-                $templateMgr->assign_by_ref('countriesOptions', $countries);
+                $templateMgr->assign('coutryList', $countryDao->getCountries());
+                $templateMgr->assign('proposalTypesList', $proposalDetailsDao->getProposalTypes());
+                $templateMgr->assign('researchFieldsList', $proposalDetailsDao->getResearchFields());
+                $templateMgr->assign('dataCollectionArray', $proposalDetailsDao->getDataCollectionArray());
+                $templateMgr->assign('otherErcDecisionArray', $proposalDetailsDao->getOtherErcDecisionArray());
+                $templateMgr->assign('academicDegreesArray', $studentResearchDao->getAcademicDegreesArray());
+                $templateMgr->assign('geoAreasList', $regionDAO->getAreasOfTheCountry());
+                $templateMgr->assign('institutionsList', $institutionsListWithOther);
+                $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
+                $templateMgr->assign('riskAssessmentYesNoArray', $riskAssessmentDao->getYesNoArray());
+                $templateMgr->assign('riskAssessmentLevelsOfRisk', $riskAssessmentDao->getLevelOfRiskArray());
+                $templateMgr->assign('riskAssessmentConflictOfInterestArray', $riskAssessmentDao->getConflictOfInterestArray());
                 
                 $fromDate = Request::getUserDateVar('dateFrom', 1, 1);
                 if ($fromDate !== null) $fromDate = date('Y-m-d H:i:s', $fromDate);
