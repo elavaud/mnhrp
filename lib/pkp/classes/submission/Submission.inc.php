@@ -1184,31 +1184,21 @@ class Submission extends DataObject {
 		return $proposalStatusMap[$submissionStatus];
 	}
 
-        
-    /**
-	 * Get "localized" Proposal ID (if applicable).
-	 * @return string
-	 */
-	function getLocalizedProposalId() {
-		return $this->getLocalizedData('proposalId');
-	}
-
 	/**
 	 * Get Proposal ID.
 	 * @param $locale
 	 * @return string
 	 */
-	function getProposalId($locale) {
-		return $this->getData('proposalId', $locale);
+	function getProposalId() {
+		return $this->getData('proposalId');
 	}
 
 	/**
 	 * Set Proposal ID.
 	 * @param $proposalId string
-	 * @param $locale
 	 */
-	function setProposalId($proposalId, $locale) {
-		return $this->setData('proposalId', $proposalId, $locale);
+	function setProposalId($proposalId) {
+		return $this->setData('proposalId', $proposalId);
 	}
 
         /**
@@ -1222,7 +1212,7 @@ class Submission extends DataObject {
 	
 	/**
 	 * Set withdraw reason.
-	 * @param $proposalId string
+	 * @param $withdrawReason string
 	 * @param $locale
 	 */
 	function setWithdrawReason($withdrawReason, $locale) {
@@ -1240,7 +1230,7 @@ class Submission extends DataObject {
 
 	/**
 	 * Set withdraw comments.
-	 * @param $proposalId string
+	 * @param $withdrawComments string
 	 * @param $locale
 	 */
 	function setWithdrawComments($withdrawComments, $locale) {

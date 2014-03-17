@@ -432,7 +432,7 @@ class ReportsHandler extends Handler {
 			$abstract = $submission->getLocalizedAbstract();
                         foreach ($columns as $index => $junk) {
 				if ($index == 'proposalId') {
-					$columns[$index] = $submission->getProposalId('en_US');
+					$columns[$index] = $submission->getProposalId();
 				} elseif ($index == 'decision') {
 					if ($submission->getEditorDecisionKey()) $columns[$index] = Locale::translate($submission->getEditorDecisionKey());
 					else $columns[$index] = 'None';

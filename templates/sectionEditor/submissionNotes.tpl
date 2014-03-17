@@ -10,7 +10,7 @@
  * $Id$
  *}
 {strip}
-{translate|assign:"pageTitleTranslated" key="submission.notes" id=$submission->getProposalId('en_US')}
+{translate|assign:"pageTitleTranslated" key="submission.notes" id=$submission->getProposalId()}
 {assign var="pageCrumbTitle" value="submission.notes.breadcrumb"}
 {include file="common/header.tpl"}
 {/strip}

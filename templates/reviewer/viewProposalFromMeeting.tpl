@@ -5,7 +5,7 @@
 
 {strip}
 	{assign var="articleId" value=$submission->getArticleId()}
-	{assign var="proposalId" value=$submission->getProposalId('en_US')}
+	{assign var="proposalId" value=$submission->getProposalId()}
 	{translate|assign:"pageTitleTranslated" key="submission.page.proposalFromMeeting" id=$proposalId}
 	{assign var="pageCrumbTitle" value="article.submission"}
 	{include file="common/header.tpl"}

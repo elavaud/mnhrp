@@ -74,8 +74,8 @@ class ReviewerAction extends Action {
 				$user =& Request::getUser();
 				$notificationManager = new NotificationManager();
 				$notificationUsers = $article->getAssociatedUserIds(false, false);
-				if ($decline == '1') $message = $article->getProposalId('en_US').':<br/>'.$user->getUsername().' declined';
-				else $message = $article->getProposalId('en_US').':<br/>'.$user->getUsername().' accepted';
+				if ($decline == '1') $message = $article->getProposalId().':<br/>'.$user->getUsername().' declined';
+				else $message = $article->getProposalId().':<br/>'.$user->getUsername().' accepted';
 				foreach ($notificationUsers as $userRole) {
 					$url = Request::url(null, $userRole['role'], 'submissionReview', $article->getId(), null, 'peerReview');
             		$notificationManager->createNotification(
@@ -93,7 +93,7 @@ class ReviewerAction extends Action {
 				$entry->setUserId($reviewer->getId());
 				$entry->setDateLogged(Core::getCurrentDate());
 				$entry->setEventType($decline?ARTICLE_LOG_REVIEW_DECLINE:ARTICLE_LOG_REVIEW_ACCEPT);
-				$entry->setLogMessage($decline?'log.review.reviewDeclined':'log.review.reviewAccepted', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $reviewerSubmission->getProposalId('en_US')));
+				$entry->setLogMessage($decline?'log.review.reviewDeclined':'log.review.reviewAccepted', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $reviewerSubmission->getProposalId()));
 				$entry->setAssocType(ARTICLE_LOG_TYPE_REVIEW);
 				$entry->setAssocId($reviewAssignment->getId());
 
@@ -186,7 +186,7 @@ class ReviewerAction extends Action {
 				$entry->setUserId($reviewer->getId());
 				$entry->setDateLogged(Core::getCurrentDate());
 				$entry->setEventType(ARTICLE_LOG_REVIEW_RECOMMENDATION);
-				$entry->setLogMessage('log.review.reviewRecommendationSet', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $reviewerSubmission->getProposalId('en_US')));
+				$entry->setLogMessage('log.review.reviewRecommendationSet', array('reviewerName' => $reviewer->getFullName(), 'articleId' => $reviewerSubmission->getProposalId()));
 				$entry->setAssocType(ARTICLE_LOG_TYPE_REVIEW);
 				$entry->setAssocId($reviewAssignment->getId());
 
@@ -290,7 +290,7 @@ class ReviewerAction extends Action {
 			$notificationManager = new NotificationManager();
 			$notificationUsers = $article->getAssociatedUserIds(false, false);
 			$user =& Request::getUser();
-			$message = $article->getProposalId('en_US').':<br/>'.$user->getUsername();
+			$message = $article->getProposalId().':<br/>'.$user->getUsername();
 			foreach ($notificationUsers as $userRole) {
 				$url = Request::url(null, $userRole['role'], 'submissionReview', $article->getId(), null, 'peerReview');
             	$notificationManager->createNotification(
@@ -323,7 +323,7 @@ class ReviewerAction extends Action {
 			$notificationManager = new NotificationManager();
 			$notificationUsers = $article->getAssociatedUserIds(false, false);
 			$user =& Request::getUser();
-			$message = $article->getProposalId('en_US').':<br/>'.$user->getUsername();
+			$message = $article->getProposalId().':<br/>'.$user->getUsername();
 			foreach ($notificationUsers as $userRole) {
 				$url = Request::url(null, $userRole['role'], 'submissionReview', $article->getId(), null, 'peerReview');
             	$notificationManager->createNotification(
@@ -375,7 +375,7 @@ class ReviewerAction extends Action {
 				$notificationManager = new NotificationManager();
 				$notificationUsers = $article->getAssociatedUserIds(false, false, false, true);
 				$url = Request::url(null, 'sectionEditor', 'submissionReview', $article->getId(), null, 'peerReview');
-				$param = $article->getProposalId('en_US').':<br/>'.$user->getUsername().' commented his review';
+				$param = $article->getProposalId().':<br/>'.$user->getUsername().' commented his review';
 				foreach ($notificationUsers as $userRole) {
                 	$notificationManager->createNotification(
                     	$userRole['id'], 'notification.type.reviewerComment',

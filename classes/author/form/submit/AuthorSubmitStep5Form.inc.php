@@ -147,18 +147,6 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 		}
 	}
 
-        /************************************************
-         * Edited by:  Anne Ivy Mirasol -- added fields
-         * Last Updated: May 4, 2011
-         ************************************************/
-
-        function getLocaleFieldNames() {
-                return array(
-			'proposalId'
-		);
-	}
-
-
 	/**
 	 * Save changes to article.
 	 */
@@ -198,7 +186,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
                                 $countyearcountry = $articleDao->getSubmissionsForYearForCountryCount($year, $country) + 1;
                         }
             
-                        $article->setProposalId($year. '.' . $countyear . '.' . $country , 'en_US');
+                        $article->setProposalId($year. '.' . $countyear . '.' . $country );
                 }
                 if ($this->getData('commentsToEditor') != '') {
                         $article->setCommentsToEditor($this->getData('commentsToEditor'));
@@ -273,7 +261,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
 				'authorUsername' => $user->getUsername(),
 				'address' => $sectionDao->getSettingValue($article->getSectionId(), 'address'),
 				'bankAccount' => $sectionDao->getSettingValue($article->getSectionId(), 'bankAccount'),
-				'proposalId' => $article->getProposalId('en_US'),
+				'proposalId' => $article->getProposalId(),
 				'submissionUrl' => Request::url(null, 'author', 'submission', $article->getId())
 			));
 			$mail->send();
@@ -289,7 +277,7 @@ class AuthorSubmitStep5Form extends AuthorSubmitForm {
                 foreach ($sectionEditors as $sectionEditor) {
                     $notificationManager->createNotification(
                         $sectionEditor->getId(), $message,
-                        $article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_ARTICLE_SUBMITTED
+                        $article->getProposalId(), $url, 1, NOTIFICATION_TYPE_ARTICLE_SUBMITTED
                     );
                 }
 

@@ -18,7 +18,7 @@
 						<option value="none">Choose One</option>
 						{foreach from=$submissions item=submission}
 							{assign var="abstract" value=$submission->getLocalizedAbstract()}
-							<option value="{$submission->getArticleId()}">{$submission->getProposalId('en_US')}: {$abstract->getScientificTitle()|strip_unsafe_html}</option>						
+							<option value="{$submission->getArticleId()}">{$submission->getProposalId()}: {$abstract->getScientificTitle()|strip_unsafe_html}</option>						
 						{/foreach}
 					</select>
 				</td>	

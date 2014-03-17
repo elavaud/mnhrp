@@ -794,7 +794,7 @@ class TrackSubmissionHandler extends AuthorHandler {
 			
 			import('lib.pkp.classes.notification.NotificationManager');
 			$notificationManager = new NotificationManager();
-			$param = $article->getProposalId('en_US').':<br/>'.$user->getUsername();
+			$param = $article->getProposalId().':<br/>'.$user->getUsername();
 			$url = Request::url($journal->getPath(), 'sectionEditor', 'submission', array($article->getId()));
         	
         		//foreach ($sectionEditors as $sectionEditorEntry) {

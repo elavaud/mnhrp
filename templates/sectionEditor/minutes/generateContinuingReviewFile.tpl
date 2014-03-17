@@ -16,7 +16,7 @@
 	<input type="hidden" name="articleId" value="{$submission->getId()}" />
 	<input type="hidden" name="lastDecisionId" value="{$lastDecision.sectionDecisionId}" />
 	<input type="hidden" name="resubmitCount" value="{$submission->getResubmitCount()}" />
-<h4>{$submission->getProposalId('en_US')}&nbsp;{translate key="editor.minutes.continuingReview"}</h4>
+<h4>{$submission->getProposalId()}&nbsp;{translate key="editor.minutes.continuingReview"}</h4>
 <br/>	
 	<table class="data" width="100%">
 		<tr>
@@ -25,7 +25,7 @@
 		</tr>
 		<tr>
 			<td class="label" width="20%">{translate key="common.proposalId"}</td>
-			<td class="value" width="80%">{$submission->getProposalId('en_US')}</td>
+			<td class="value" width="80%">{$submission->getProposalId()}</td>
 		</tr>
 		<tr>
 			<td class="label" width="20%">{translate key="editor.minutes.pi"}</td>

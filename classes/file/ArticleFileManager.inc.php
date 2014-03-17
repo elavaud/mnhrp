@@ -385,7 +385,7 @@ class ArticleFileManager extends FileManager {
 		$date = new DateTime($sourceArticleFile->getDateUploaded());
 		$dateUploaded = $date->format('dMY-gia');
 		
-		$newFileName = $this->article->getProposalId('en_US').".".$type.'.'.$dateUploaded.'.'.$fileExtension;
+		$newFileName = $this->article->getProposalId().".".$type.'.'.$dateUploaded.'.'.$fileExtension;
 
 		//rename file
 		rename($sourceDir.$sourceArticleFile->getFileName(), $sourceDir.$newFileName);
@@ -485,7 +485,7 @@ class ArticleFileManager extends FileManager {
 		.dateuploaded.extension)
 		 *  Else, use the default naming scheme (articleId.fileId.type.extension)
 		 **/
-		$proposalId = $this->article->getProposalId('en_US');
+		$proposalId = $this->article->getProposalId();
 		 
 		if($proposalId!=null || $proposalId!=''){
 			

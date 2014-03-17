@@ -24,7 +24,7 @@
 
 	{assign var="abstract" value=$submission->getLocalizedAbstract()}
     {assign var="articleId" value=$submission->getArticleId()}
-    {assign var="proposalId" value=$submission->getProposalId('en_US')}
+    {assign var="proposalId" value=$submission->getProposalId()}
 
 	<tr valign="top">
 		<td>{$proposalId|escape}</td>

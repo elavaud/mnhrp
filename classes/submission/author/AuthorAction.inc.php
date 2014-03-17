@@ -102,7 +102,7 @@ class AuthorAction extends Action {
 			$user =& Request::getUser();
 			import('classes.article.log.ArticleLog');
 			import('classes.article.log.ArticleEventLogEntry');
-			ArticleLog::logEvent($authorSubmission->getId(), ARTICLE_LOG_AUTHOR_REVISION, ARTICLE_LOG_TYPE_AUTHOR, $user->getId(), 'log.author.documentRevised', array('authorName' => $user->getFullName(), 'fileId' => $fileId, 'articleId' => $authorSubmission->getProposalId('en_US')));
+			ArticleLog::logEvent($authorSubmission->getId(), ARTICLE_LOG_AUTHOR_REVISION, ARTICLE_LOG_TYPE_AUTHOR, $user->getId(), 'log.author.documentRevised', array('authorName' => $user->getFullName(), 'fileId' => $fileId, 'articleId' => $authorSubmission->getProposalId()));
 		}
 	}
 
@@ -286,7 +286,7 @@ class AuthorAction extends Action {
 					$url = Request::url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'layout');
 					$notificationManager->createNotification(
 						$userRole['id'], 'notification.type.layoutComment',
-						$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_LAYOUT_COMMENT
+						$article->getProposalId(), $url, 1, NOTIFICATION_TYPE_LAYOUT_COMMENT
 					);
 				}
 
@@ -405,7 +405,7 @@ class AuthorAction extends Action {
 					$url = Request::url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'copyedit');
 					$notificationManager->createNotification(
 						$userRole['id'], 'notification.type.copyeditComment',
-						$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_COPYEDIT_COMMENT
+						$article->getProposalId(), $url, 1, NOTIFICATION_TYPE_COPYEDIT_COMMENT
 					);
 				}
 
@@ -457,7 +457,7 @@ class AuthorAction extends Action {
 				foreach ($notificationUsers as $userRole) {
 					$url = Request::url(null, $userRole['role'], 'submissionEditing', $article->getId(), null, 'proofread');
 					$notificationManager->createNotification($userRole['id'], 'notification.type.proofreadComment',
-						$article->getProposalId('en_US'), $url, 1, NOTIFICATION_TYPE_PROOFREAD_COMMENT
+						$article->getProposalId(), $url, 1, NOTIFICATION_TYPE_PROOFREAD_COMMENT
 					);
 				}
 
@@ -601,7 +601,7 @@ class AuthorAction extends Action {
 			import('lib.pkp.classes.notification.NotificationManager');
 			$notificationManager = new NotificationManager();
 			$notificationUsers = $article->getAssociatedUserIds(false, false);
-			$param = $article->getProposalId('en_US').': <br/>'.$user->getFullName().', <i>'.$user->getErcFunction($article->getSectionId()).'</i>,';
+			$param = $article->getProposalId().': <br/>'.$user->getFullName().', <i>'.$user->getErcFunction($article->getSectionId()).'</i>,';
 			foreach ($notificationUsers as $userRole) {
 				$url = Request::url(null, $userRole['role'], 'submissionReview', $article->getId(), null, 'editorDecision');
 				$notificationManager->createNotification(

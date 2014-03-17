@@ -77,7 +77,6 @@ class ArticleDAO extends DAO {
                     'coverageSample', 
                     'type', 
                     'sponsor', 
-                    'proposalId', 
                     'withdrawReason', 
                     'withdrawComments' 
                );
@@ -169,7 +168,8 @@ class ArticleDAO extends DAO {
 	function _articleFromRow(&$article, &$row) {
 		
 		if (isset($row['article_id'])) $article->setId($row['article_id']);
-		if (isset($row['user_id'])) $article->setUserId($row['user_id']);
+		if (isset($row['public_id'])) $article->setProposalId($row['public_id']);
+                if (isset($row['user_id'])) $article->setUserId($row['user_id']);
 		if (isset($row['journal_id'])) $article->setJournalId($row['journal_id']);
 		if (isset($row['section_title'])) $article->setSectionTitle($row['section_title']);
 		if (isset($row['section_abbrev'])) $article->setSectionAbbrev($row['section_abbrev']);
@@ -220,11 +220,12 @@ class ArticleDAO extends DAO {
 		$article->stampModified();
 		$this->update(
 		sprintf('INSERT INTO articles
-				(locale, user_id, journal_id, language, comments_to_ed, citations, date_submitted, date_status_modified, last_modified, status, submission_progress, submission_file_id, revised_file_id, review_file_id, editor_file_id, pages, fast_tracked, hide_author, comments_status, doi)
+				(public_id, locale, user_id, journal_id, language, comments_to_ed, citations, date_submitted, date_status_modified, last_modified, status, submission_progress, submission_file_id, revised_file_id, review_file_id, editor_file_id, pages, fast_tracked, hide_author, comments_status, doi)
 				VALUES
-				(?, ?, ?, ?, ?, ?, %s, %s, %s, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+				(?, ?, ?, ?, ?, ?, ?, %s, %s, %s, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 		$this->datetimeToDB($article->getDateSubmitted()), $this->datetimeToDB($article->getDateStatusModified()), $this->datetimeToDB($article->getLastModified())),
 		array(
+                        $article->getProposalId(),
 			$article->getLocale(),
 			$article->getUserId(),
 			$article->getJournalId(),
@@ -266,7 +267,8 @@ class ArticleDAO extends DAO {
 		$article->stampModified();
 		$this->update(
 		sprintf('UPDATE articles
-				SET	locale = ?,
+				SET	public_id = ?,
+					locale = ?,
 					user_id = ?,
 					language = ?,
 					comments_to_ed = ?,
@@ -288,6 +290,7 @@ class ArticleDAO extends DAO {
 				WHERE article_id = ?',
 		$this->datetimeToDB($article->getDateSubmitted()), $this->datetimeToDB($article->getDateStatusModified()), $this->datetimeToDB($article->getLastModified())),
 		array(
+                        $article->getProposalId(),
 			$article->getLocale(),
 			$article->getUserId(),
 			$article->getLanguage(),
@@ -758,9 +761,8 @@ class ArticleDAO extends DAO {
 	 */
 	function getICPSubmissionsForYearCount($year) {
 		$result =& $this->retrieve('SELECT * FROM articles
-                                            WHERE date_submitted is not NULL and extract(year from date_submitted) = ? and
-                                            article_id in (SELECT article_id from article_settings where setting_name = ? and setting_value LIKE ?)',
-		array($year, 'proposalId', '%.ICP.%'));
+                                            WHERE date_submitted is not NULL and extract(year from date_submitted) = ? and a.public_id LIKE ?',
+		array($year, '%.ICP.%'));
 
 		$count = $result->NumRows();
 
@@ -1036,7 +1038,7 @@ class ArticleDAO extends DAO {
 	function _searchArticleFromRow(&$article, &$row) {
 		if (isset($row['status'])) $article->setStatus($row['status']);
 		if (isset($row['article_id'])) $article->setId($row['article_id']);
-		if (isset($row['proposalid'])) $article->setProposalId($row['proposalid'], 'en_US');
+		if (isset($row['public_id'])) $article->setProposalId($row['public_id']);
 		if (isset($row['date_submitted'])) $article->setDateSubmitted($this->datetimeFromDB($row['date_submitted']));
 		if (isset($row['efname']) or isset($row['elname'])) $article->setPrimaryEditor($row['efname']." ".$row['elname']);
 		if (isset($row['afname']) or isset($row['alname'])) $article->setPrimaryAuthor($row['afname']." ".$row['alname']);

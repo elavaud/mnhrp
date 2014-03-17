@@ -67,7 +67,7 @@ class ArticleMailTemplate extends MailTemplate {
 		$section =& $sectionDao->getSection($this->sectionDecision->getSectionId());
 		$abstract =& $article->getLocalizedAbstract();
 		$paramArray['articleTitle'] = strip_tags($abstract->getScientificTitle());
-		$paramArray['articleId'] = $article->getProposalId('en_US');
+		$paramArray['articleId'] = $article->getProposalId();
 		$paramArray['journalName'] = strip_tags($journal->getLocalizedTitle());
 		$paramArray['sectionName'] = strip_tags($section->getLocalizedTitle());
 		$paramArray['articleBackground'] = String::html2text($abstract->getBackground());
