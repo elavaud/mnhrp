@@ -12,7 +12,7 @@
  * Added by EL on April 2013
  */
 
-// Review type
+// Review type - If modified, should modify to Action.inc.php
 define('REVIEW_TYPE_INITIAL', 1); 	// Initial Review
 define('REVIEW_TYPE_CONTINUING', 2);	// Continuing Review
 define('REVIEW_TYPE_AMENDMENT', 3);	// Post-Approval Amendment
@@ -276,7 +276,7 @@ class SectionDecision extends DataObject {
 	 * Get a map for review type  to locale key.
 	 * @return array
 	 */
-	function &getReviewTypeMap() {
+	function getReviewTypeMap() {
                 return $reviewTypeMap = array(
                         REVIEW_TYPE_INITIAL => 'submission.initialReview',
                         REVIEW_TYPE_CONTINUING => 'submission.continuingReview',

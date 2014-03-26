@@ -287,7 +287,7 @@ class ProposalDetails extends DataObject {
 	 * @param $otherResearchField string
 	 */
 	function setOtherResearchField($otherResearchField) {
-		return $this->setData('otherProposalType', $otherResearchField);
+		return $this->setData('otherResearchField', $otherResearchField);
 	}
 	/**
 	 * Get other research field.

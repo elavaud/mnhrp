@@ -29,69 +29,63 @@ class SubmissionsReportForm extends Form {
 		//$this->addCheck(new FormValidator($this,'countries', 'required', 'editor.reports.countryRequired'));
 		//$this->addCheck(new FormValidator($this,'decisions', 'required', 'editor.reports.decisionRequired'));
 	}
-	
-	/**
-	 * Assign form data to user-submitted data.
-	 */
-	function readInputData() {
-		$this->readUserVars(array(
-			'decisions',
-			'countries',
-		));
-	}
-
-	function display() {
+	        
+        function display() {
                 $journal = Request::getJournal();
             
 		$countryDao =& DAORegistry::getDAO('CountryDAO');
                 $proposalDetailsDao =& DAORegistry::getDAO('ProposalDetailsDAO');
-                $studentResearchDao =& DAORegistry::getDAO('StudentResearchDAO');
                 $regionDAO =& DAORegistry::getDAO('AreasOfTheCountryDAO');
 		$institutionDao =& DAORegistry::getDAO('InstitutionDAO');
 		$riskAssessmentDao =& DAORegistry::getDAO('RiskAssessmentDAO');
 		$currencyDao =& DAORegistry::getDAO('CurrencyDAO');
-                
-                $institutionsList = $institutionDao->getInstitutionsList();
-                $institutionsListWithOther = $institutionsList + array('OTHER' => Locale::translate('common.other'));
-                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
-
-                $templateMgr =& TemplateManager::getManager();
+		$sectionDao =& DAORegistry::getDAO('SectionDAO');
+		
+                $sectionOptions = array('0' => Locale::translate('editor.reports.anyCommittee')) + $sectionDao->getSectionTitles($journal->getId());
+                $decisionTypes = array(
+                    INITIAL_REVIEW => 'submission.initialReview',
+                    CONTINUING_REVIEW => 'submission.continuingReview',
+                    PROTOCOL_AMENDMENT => 'submission.protocolAmendment',
+                    SERIOUS_ADVERSE_EVENT => 'submission.seriousAdverseEvents',
+                    END_OF_STUDY => 'submission.endOfStudy'
+		);
 		$decisionOptions = array(
+                    98 => 'editor.reports.aDecisionsIUR',
+                    99 => 'editor.reports.aDecisionsEUR',
                     SUBMISSION_SECTION_DECISION_APPROVED => 'editor.article.decision.approved',
                     SUBMISSION_SECTION_DECISION_RESUBMIT => 'editor.article.decision.resubmit',
-                    SUBMISSION_SECTION_DECISION_DECLINED => 'editor.article.decision.declined',
-                    SUBMISSION_SECTION_DECISION_COMPLETE => 'editor.article.decision.complete',
-                    SUBMISSION_SECTION_DECISION_INCOMPLETE => 'editor.article.decision.incomplete',
-                    SUBMISSION_SECTION_DECISION_EXEMPTED => 'editor.article.decision.exempted',
-                    SUBMISSION_SECTION_DECISION_FULL_REVIEW => 'editor.article.decision.fullReview',
-                    SUBMISSION_SECTION_DECISION_EXPEDITED => 'editor.article.decision.expedited'
+                    SUBMISSION_SECTION_DECISION_DECLINED => 'editor.article.decision.declined'
 		);
-		$templateMgr->assign_by_ref('decisionsOptions', $decisionOptions);
+                $budgetOptions = array(
+                    ">=" => 'editor.reports.budgetSuperiorTo',
+                    "<=" => 'editor.reports.budgetInferiorTo'
+		);
+                $sourceCurrencyId = $journal->getSetting('sourceCurrency');
+                $reportTypeOptions = array(
+                    0 => 'editor.reports.type.spreadsheet',
+                    1 => 'editor.reports.type.linePLot',
+                    2 => 'editor.reports.type.barPlot',
+                    3 => 'editor.reports.type.piePlot'
+		);
                 
+                $templateMgr =& TemplateManager::getManager();
+                $templateMgr->assign('sectionOptions', $sectionOptions);
+		$templateMgr->assign('decisionTypes', $decisionTypes);
+		$templateMgr->assign('decisionOptions', $decisionOptions);
+                $templateMgr->assign('proposalDetailYesNoArray', $proposalDetailsDao->getYesNoArray());
+                $templateMgr->assign('institutionsList', $institutionDao->getInstitutionsList());
                 $templateMgr->assign('coutryList', $countryDao->getCountries());
-                $templateMgr->assign('proposalTypesList', $proposalDetailsDao->getProposalTypes());
-                $templateMgr->assign('researchFieldsList', $proposalDetailsDao->getResearchFields());
-                $templateMgr->assign('dataCollectionArray', $proposalDetailsDao->getDataCollectionArray());
-                $templateMgr->assign('otherErcDecisionArray', $proposalDetailsDao->getOtherErcDecisionArray());
-                $templateMgr->assign('academicDegreesArray', $studentResearchDao->getAcademicDegreesArray());
                 $templateMgr->assign('geoAreasList', $regionDAO->getAreasOfTheCountry());
-                $templateMgr->assign('institutionsList', $institutionsListWithOther);
+                $templateMgr->assign('researchFieldsList', $proposalDetailsDao->getResearchFields());
+                $templateMgr->assign('proposalTypesList', $proposalDetailsDao->getProposalTypes());
+                $templateMgr->assign('dataCollectionArray', $proposalDetailsDao->getDataCollectionArray());
+                $templateMgr->assign('budgetOptions', $budgetOptions);                
                 $templateMgr->assign('sourceCurrency', $currencyDao->getCurrencyByAlphaCode($sourceCurrencyId));
                 $templateMgr->assign('riskAssessmentYesNoArray', $riskAssessmentDao->getYesNoArray());
-                $templateMgr->assign('riskAssessmentLevelsOfRisk', $riskAssessmentDao->getLevelOfRiskArray());
-                $templateMgr->assign('riskAssessmentConflictOfInterestArray', $riskAssessmentDao->getConflictOfInterestArray());
+                $templateMgr->assign('reportTypeOptions', $reportTypeOptions);
                 
-                $fromDate = Request::getUserDateVar('dateFrom', 1, 1);
-                if ($fromDate !== null) $fromDate = date('Y-m-d H:i:s', $fromDate);
-                $toDate = Request::getUserDateVar('dateTo', 32, 12, null, 23, 59, 59);
-                if ($toDate !== null) $toDate = date('Y-m-d H:i:s', $toDate);
-                $templateMgr->assign('dateFrom', $fromDate);
-                $templateMgr->assign('dateTo', $toDate);
-        
      	        parent::display();
-	}
-
-	
+	}     
 }
 
 ?>

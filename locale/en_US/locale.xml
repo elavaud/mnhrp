@@ -25,7 +25,13 @@
 	 *  MISC - Entries that don't belong elsewhere.
 	 *  DEFAULT - Default settings for configuration items.
 	-->
+        
+        <!-- New keys added in February March 2014 -->
                 
+        <message key="proposal.exportHumanTissueAbb">Export Human Tissue</message>
+                
+        <!-- End new keys -->
+                                
         <!-- Common Source and Institution Terms. Added in February 2014-->
         
         <message key="institution.acronym">Acronym</message>
@@ -1117,7 +1123,7 @@ current password.<br /><br />Enter your email address below to reset your passwo
 	<message key="search.responsibleOfficer">Responsible Officer</message>
 	<message key="search.primaryInvestigator">Principal Investigator</message>
     <message key="search.primarySponsor">Primary Sponsor</message>
-    <message key="search.proposalType">Proposal Type</message>    
+    <message key="search.proposalType">Proposal Type(s)</message>    
     <message key="search.region">Geographical Area</message>
     <message key="search.researchField">Research Field</message>
     <message key="search.researchDates">Research Dates</message>
