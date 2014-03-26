@@ -26,6 +26,12 @@
 	 *  DEFAULT - Default settings for configuration items.
 	-->
 
+        <!-- New keys added in February March 2014 -->
+                
+        <message key="proposal.exportHumanTissueAbb">Export Human Tissue</message>
+                
+        <!-- End new keys -->
+
         <!-- Common Source and Institution Terms. Added in February 2014-->
         <message key="institution.acronym">Acronym</message>
         <message key="institution.countKII">Number of proposal(s) with this institution as a "Key Implementing Institution":</message>
